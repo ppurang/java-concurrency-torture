@@ -49,15 +49,15 @@ public abstract class TwoThreadTest<S> {
 
                 Multiset<Long> set = TreeMultiset.create();
 
-                long[] results = new long[LOOPS];
+                byte[][] results = new byte[LOOPS][];
                 while (!Thread.interrupted()) {
                     for (int c = 0; c < LOOPS; c++) {
                         thread1(current, res);
-                        results[c] = byteArrToLong(res);
+                        results[c] = Arrays.copyOf(res, 8);
                     }
 
-                    for (long result : results) {
-                        set.add(result);
+                    for (byte[] result : results) {
+                        set.add(byteArrToLong(result));
                     }
                 }
                 return set;
