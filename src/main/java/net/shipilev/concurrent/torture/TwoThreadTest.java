@@ -16,7 +16,7 @@ public abstract class TwoThreadTest<S> {
 
     private static final int LOOPS = 10000;
 
-    S current;
+    volatile S current;
 
     public void run() throws InterruptedException, ExecutionException {
         System.out.println("Running " + this.getClass().getName());
