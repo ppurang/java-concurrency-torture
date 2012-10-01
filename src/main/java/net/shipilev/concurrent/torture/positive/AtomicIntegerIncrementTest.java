@@ -15,7 +15,7 @@ import java.util.concurrent.atomic.AtomicInteger;
  *    [1]: INCORRECT: lost update
  *    [2]: CORRECT:   both updates are intact
  */
-public class AtomicRaceTest extends TwoActorsOneArbiterTest<AtomicRaceTest.Specimen> {
+public class AtomicIntegerIncrementTest extends TwoActorsOneArbiterTest<AtomicIntegerIncrementTest.Specimen> {
 
     public static class Specimen {
         final AtomicInteger count = new AtomicInteger();
