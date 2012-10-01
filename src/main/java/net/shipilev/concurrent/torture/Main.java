@@ -14,8 +14,11 @@ import java.util.concurrent.ExecutionException;
 public class Main {
 
     public static void main(String[] args) throws ExecutionException, InterruptedException {
-        System.out.println("Running each test for " + Constants.TIME_MSEC + "ms, -Dtime=# to override");
-        System.out.println("Each test does " + Constants.LOOPS + " internal loops, -Dloops=# to override");
+        System.out.println("Java Concurrency Torture Tests");
+        System.out.println("---------------------------------------------------------------------------------");
+        System.out.println("Look up the Javadoc for test to look up the details about the test.");
+        System.out.println("Running each test for " + Constants.TIME_MSEC + "ms, -Dtime=# to override.");
+        System.out.println("Each test does " + Constants.LOOPS + " internal loops, -Dloops=# to override.");
         System.out.println();
 
         System.out.println("*** NEGATIVE TESTS (expected to fail) ***");
