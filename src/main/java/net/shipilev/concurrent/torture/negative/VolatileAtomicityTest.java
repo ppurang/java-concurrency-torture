@@ -37,7 +37,7 @@ public class VolatileAtomicityTest extends TwoActorsOneArbiterTest<VolatileAtomi
     }
 
     @Override
-    public Specimen createNew() {
+    public Specimen newSpecimen() {
         return new Specimen();
     }
 

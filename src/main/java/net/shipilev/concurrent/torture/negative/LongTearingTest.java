@@ -24,7 +24,7 @@ public class LongTearingTest extends OneActorOneObserverTest<LongTearingTest.Spe
     }
 
     @Override
-    public Specimen createNew() {
+    public Specimen newSpecimen() {
         return new Specimen();
     }
 

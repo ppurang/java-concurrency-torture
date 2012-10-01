@@ -23,7 +23,7 @@ public class VolatileLongTearingTest extends OneActorOneObserverTest<VolatileLon
     }
 
     @Override
-    public Specimen createNew() {
+    public Specimen newSpecimen() {
         return new Specimen();
     }
 

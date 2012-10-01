@@ -29,7 +29,7 @@ public abstract class TwoActorsOneArbiterTest<S> {
      *
      * @return fresh specimen
      */
-    protected abstract S createNew();
+    protected abstract S newSpecimen();
 
     /**
      * Body for actor 1.
@@ -93,7 +93,7 @@ public abstract class TwoActorsOneArbiterTest<S> {
     public void run() throws InterruptedException, ExecutionException {
         System.out.println("Running " + this.getClass().getName());
 
-        current = createNew();
+        current = newSpecimen();
 
         ExecutorService pool = Executors.newCachedThreadPool();
 
@@ -101,7 +101,7 @@ public abstract class TwoActorsOneArbiterTest<S> {
             public void run() {
                 while (!Thread.interrupted()) {
                     while (t1 != null && t2 != null && !Thread.currentThread().isInterrupted());
-                    current = createNew();
+                    current = newSpecimen();
                 }
             }
         });

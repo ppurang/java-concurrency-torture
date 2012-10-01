@@ -37,7 +37,7 @@ public class AtomicIntegerIncrementTest extends TwoActorsOneArbiterTest<AtomicIn
     }
 
     @Override
-    public Specimen createNew() {
+    public Specimen newSpecimen() {
         return new Specimen();
     }
 

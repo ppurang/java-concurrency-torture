@@ -56,7 +56,7 @@ public class UnsafeSingletonTest extends OneActorOneObserverTest<UnsafeSingleton
     }
 
     @Override
-    public SingletonFactory createNew() {
+    public SingletonFactory newSpecimen() {
         return new SingletonFactory();
     }
 

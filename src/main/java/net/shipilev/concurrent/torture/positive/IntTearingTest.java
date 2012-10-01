@@ -20,7 +20,7 @@ public class IntTearingTest extends OneActorOneObserverTest<IntTearingTest.Speci
     }
 
     @Override
-    public Specimen createNew() {
+    public Specimen newSpecimen() {
         return new Specimen();
     }
 

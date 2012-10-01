@@ -25,7 +25,7 @@ public class VolatileWriteTest extends OneActorOneObserverTest<VolatileWriteTest
     }
 
     @Override
-    public Specimen createNew() {
+    public Specimen newSpecimen() {
         return new Specimen();
     }
 

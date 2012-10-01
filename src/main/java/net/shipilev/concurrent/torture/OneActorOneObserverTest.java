@@ -29,7 +29,7 @@ public abstract class OneActorOneObserverTest<S> {
      *
      * @return fresh specimen
      */
-    protected abstract S createNew();
+    protected abstract S newSpecimen();
 
     /**
      * Body for actor 1.
@@ -81,12 +81,12 @@ public abstract class OneActorOneObserverTest<S> {
 
         ExecutorService pool = Executors.newFixedThreadPool(3);
 
-        current = createNew();
+        current = newSpecimen();
 
         pool.submit(new Runnable() {
             public void run() {
                 while (!Thread.interrupted()) {
-                    current = createNew();
+                    current = newSpecimen();
                 }
             }
         });
