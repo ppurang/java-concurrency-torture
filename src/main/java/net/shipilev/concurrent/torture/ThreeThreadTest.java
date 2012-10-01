@@ -21,6 +21,8 @@ public abstract class ThreeThreadTest<S> {
     public void run() throws InterruptedException, ExecutionException {
         System.out.println("Running " + this.getClass().getName());
 
+        current = createNew();
+
         ExecutorService pool = Executors.newCachedThreadPool();
 
         pool.submit(new Runnable() {
@@ -33,10 +35,18 @@ public abstract class ThreeThreadTest<S> {
 
         pool.submit(new Runnable() {
             public void run() {
-                current = createNew();
+                S last = null;
                 while (!Thread.interrupted()) {
-                    for (int c = 0; c < LOOPS; c++) {
-                        thread0(current);
+                    int c = 0;
+                    int l = 0;
+                    while (l < LOOPS) {
+                        S cur = current;
+                        if (last != cur) {
+                            thread0(cur);
+                            last = cur;
+                            c++;
+                        }
+                        l++;
                     }
                 }
             }
@@ -44,10 +54,18 @@ public abstract class ThreeThreadTest<S> {
 
         pool.submit(new Runnable() {
             public void run() {
-                current = createNew();
+                S last = null;
                 while (!Thread.interrupted()) {
-                    for (int c = 0; c < LOOPS; c++) {
-                        thread1(current);
+                    int c = 0;
+                    int l = 0;
+                    while (l < LOOPS) {
+                        S cur = current;
+                        if (last != cur) {
+                            thread1(cur);
+                            last = cur;
+                            c++;
+                        }
+                        l++;
                     }
                 }
             }
@@ -55,20 +73,28 @@ public abstract class ThreeThreadTest<S> {
 
         Future<Multiset<Long>> res = pool.submit(new Callable<Multiset<Long>>() {
             public Multiset<Long> call() {
-                current = createNew();
+                S last = null;
                 byte[] res = new byte[8];
 
                 Multiset<Long> set = TreeMultiset.create();
 
                 byte[][] results = new byte[LOOPS][];
                 while (!Thread.interrupted()) {
-                    for (int c = 0; c < LOOPS; c++) {
-                        thread2(current, res);
-                        results[c] = Arrays.copyOf(res, 8);
+                    int c = 0;
+                    int l = 0;
+                    while (l < LOOPS) {
+                        S cur = current;
+                        if (last != cur) {
+                            thread2(cur, res);
+                            results[c] = Arrays.copyOf(res, 8);
+                            last = cur;
+                            c++;
+                        }
+                        l++;
                     }
 
-                    for (byte[] result : results) {
-                        set.add(byteArrToLong(result));
+                    for (int i = 0; i < c; i++) {
+                        set.add(byteArrToLong(results[i]));
                     }
                 }
                 return set;

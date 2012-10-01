@@ -35,8 +35,9 @@ public abstract class TwoThreadTest<S> {
 
         pool.submit(new Runnable() {
             public void run() {
+                S last = null;
+
                 while (!Thread.interrupted()) {
-                    S last = null;
                     int c = 0;
                     int l = 0;
                     while (l < LOOPS) {
@@ -54,14 +55,14 @@ public abstract class TwoThreadTest<S> {
 
         Future<Multiset<Long>> res = pool.submit(new Callable<Multiset<Long>>() {
             public Multiset<Long> call() {
+                S last = null;
+
                 byte[] res = new byte[8];
 
                 Multiset<Long> set = TreeMultiset.create();
 
                 byte[][] results = new byte[LOOPS][];
                 while (!Thread.interrupted()) {
-
-                    S last = null;
                     int c = 0;
                     int l = 0;
                     while (l < LOOPS) {
