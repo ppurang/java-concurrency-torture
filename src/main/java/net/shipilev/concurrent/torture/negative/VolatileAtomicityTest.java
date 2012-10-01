@@ -1,16 +1,17 @@
-package net.shipilev.concurrent.torture.positive;
+package net.shipilev.concurrent.torture.negative;
 
 import net.shipilev.concurrent.torture.Outcome;
 import net.shipilev.concurrent.torture.ThreeThreadTest;
-import net.shipilev.concurrent.torture.TwoThreadTest;
 
 import java.util.concurrent.atomic.AtomicInteger;
 
 public class VolatileAtomicityTest extends ThreeThreadTest<VolatileAtomicityTest.Specimen> {
 
+    // FIXME: This test is incorrect, because stronger requirement in TwoAtomicsAreNotAtomicTest is not met
+
     public static class Specimen {
         volatile int x;
-        AtomicInteger count = new AtomicInteger();
+        final AtomicInteger count = new AtomicInteger();
     }
 
     @Override
@@ -38,6 +39,7 @@ public class VolatileAtomicityTest extends ThreeThreadTest<VolatileAtomicityTest
 
     @Override
     protected Outcome test(byte[] res) {
+        if (res[0] != res[1]) return Outcome.NOT_EXPECTED;
         return Outcome.ACCEPTABLE;
     }
 

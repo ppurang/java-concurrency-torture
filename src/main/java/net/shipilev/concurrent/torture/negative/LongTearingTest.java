@@ -1,4 +1,4 @@
-package net.shipilev.concurrent.torture.positive;
+package net.shipilev.concurrent.torture.negative;
 
 import net.shipilev.concurrent.torture.Outcome;
 import net.shipilev.concurrent.torture.TwoThreadTest;
