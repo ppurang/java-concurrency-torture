@@ -15,30 +15,26 @@ import java.util.concurrent.atomic.AtomicInteger;
  *    [1]: INCORRECT: lost update
  *    [2]: CORRECT:   both updates are intact
  */
-public class AtomicIntegerIncrementTest extends TwoActorsOneArbiterTest<AtomicIntegerIncrementTest.Specimen> {
+public class AtomicIntegerIncrementTest extends TwoActorsOneArbiterTest<AtomicInteger> {
 
-    public static class Specimen {
-        final AtomicInteger count = new AtomicInteger();
+    @Override
+    public void actor1(AtomicInteger s) {
+        s.incrementAndGet();
     }
 
     @Override
-    public void actor1(Specimen s) {
-        s.count.incrementAndGet();
+    public void actor2(AtomicInteger s) {
+        s.incrementAndGet();
     }
 
     @Override
-    public void actor2(Specimen s) {
-        s.count.incrementAndGet();
+    public void arbitrate(AtomicInteger s, byte[] result) {
+        result[0] = (byte) s.get();
     }
 
     @Override
-    public void arbitrate(Specimen s, byte[] result) {
-        result[0] = (byte) s.count.get();
-    }
-
-    @Override
-    public Specimen newSpecimen() {
-        return new Specimen();
+    public AtomicInteger newSpecimen() {
+        return new AtomicInteger();
     }
 
     @Override
