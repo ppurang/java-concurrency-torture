@@ -5,9 +5,9 @@ import net.shipilev.concurrent.torture.positive.IntTearingTest;
 import net.shipilev.concurrent.torture.negative.LongTearingTest;
 import net.shipilev.concurrent.torture.negative.UnsafeSingletonTest;
 import net.shipilev.concurrent.torture.negative.VolatileAtomicityTest;
+import net.shipilev.concurrent.torture.positive.ReadAfterVolatileReadTest;
+import net.shipilev.concurrent.torture.positive.ReadTwiceOverVolatileReadTest;
 import net.shipilev.concurrent.torture.positive.VolatileLongTearingTest;
-import net.shipilev.concurrent.torture.positive.VolatileReadTest;
-import net.shipilev.concurrent.torture.positive.VolatileWriteTest;
 
 import java.util.concurrent.ExecutionException;
 
@@ -27,8 +27,8 @@ public class Main {
         System.out.println("*** POSITIVE TESTS (expected to pass) ***");
         new AtomicIntegerIncrementTest().run();
         new IntTearingTest().run();
-        new VolatileReadTest().run();
-        new VolatileWriteTest().run();
+        new ReadTwiceOverVolatileReadTest().run();
+        new ReadAfterVolatileReadTest().run();
         new VolatileLongTearingTest().run();
     }
 

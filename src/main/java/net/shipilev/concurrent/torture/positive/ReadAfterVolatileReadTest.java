@@ -3,7 +3,17 @@ package net.shipilev.concurrent.torture.positive;
 import net.shipilev.concurrent.torture.OneActorOneObserverTest;
 import net.shipilev.concurrent.torture.Outcome;
 
-public class VolatileWriteTest extends OneActorOneObserverTest<VolatileWriteTest.Specimen> {
+/**
+ * Tests if volatile write-read induce proper happens-before.
+ *
+ * Possible states are:
+ *   [0, *]: CORRECT:   volatile write to $y had not yet happened, no constraints on $x
+ *   [1, 0]: INCORRECT: can't read default value for $x after volatile write to $y happened
+ *   [1, 1]: INCORRECT: can't read stale value for $x after volatile write to $y happened
+ *   [1, 2]: CORRECT:   read correct $x value, forced by happens-before
+ *   [1, 3]: CORRECT:   read correct $x value, residual after $y update
+ */
+public class ReadAfterVolatileReadTest extends OneActorOneObserverTest<ReadAfterVolatileReadTest.Specimen> {
 
     public static class Specimen {
         int x;
@@ -32,8 +42,6 @@ public class VolatileWriteTest extends OneActorOneObserverTest<VolatileWriteTest
     @Override
     protected Outcome test(byte[] res) {
         if (res[0] == 1 && res[1] < 2) {
-            // volatile read happened
-            // should always read x == 2 or x == 3
             return Outcome.NOT_EXPECTED;
         }
         return Outcome.ACCEPTABLE;
