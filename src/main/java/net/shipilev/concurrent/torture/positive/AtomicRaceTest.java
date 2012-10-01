@@ -5,6 +5,16 @@ import net.shipilev.concurrent.torture.TwoActorsOneArbiterTest;
 
 import java.util.concurrent.atomic.AtomicInteger;
 
+/**
+ * Tests the atomicity of AtomicInteger incrementAndGet.
+ * This is guaranteed by JMM and implementation.
+ * The failure on this scenario highlights the possible bug.
+ *
+ * Possible observed states are:
+ *    [0]: INCORRECT: complete infrastructure failure (this is an infrastructure bug to have one)
+ *    [1]: INCORRECT: lost update
+ *    [2]: CORRECT:   both updates are intact
+ */
 public class AtomicRaceTest extends TwoActorsOneArbiterTest<AtomicRaceTest.Specimen> {
 
     public static class Specimen {

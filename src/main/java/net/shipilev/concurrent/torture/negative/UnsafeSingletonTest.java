@@ -3,11 +3,19 @@ package net.shipilev.concurrent.torture.negative;
 import net.shipilev.concurrent.torture.Outcome;
 import net.shipilev.concurrent.torture.OneActorOneObserverTest;
 
+/**
+ * Tests the broken double-checked locking.
+ * This is allowed by JMM, and hence this is a negative test.
+ * The failure on this test DOES NOT highlight the possible bug.
+ *
+ * The race is on getting uninitialized field in Singleton.
+ *
+ * Note: this is a very fine race, you might need to run longer to observe the failure.
+ */
 public class UnsafeSingletonTest extends OneActorOneObserverTest<UnsafeSingletonTest.SingletonFactory> {
 
     public static class SingletonFactory {
-
-        private Singleton instance;
+        private Singleton instance; // specifically non-volatile
 
         public Singleton getInstance() {
             if (instance == null) {
@@ -19,7 +27,6 @@ public class UnsafeSingletonTest extends OneActorOneObserverTest<UnsafeSingleton
             }
             return instance;
         }
-
     }
 
     public static class Singleton {

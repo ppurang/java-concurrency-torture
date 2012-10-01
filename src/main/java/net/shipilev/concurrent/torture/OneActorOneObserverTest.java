@@ -138,7 +138,7 @@ public abstract class OneActorOneObserverTest<S> {
             }
         });
 
-        TimeUnit.SECONDS.sleep(1);
+        TimeUnit.SECONDS.sleep(5);
 
         pool.shutdownNow();
 

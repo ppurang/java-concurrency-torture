@@ -1,8 +1,18 @@
-package net.shipilev.concurrent.torture.negative;
+package net.shipilev.concurrent.torture.positive;
 
 import net.shipilev.concurrent.torture.OneActorOneObserverTest;
 import net.shipilev.concurrent.torture.Outcome;
 
+/**
+ * Tests if primitive integers experience word tearing.
+ * This behavior is forbidden by JMM, so the failures on this tests highlight the possible bug.
+ *
+ * Possible observed states:
+ *    - default value for integer (i.e. 0)
+ *    - value set by actor (i.e. -1)
+ *
+ * All other values are forbidden because out-of-thin-air values are forbidden.
+ */
 public class IntTearingTest extends OneActorOneObserverTest<IntTearingTest.Specimen> {
 
     public static class Specimen {

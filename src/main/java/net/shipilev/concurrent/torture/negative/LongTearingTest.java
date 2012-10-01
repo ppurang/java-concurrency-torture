@@ -4,6 +4,19 @@ import net.shipilev.concurrent.torture.OneActorOneObserverTest;
 import net.shipilev.concurrent.torture.Outcome;
 import net.shipilev.concurrent.torture.TwoActorsOneArbiterTest;
 
+/**
+ * Tests if primitive longs experience word tearing.
+ * Long tearing is allowed by JMM, and hence this is a negative test.
+ * The failure on this test DOES NOT highlight the possible bug.
+ *
+ * Possible observed states:
+ *    - default value for long (i.e. 0)
+ *    - value set by actor (i.e. -1)
+ *    - low-word set to -1, high-word still set to 0 (tearing)
+ *    - high-word set to -1, low-word still set to 0 (tearing)
+ *
+ * All other values are forbidden because out-of-thin-air values are forbidden.
+ */
 public class LongTearingTest extends OneActorOneObserverTest<LongTearingTest.Specimen> {
 
     public static class Specimen {
