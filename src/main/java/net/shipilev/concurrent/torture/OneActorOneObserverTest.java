@@ -1,7 +1,6 @@
 package net.shipilev.concurrent.torture;
 
-import com.google.common.collect.Multiset;
-import com.google.common.collect.TreeMultiset;
+import net.shipilev.concurrent.torture.util.Multiset;
 
 import java.nio.ByteBuffer;
 import java.util.Arrays;
@@ -36,7 +35,6 @@ public abstract class OneActorOneObserverTest<S> {
      *
      * Conventions:
      *   - this method is called only by actor 1, only once per specimen
-     *   - the order vs. other actor is unspecified
      *
      * @param specimen specimen to work on
      */
@@ -46,9 +44,9 @@ public abstract class OneActorOneObserverTest<S> {
      * Body for the observer.
      *
      * Conventions:
-     *   - this method is called only by arbiter thread, once per specimen
-     *   - for any given specimen, observer would be concurrently with the actor
-     *   - observer can store the arbitrated state in the result array
+     *   - this method is called only by observer thread, once per specimen
+     *   - for any given specimen, observer would run concurrently with the actor
+     *   - observer can store the observed state in the result array
      *   - observer can not store the reference to result array
      *
      * @param specimen specimen to work on
@@ -117,7 +115,7 @@ public abstract class OneActorOneObserverTest<S> {
 
                 byte[] res = new byte[8];
 
-                Multiset<Long> set = TreeMultiset.create();
+                Multiset<Long> set = new Multiset<Long>();
 
                 byte[][] results = new byte[Constants.LOOPS][];
                 while (!Thread.interrupted()) {
@@ -127,7 +125,8 @@ public abstract class OneActorOneObserverTest<S> {
                         S cur = current;
                         if (last != cur) {
                             observe(cur, res);
-                            results[c] = Arrays.copyOf(res, 8);
+                            results[c] = new byte[8];
+                            System.arraycopy(res, 0, results[c], 0, 8);
                             last = cur;
                             c++;
                         }
@@ -147,11 +146,13 @@ public abstract class OneActorOneObserverTest<S> {
         pool.shutdownNow();
 
         Multiset<Long> results = res.get();
-        for (Multiset.Entry<Long> e : results.entrySet()) {
+        for (Long e : results.keys()) {
 
-            byte[] b = longToByteArr(e.getElement());
+            byte[] b = longToByteArr(e);
 
-            b = Arrays.copyOf(b, resultSize());
+            byte[] t = new byte[resultSize()];
+            System.arraycopy(b, 0, t, 0, resultSize());
+            b = t;
 
             boolean isFailed;
             switch (test(b)) {
@@ -162,20 +163,20 @@ public abstract class OneActorOneObserverTest<S> {
                     break;
 
                 case EXPECTED:
-                    isFailed = (e.getCount() == 0);
+                    isFailed = (results.count(e) == 0);
                     break;
 
                 case NOT_EXPECTED:
-                    isFailed = (e.getCount() > 0);
+                    isFailed = (results.count(e) > 0);
                     break;
                 default:
                     throw new IllegalStateException();
             }
 
-            System.out.printf("%35s (%10d) %20s\n", Arrays.toString(b), e.getCount(), isFailed ? "ERROR: " + test(b) : "");
+            System.out.printf("%35s (%10d) %20s\n", Arrays.toString(b), results.count(e), isFailed ? "ERROR: " + test(b) : "");
         }
 
-        pool.awaitTermination(1, TimeUnit.DAYS);
+        pool.awaitTermination(3600, TimeUnit.SECONDS);
     }
 
     private byte[] longToByteArr(Long element) {
