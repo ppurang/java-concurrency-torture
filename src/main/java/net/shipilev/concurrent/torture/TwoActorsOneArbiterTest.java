@@ -16,14 +16,9 @@ import java.util.concurrent.TimeUnit;
  * This test accepts two actors (threads actively mutating the state),
  * and one arbiter (thread observing the state *after* two actors finished).
  *
- * @param <S>
+ * @param <S> specimen type
  */
 public abstract class TwoActorsOneArbiterTest<S> {
-
-    /**
-     * Number of internal loops to do before making heavy operations (i.e. enforcing ordering)
-     */
-    private static final int LOOPS = 10000;
 
     /**
      * Create new object to work on.
@@ -117,7 +112,7 @@ public abstract class TwoActorsOneArbiterTest<S> {
                 while (!Thread.interrupted()) {
                     int c = 0;
                     int l = 0;
-                    while (l < LOOPS) {
+                    while (l < Constants.LOOPS) {
                         S cur = current;
                         if (last != cur) {
                             actor1(cur);
@@ -137,7 +132,7 @@ public abstract class TwoActorsOneArbiterTest<S> {
                 while (!Thread.interrupted()) {
                     int c = 0;
                     int l = 0;
-                    while (l < LOOPS) {
+                    while (l < Constants.LOOPS) {
                         S cur = current;
                         if (last != cur) {
                             actor2(cur);
@@ -158,11 +153,11 @@ public abstract class TwoActorsOneArbiterTest<S> {
 
                 Multiset<Long> set = TreeMultiset.create();
 
-                byte[][] results = new byte[LOOPS][];
+                byte[][] results = new byte[Constants.LOOPS][];
                 while (!Thread.interrupted()) {
                     int c = 0;
                     int l = 0;
-                    while (l < LOOPS) {
+                    while (l < Constants.LOOPS) {
                         S s1 = t1;
                         S s2 = t2;
                         if (s1 == s2 && s1 != null) {

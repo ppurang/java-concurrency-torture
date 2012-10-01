@@ -12,9 +12,13 @@ import java.util.concurrent.Executors;
 import java.util.concurrent.Future;
 import java.util.concurrent.TimeUnit;
 
+/**
+ * This test accepts single actors (thread actively mutating the state),
+ * and one observer (thread observing the state *concurrently* with actor doing dirty work).
+ *
+ * @param <S> specimen type
+ */
 public abstract class OneActorOneObserverTest<S> {
-
-    private static final int LOOPS = 10000;
 
     /**
      * Create new object to work on.
@@ -94,7 +98,7 @@ public abstract class OneActorOneObserverTest<S> {
                 while (!Thread.interrupted()) {
                     int c = 0;
                     int l = 0;
-                    while (l < LOOPS) {
+                    while (l < Constants.LOOPS) {
                         S cur = current;
                         if (last != cur) {
                             actor1(cur);
@@ -115,11 +119,11 @@ public abstract class OneActorOneObserverTest<S> {
 
                 Multiset<Long> set = TreeMultiset.create();
 
-                byte[][] results = new byte[LOOPS][];
+                byte[][] results = new byte[Constants.LOOPS][];
                 while (!Thread.interrupted()) {
                     int c = 0;
                     int l = 0;
-                    while (l < LOOPS) {
+                    while (l < Constants.LOOPS) {
                         S cur = current;
                         if (last != cur) {
                             observe(cur, res);
