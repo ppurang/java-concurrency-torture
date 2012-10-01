@@ -14,6 +14,9 @@ import java.util.concurrent.ExecutionException;
 public class Main {
 
     public static void main(String[] args) throws ExecutionException, InterruptedException {
+        System.out.println("Running each test for " + Constants.TIME_MSEC + "ms, -Dtime=# to override");
+        System.out.println();
+
         System.out.println("*** NEGATIVE TESTS (expected to fail) ***");
         new UnsafeSingletonTest().run();
         new VolatileAtomicityTest().run();

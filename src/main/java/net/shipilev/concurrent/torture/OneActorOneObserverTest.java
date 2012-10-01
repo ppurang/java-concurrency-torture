@@ -138,7 +138,7 @@ public abstract class OneActorOneObserverTest<S> {
             }
         });
 
-        TimeUnit.SECONDS.sleep(5);
+        TimeUnit.MILLISECONDS.sleep(Constants.TIME_MSEC);
 
         pool.shutdownNow();
 
@@ -168,7 +168,7 @@ public abstract class OneActorOneObserverTest<S> {
                     throw new IllegalStateException();
             }
 
-            System.out.printf("%20s (%10d) %20s\n", Arrays.toString(b), e.getCount(), isFailed ? "ERROR: " + test(b) : "");
+            System.out.printf("%35s (%10d) %20s\n", Arrays.toString(b), e.getCount(), isFailed ? "ERROR: " + test(b) : "");
         }
 
         pool.awaitTermination(1, TimeUnit.DAYS);
