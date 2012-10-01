@@ -1,13 +1,12 @@
-package net.shipilev.concurrent.torture.negative;
+package net.shipilev.concurrent.torture.positive;
 
 import net.shipilev.concurrent.torture.OneActorOneObserverTest;
 import net.shipilev.concurrent.torture.Outcome;
-import net.shipilev.concurrent.torture.TwoActorsOneArbiterTest;
 
-public class LongTearingTest extends OneActorOneObserverTest<LongTearingTest.Specimen> {
+public class VolatileLongTearingTest extends OneActorOneObserverTest<VolatileLongTearingTest.Specimen> {
 
     public static class Specimen {
-        long x;
+        volatile long x;
     }
 
     @Override

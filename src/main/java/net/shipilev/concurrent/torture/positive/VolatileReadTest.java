@@ -1,9 +1,9 @@
 package net.shipilev.concurrent.torture.positive;
 
+import net.shipilev.concurrent.torture.OneActorOneObserverTest;
 import net.shipilev.concurrent.torture.Outcome;
-import net.shipilev.concurrent.torture.TwoThreadTest;
 
-public class VolatileReadTest extends TwoThreadTest<VolatileReadTest.Specimen> {
+public class VolatileReadTest extends OneActorOneObserverTest<VolatileReadTest.Specimen> {
 
     public static class Specimen {
         int x;
@@ -11,13 +11,13 @@ public class VolatileReadTest extends TwoThreadTest<VolatileReadTest.Specimen> {
     }
 
     @Override
-    public void thread0(Specimen s) {
+    public void actor1(Specimen s) {
         s.x = 1;
         s.y = 1;
     }
 
     @Override
-    public void thread1(Specimen s, byte[] res) {
+    public void observe(Specimen s, byte[] res) {
         res[0] = (byte) s.x;
         res[1] = (byte) s.y;
         res[2] = (byte) s.x;

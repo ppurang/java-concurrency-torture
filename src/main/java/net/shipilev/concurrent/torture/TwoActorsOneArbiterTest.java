@@ -12,22 +12,100 @@ import java.util.concurrent.Executors;
 import java.util.concurrent.Future;
 import java.util.concurrent.TimeUnit;
 
-public abstract class TwoThreadTest<S> {
+/**
+ * This test accepts two actors (threads actively mutating the state),
+ * and one arbiter (thread observing the state *after* two actors finished).
+ *
+ * @param <S>
+ */
+public abstract class TwoActorsOneArbiterTest<S> {
 
+    /**
+     * Number of internal loops to do before making heavy operations (i.e. enforcing ordering)
+     */
     private static final int LOOPS = 10000;
 
+    /**
+     * Create new object to work on.
+     *
+     * Conventions:
+     *   - this method is called only within injector thread
+     *   - this method should return new object at every call, no caching
+     *
+     * @return fresh specimen
+     */
+    protected abstract S createNew();
+
+    /**
+     * Body for actor 1.
+     *
+     * Conventions:
+     *   - this method is called only by actor 1, only once per specimen
+     *   - the order vs. other actor is unspecified
+     *
+     * @param specimen specimen to work on
+     */
+    protected abstract void actor1(S specimen);
+
+    /**
+     * Body for actor 2.
+     *
+     * Conventions:
+     *   - this method is called only by actor 2, only once per specimen
+     *   - the order vs. other actor is unspecified
+     *
+     * @param specimen specimen to work on
+     */
+    protected abstract void actor2(S specimen);
+
+    /**
+     * Body for the arbiter.
+     *
+     * Conventions:
+     *   - this method is called only by arbiter thread, once per specimen
+     *   - for any given specimen, arbiter would be called *after* both actors finished with the specimen
+     *   - all memory effects on specimen would make the effect before arbitrate() call
+     *      (i.e. for given specimen, (actor1() hb arbitrate()) and (actor2() hb arbitrate()))
+     *   - arbiter can store the arbitrated state in the result array
+     *   - arbiter can not store the reference to result array
+     *
+     * @param specimen specimen to work on
+     * @param result result array
+     * @see #resultSize()
+     */
+    protected abstract void arbitrate(S specimen, byte[] result);
+
+    /**
+     * Expected result size.
+     * @return result size.
+     *
+     * @see #arbitrate(Object, byte[])
+     */
+    protected abstract int resultSize();
+
+    /**
+     * Analyze the result.
+     *
+     * @param result result to be analyzed
+     * @return graded outcome
+     */
+    protected abstract Outcome test(byte[] result);
+
     volatile S current;
+    volatile S t1;
+    volatile S t2;
 
     public void run() throws InterruptedException, ExecutionException {
         System.out.println("Running " + this.getClass().getName());
 
-        ExecutorService pool = Executors.newFixedThreadPool(3);
-
         current = createNew();
+
+        ExecutorService pool = Executors.newCachedThreadPool();
 
         pool.submit(new Runnable() {
             public void run() {
                 while (!Thread.interrupted()) {
+                    while (t1 != null && t2 != null && !Thread.currentThread().isInterrupted());
                     current = createNew();
                 }
             }
@@ -36,15 +114,35 @@ public abstract class TwoThreadTest<S> {
         pool.submit(new Runnable() {
             public void run() {
                 S last = null;
-
                 while (!Thread.interrupted()) {
                     int c = 0;
                     int l = 0;
                     while (l < LOOPS) {
                         S cur = current;
                         if (last != cur) {
-                            thread0(cur);
+                            actor1(cur);
+                            t1 = cur;
                             last = cur;
+                            c++;
+                        }
+                        l++;
+                    }
+                }
+            }
+        });
+
+        pool.submit(new Runnable() {
+            public void run() {
+                S last = null;
+                while (!Thread.interrupted()) {
+                    int c = 0;
+                    int l = 0;
+                    while (l < LOOPS) {
+                        S cur = current;
+                        if (last != cur) {
+                            actor2(cur);
+                            last = cur;
+                            t2 = cur;
                             c++;
                         }
                         l++;
@@ -56,7 +154,6 @@ public abstract class TwoThreadTest<S> {
         Future<Multiset<Long>> res = pool.submit(new Callable<Multiset<Long>>() {
             public Multiset<Long> call() {
                 S last = null;
-
                 byte[] res = new byte[8];
 
                 Multiset<Long> set = TreeMultiset.create();
@@ -66,12 +163,14 @@ public abstract class TwoThreadTest<S> {
                     int c = 0;
                     int l = 0;
                     while (l < LOOPS) {
-                        S cur = current;
-                        if (last != cur) {
-                            thread1(cur, res);
+                        S s1 = t1;
+                        S s2 = t2;
+                        if (s1 == s2 && s1 != null) {
+                            arbitrate(s1, res);
                             results[c] = Arrays.copyOf(res, 8);
-                            last = cur;
                             c++;
+                            t1 = null;
+                            t2 = null;
                         }
                         l++;
                     }
@@ -131,12 +230,5 @@ public abstract class TwoThreadTest<S> {
         return buf.getLong();
     }
 
-    protected abstract Outcome test(byte[] d);
-
-    protected abstract int resultSize();
-
-    public abstract S createNew();
-    public abstract void thread0(S current);
-    public abstract void thread1(S current, byte[] res);
 
 }

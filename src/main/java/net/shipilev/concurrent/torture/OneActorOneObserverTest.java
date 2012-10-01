@@ -12,18 +12,72 @@ import java.util.concurrent.Executors;
 import java.util.concurrent.Future;
 import java.util.concurrent.TimeUnit;
 
-public abstract class ThreeThreadTest<S> {
+public abstract class OneActorOneObserverTest<S> {
 
     private static final int LOOPS = 10000;
+
+    /**
+     * Create new object to work on.
+     *
+     * Conventions:
+     *   - this method is called only within injector thread
+     *   - this method should return new object at every call, no caching
+     *
+     * @return fresh specimen
+     */
+    protected abstract S createNew();
+
+    /**
+     * Body for actor 1.
+     *
+     * Conventions:
+     *   - this method is called only by actor 1, only once per specimen
+     *   - the order vs. other actor is unspecified
+     *
+     * @param specimen specimen to work on
+     */
+    protected abstract void actor1(S specimen);
+
+    /**
+     * Body for the observer.
+     *
+     * Conventions:
+     *   - this method is called only by arbiter thread, once per specimen
+     *   - for any given specimen, observer would be concurrently with the actor
+     *   - observer can store the arbitrated state in the result array
+     *   - observer can not store the reference to result array
+     *
+     * @param specimen specimen to work on
+     * @param result result array
+     * @see #resultSize()
+     */
+    protected abstract void observe(S specimen, byte[] result);
+
+    /**
+     * Expected result size.
+     * @return result size.
+     *
+     * @see #observe(Object, byte[])
+     */
+    protected abstract int resultSize();
+
+    /**
+     * Analyze the result.
+     *
+     * @param result result to be analyzed
+     * @return graded outcome
+     */
+    protected abstract Outcome test(byte[] result);
+
 
     volatile S current;
 
     public void run() throws InterruptedException, ExecutionException {
         System.out.println("Running " + this.getClass().getName());
 
-        current = createNew();
+        ExecutorService pool = Executors.newFixedThreadPool(3);
 
-        ExecutorService pool = Executors.newCachedThreadPool();
+        current = createNew();
 
         pool.submit(new Runnable() {
             public void run() {
@@ -36,32 +90,14 @@ public abstract class ThreeThreadTest<S> {
         pool.submit(new Runnable() {
             public void run() {
                 S last = null;
-                while (!Thread.interrupted()) {
-                    int c = 0;
-                    int l = 0;
-                    while (l < LOOPS) {
-                        S cur = current;
-                        if (last != cur) {
-                            thread0(cur);
-                            last = cur;
-                            c++;
-                        }
-                        l++;
-                    }
-                }
-            }
-        });
 
-        pool.submit(new Runnable() {
-            public void run() {
-                S last = null;
                 while (!Thread.interrupted()) {
                     int c = 0;
                     int l = 0;
                     while (l < LOOPS) {
                         S cur = current;
                         if (last != cur) {
-                            thread1(cur);
+                            actor1(cur);
                             last = cur;
                             c++;
                         }
@@ -74,6 +110,7 @@ public abstract class ThreeThreadTest<S> {
         Future<Multiset<Long>> res = pool.submit(new Callable<Multiset<Long>>() {
             public Multiset<Long> call() {
                 S last = null;
+
                 byte[] res = new byte[8];
 
                 Multiset<Long> set = TreeMultiset.create();
@@ -85,7 +122,7 @@ public abstract class ThreeThreadTest<S> {
                     while (l < LOOPS) {
                         S cur = current;
                         if (last != cur) {
-                            thread2(cur, res);
+                            observe(cur, res);
                             results[c] = Arrays.copyOf(res, 8);
                             last = cur;
                             c++;
@@ -147,14 +184,5 @@ public abstract class ThreeThreadTest<S> {
         ByteBuffer buf = ByteBuffer.wrap(b);
         return buf.getLong();
     }
-
-    protected abstract Outcome test(byte[] d);
-
-    protected abstract int resultSize();
-
-    public abstract S createNew();
-    public abstract void thread0(S current);
-    public abstract void thread1(S current);
-    public abstract void thread2(S current, byte[] res);
 
 }

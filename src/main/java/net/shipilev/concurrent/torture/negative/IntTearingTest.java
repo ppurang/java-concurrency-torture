@@ -2,12 +2,11 @@ package net.shipilev.concurrent.torture.negative;
 
 import net.shipilev.concurrent.torture.OneActorOneObserverTest;
 import net.shipilev.concurrent.torture.Outcome;
-import net.shipilev.concurrent.torture.TwoActorsOneArbiterTest;
 
-public class LongTearingTest extends OneActorOneObserverTest<LongTearingTest.Specimen> {
+public class IntTearingTest extends OneActorOneObserverTest<IntTearingTest.Specimen> {
 
     public static class Specimen {
-        long x;
+        int x;
     }
 
     @Override
@@ -17,7 +16,7 @@ public class LongTearingTest extends OneActorOneObserverTest<LongTearingTest.Spe
 
     @Override
     public void actor1(Specimen s) {
-        s.x = 0xFFFFFFFFFFFFFFFFL;
+        s.x = 0xFFFFFFFF;
     }
 
     @Override
@@ -27,23 +26,17 @@ public class LongTearingTest extends OneActorOneObserverTest<LongTearingTest.Spe
         result[1] = (byte) ((t >> 8) & 0xFFFF);
         result[2] = (byte) ((t >> 16) & 0xFFFF);
         result[3] = (byte) ((t >> 24) & 0xFFFF);
-        result[4] = (byte) ((t >> 32) & 0xFFFF);
-        result[5] = (byte) ((t >> 40) & 0xFFFF);
-        result[6] = (byte) ((t >> 48) & 0xFFFF);
-        result[7] = (byte) ((t >> 56) & 0xFFFF);
     }
 
     @Override
     protected Outcome test(byte[] res) {
-        if (res[0] != res[1] || res[1] != res[2] || res[2] != res[3]
-                || res[3] != res[4] || res[5] != res[6] || res[6] != res[7])
+        if (res[0] != res[1] || res[1] != res[2] || res[2] != res[3])
             return Outcome.NOT_EXPECTED;
-
         return Outcome.ACCEPTABLE;
     }
 
     public int resultSize() {
-        return 8;
+        return 4;
     }
 
 }

@@ -1,9 +1,9 @@
 package net.shipilev.concurrent.torture.negative;
 
+import net.shipilev.concurrent.torture.OneActorOneObserverTest;
 import net.shipilev.concurrent.torture.Outcome;
-import net.shipilev.concurrent.torture.TwoThreadTest;
 
-public class SyncBarrierTest extends TwoThreadTest<SyncBarrierTest.Specimen> {
+public class SyncBarrierTest extends OneActorOneObserverTest<SyncBarrierTest.Specimen> {
 
     public static class Specimen {
         int x;
@@ -11,13 +11,13 @@ public class SyncBarrierTest extends TwoThreadTest<SyncBarrierTest.Specimen> {
     }
 
     @Override
-    public void thread0(Specimen s) {
+    public void actor1(Specimen s) {
         s.x = 42;
         s.y = 1;
     }
 
     @Override
-    public void thread1(Specimen s, byte[] res) {
+    public void observe(Specimen s, byte[] res) {
         res[0] = (byte) s.x;
         res[1] = (byte) s.y;
         synchronized (this) {} // THIS IS *NOT* A PROPER BARRIER

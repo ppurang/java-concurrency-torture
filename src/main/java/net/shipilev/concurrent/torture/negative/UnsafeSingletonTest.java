@@ -1,9 +1,9 @@
 package net.shipilev.concurrent.torture.negative;
 
 import net.shipilev.concurrent.torture.Outcome;
-import net.shipilev.concurrent.torture.TwoThreadTest;
+import net.shipilev.concurrent.torture.OneActorOneObserverTest;
 
-public class UnsafeSingletonTest extends TwoThreadTest<UnsafeSingletonTest.SingletonFactory> {
+public class UnsafeSingletonTest extends OneActorOneObserverTest<UnsafeSingletonTest.SingletonFactory> {
 
     public static class SingletonFactory {
 
@@ -28,12 +28,12 @@ public class UnsafeSingletonTest extends TwoThreadTest<UnsafeSingletonTest.Singl
     }
 
     @Override
-    public void thread0(SingletonFactory s) {
+    public void actor1(SingletonFactory s) {
         s.getInstance();
     }
 
     @Override
-    public void thread1(SingletonFactory s, byte[] res) {
+    public void observe(SingletonFactory s, byte[] res) {
         Singleton singleton = s.getInstance();
         if (singleton == null) {
             res[0] = 0;
