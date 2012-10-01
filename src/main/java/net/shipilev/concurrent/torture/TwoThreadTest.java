@@ -21,7 +21,9 @@ public abstract class TwoThreadTest<S> {
     public void run() throws InterruptedException, ExecutionException {
         System.out.println("Running " + this.getClass().getName());
 
-        ExecutorService pool = Executors.newCachedThreadPool();
+        ExecutorService pool = Executors.newFixedThreadPool(3);
+
+        current = createNew();
 
         pool.submit(new Runnable() {
             public void run() {
@@ -33,10 +35,18 @@ public abstract class TwoThreadTest<S> {
 
         pool.submit(new Runnable() {
             public void run() {
-                current = createNew();
                 while (!Thread.interrupted()) {
-                    for (int c = 0; c < LOOPS; c++) {
-                        thread0(current);
+                    S last = null;
+                    int c = 0;
+                    int l = 0;
+                    while (l < LOOPS) {
+                        S cur = current;
+                        if (last != cur) {
+                            thread0(cur);
+                            last = cur;
+                            c++;
+                        }
+                        l++;
                     }
                 }
             }
@@ -44,27 +54,36 @@ public abstract class TwoThreadTest<S> {
 
         Future<Multiset<Long>> res = pool.submit(new Callable<Multiset<Long>>() {
             public Multiset<Long> call() {
-                current = createNew();
                 byte[] res = new byte[8];
 
                 Multiset<Long> set = TreeMultiset.create();
 
                 byte[][] results = new byte[LOOPS][];
                 while (!Thread.interrupted()) {
-                    for (int c = 0; c < LOOPS; c++) {
-                        thread1(current, res);
-                        results[c] = Arrays.copyOf(res, 8);
+
+                    S last = null;
+                    int c = 0;
+                    int l = 0;
+                    while (l < LOOPS) {
+                        S cur = current;
+                        if (last != cur) {
+                            thread1(cur, res);
+                            results[c] = Arrays.copyOf(res, 8);
+                            last = cur;
+                            c++;
+                        }
+                        l++;
                     }
 
-                    for (byte[] result : results) {
-                        set.add(byteArrToLong(result));
+                    for (int i = 0; i < c; i++) {
+                        set.add(byteArrToLong(results[i]));
                     }
                 }
                 return set;
             }
         });
 
-        TimeUnit.SECONDS.sleep(5);
+        TimeUnit.SECONDS.sleep(1);
 
         pool.shutdownNow();
 
