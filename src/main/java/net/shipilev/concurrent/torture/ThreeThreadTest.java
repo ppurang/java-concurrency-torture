@@ -12,7 +12,7 @@ import java.util.concurrent.Executors;
 import java.util.concurrent.Future;
 import java.util.concurrent.TimeUnit;
 
-public abstract class TwoThreadTest<S> {
+public abstract class ThreeThreadTest<S> {
 
     private static final int LOOPS = 10000;
 
@@ -42,6 +42,17 @@ public abstract class TwoThreadTest<S> {
             }
         });
 
+        pool.submit(new Runnable() {
+            public void run() {
+                current = createNew();
+                while (!Thread.interrupted()) {
+                    for (int c = 0; c < LOOPS; c++) {
+                        thread1(current);
+                    }
+                }
+            }
+        });
+
         Future<Multiset<Long>> res = pool.submit(new Callable<Multiset<Long>>() {
             public Multiset<Long> call() {
                 current = createNew();
@@ -52,7 +63,7 @@ public abstract class TwoThreadTest<S> {
                 byte[][] results = new byte[LOOPS][];
                 while (!Thread.interrupted()) {
                     for (int c = 0; c < LOOPS; c++) {
-                        thread1(current, res);
+                        thread2(current, res);
                         results[c] = Arrays.copyOf(res, 8);
                     }
 
@@ -117,6 +128,7 @@ public abstract class TwoThreadTest<S> {
 
     public abstract S createNew();
     public abstract void thread0(S current);
-    public abstract void thread1(S current, byte[] res);
+    public abstract void thread1(S current);
+    public abstract void thread2(S current, byte[] res);
 
 }

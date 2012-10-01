@@ -2,6 +2,8 @@ package net.shipilev.concurrent.torture;
 
 import net.shipilev.concurrent.torture.negative.SyncBarrierTest;
 import net.shipilev.concurrent.torture.negative.UnsafeSingletonTest;
+import net.shipilev.concurrent.torture.positive.LongTearingTest;
+import net.shipilev.concurrent.torture.positive.VolatileAtomicityTest;
 import net.shipilev.concurrent.torture.positive.VolatileReadTest;
 import net.shipilev.concurrent.torture.positive.VolatileWriteTest;
 
