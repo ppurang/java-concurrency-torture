@@ -101,7 +101,7 @@ public abstract class ThreeThreadTest<S> {
             }
         });
 
-        TimeUnit.SECONDS.sleep(5);
+        TimeUnit.SECONDS.sleep(1);
 
         pool.shutdownNow();
 
