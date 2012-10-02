@@ -16,7 +16,7 @@ import net.shipilev.concurrent.torture.Outcome;
  *
  * All other values are forbidden because out-of-thin-air values are forbidden.
  */
-public class VolatileLongTearingTest extends OneActorOneObserverTest<VolatileLongTearingTest.Specimen> {
+public class AtomicVolatileLongTest extends OneActorOneObserverTest<AtomicVolatileLongTest.Specimen> {
 
     public static class Specimen {
         volatile long x;

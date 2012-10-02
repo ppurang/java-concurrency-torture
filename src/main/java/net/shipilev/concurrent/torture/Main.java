@@ -3,12 +3,12 @@ package net.shipilev.concurrent.torture;
 import net.shipilev.concurrent.torture.negative.NonAtomicDoubleTest;
 import net.shipilev.concurrent.torture.negative.NonAtomicLongTest;
 import net.shipilev.concurrent.torture.positive.AtomicIntegerIncrementTest;
+import net.shipilev.concurrent.torture.positive.AtomicVolatileLongTest;
 import net.shipilev.concurrent.torture.positive.IntTearingTest;
 import net.shipilev.concurrent.torture.negative.UnsafeSingletonTest;
 import net.shipilev.concurrent.torture.negative.VolatileAtomicityTest;
 import net.shipilev.concurrent.torture.positive.ReadAfterVolatileReadTest;
 import net.shipilev.concurrent.torture.positive.ReadTwiceOverVolatileReadTest;
-import net.shipilev.concurrent.torture.positive.VolatileLongTearingTest;
 
 import java.util.concurrent.ExecutionException;
 
@@ -34,7 +34,7 @@ public class Main {
         new IntTearingTest().run();
         new ReadTwiceOverVolatileReadTest().run();
         new ReadAfterVolatileReadTest().run();
-        new VolatileLongTearingTest().run();
+        new AtomicVolatileLongTest().run();
     }
 
 }
