@@ -1,5 +1,6 @@
 package net.shipilev.concurrent.torture;
 
+import net.shipilev.concurrent.torture.negative.DoubleTearingTest;
 import net.shipilev.concurrent.torture.positive.AtomicIntegerIncrementTest;
 import net.shipilev.concurrent.torture.positive.IntTearingTest;
 import net.shipilev.concurrent.torture.negative.LongTearingTest;
@@ -25,6 +26,7 @@ public class Main {
         new UnsafeSingletonTest().run();
         new VolatileAtomicityTest().run();
         new LongTearingTest().run();
+        new DoubleTearingTest().run();
 
         System.out.println();
         System.out.println("*** POSITIVE TESTS (expected to pass) ***");
