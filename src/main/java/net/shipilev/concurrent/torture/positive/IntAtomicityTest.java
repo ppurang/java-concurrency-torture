@@ -1,25 +1,22 @@
-package net.shipilev.concurrent.torture.negative;
+package net.shipilev.concurrent.torture.positive;
 
 import net.shipilev.concurrent.torture.OneActorOneObserverTest;
 import net.shipilev.concurrent.torture.Outcome;
 
 /**
- * Tests if primitive longs experience non-atomic updates.
- * Long tearing is allowed by JMM, and hence this is a negative test.
- * The failure on this test DOES NOT highlight the possible bug.
+ * Tests if primitive integers experience non-atomic reads/writes.
+ * This behavior is forbidden by JMM, so the failures on this tests highlight the possible bug.
  *
  * Possible observed states:
- *    - default value for long (i.e. 0)
+ *    - default value for integer (i.e. 0)
  *    - value set by actor (i.e. -1)
- *    - low-word set to -1, high-word still set to 0 (tearing)
- *    - high-word set to -1, low-word still set to 0 (tearing)
  *
  * All other values are forbidden because out-of-thin-air values are forbidden.
  */
-public class NonAtomicLongTest extends OneActorOneObserverTest<NonAtomicLongTest.Specimen> {
+public class IntAtomicityTest extends OneActorOneObserverTest<IntAtomicityTest.Specimen> {
 
     public static class Specimen {
-        long x;
+        int x;
     }
 
     @Override
@@ -29,7 +26,7 @@ public class NonAtomicLongTest extends OneActorOneObserverTest<NonAtomicLongTest
 
     @Override
     public void actor1(Specimen s) {
-        s.x = 0xFFFFFFFFFFFFFFFFL;
+        s.x = 0xFFFFFFFF;
     }
 
     @Override
@@ -39,23 +36,17 @@ public class NonAtomicLongTest extends OneActorOneObserverTest<NonAtomicLongTest
         result[1] = (byte) ((t >> 8) & 0xFF);
         result[2] = (byte) ((t >> 16) & 0xFF);
         result[3] = (byte) ((t >> 24) & 0xFF);
-        result[4] = (byte) ((t >> 32) & 0xFF);
-        result[5] = (byte) ((t >> 40) & 0xFF);
-        result[6] = (byte) ((t >> 48) & 0xFF);
-        result[7] = (byte) ((t >> 56) & 0xFF);
     }
 
     @Override
     protected Outcome test(byte[] res) {
-        if (res[0] != res[1] || res[1] != res[2] || res[2] != res[3]
-                || res[3] != res[4] || res[5] != res[6] || res[6] != res[7])
+        if (res[0] != res[1] || res[1] != res[2] || res[2] != res[3])
             return Outcome.NOT_EXPECTED;
-
         return Outcome.ACCEPTABLE;
     }
 
     public int resultSize() {
-        return 8;
+        return 4;
     }
 
 }

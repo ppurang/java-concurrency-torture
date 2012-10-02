@@ -1,10 +1,10 @@
 package net.shipilev.concurrent.torture;
 
-import net.shipilev.concurrent.torture.negative.NonAtomicDoubleTest;
-import net.shipilev.concurrent.torture.negative.NonAtomicLongTest;
+import net.shipilev.concurrent.torture.negative.DoubleAtomicityTest;
+import net.shipilev.concurrent.torture.negative.LongAtomicityTest;
 import net.shipilev.concurrent.torture.positive.AtomicIntegerIncrementTest;
-import net.shipilev.concurrent.torture.positive.AtomicVolatileLongTest;
-import net.shipilev.concurrent.torture.positive.IntTearingTest;
+import net.shipilev.concurrent.torture.positive.IntAtomicityTest;
+import net.shipilev.concurrent.torture.positive.VolatileLongAtomicityTest;
 import net.shipilev.concurrent.torture.negative.UnsafeSingletonTest;
 import net.shipilev.concurrent.torture.negative.VolatileAtomicityTest;
 import net.shipilev.concurrent.torture.positive.ReadAfterVolatileReadTest;
@@ -25,16 +25,16 @@ public class Main {
         System.out.println("*** NEGATIVE TESTS (expected to fail) ***");
         new UnsafeSingletonTest().run();
         new VolatileAtomicityTest().run();
-        new NonAtomicLongTest().run();
-        new NonAtomicDoubleTest().run();
+        new LongAtomicityTest().run();
+        new DoubleAtomicityTest().run();
 
         System.out.println();
         System.out.println("*** POSITIVE TESTS (expected to pass) ***");
         new AtomicIntegerIncrementTest().run();
-        new IntTearingTest().run();
+        new IntAtomicityTest().run();
         new ReadTwiceOverVolatileReadTest().run();
         new ReadAfterVolatileReadTest().run();
-        new AtomicVolatileLongTest().run();
+        new VolatileLongAtomicityTest().run();
     }
 
 }

@@ -1,25 +1,25 @@
-package net.shipilev.concurrent.torture.negative;
+package net.shipilev.concurrent.torture.positive;
 
 import net.shipilev.concurrent.torture.OneActorOneObserverTest;
 import net.shipilev.concurrent.torture.Outcome;
 
 /**
- * Tests if primitive doubles experience non-atomic updates.
- * Long tearing is allowed by JMM, and hence this is a negative test.
- * The failure on this test DOES NOT highlight the possible bug.
+ * Tests if volatile primitive longs experience word tearing.
+ * Volatile long tearing is not allowed by JMM.
+ * The failure on this test highlights the possible bug.
  *
  * Possible observed states:
- *    - default value for default (i.e. 0)
- *    - value set by actor (i.e. -1)
- *    - low-word set to -1, high-word still set to 0 (tearing)
- *    - high-word set to -1, low-word still set to 0 (tearing)
+ *    - CORRECT:   default value for long (i.e. 0)
+ *    - CORRECT:   value set by actor (i.e. -1)
+ *    - INCORRECT: low-word set to -1, high-word still set to 0 (tearing)
+ *    - INCORRECT: high-word set to -1, low-word still set to 0 (tearing)
  *
  * All other values are forbidden because out-of-thin-air values are forbidden.
  */
-public class NonAtomicDoubleTest extends OneActorOneObserverTest<NonAtomicDoubleTest.Specimen> {
+public class VolatileLongAtomicityTest extends OneActorOneObserverTest<VolatileLongAtomicityTest.Specimen> {
 
     public static class Specimen {
-        double x;
+        volatile long x;
     }
 
     @Override
@@ -29,12 +29,12 @@ public class NonAtomicDoubleTest extends OneActorOneObserverTest<NonAtomicDouble
 
     @Override
     public void actor1(Specimen s) {
-        s.x = Double.longBitsToDouble(0xFFFFFFFFFFFFFFFFL);
+        s.x = 0xFFFFFFFFFFFFFFFFL;
     }
 
     @Override
     protected void observe(Specimen s, byte[] result) {
-        long t = Double.doubleToRawLongBits(s.x);
+        long t = s.x;
         result[0] = (byte) ((t >> 0) & 0xFF);
         result[1] = (byte) ((t >> 8) & 0xFF);
         result[2] = (byte) ((t >> 16) & 0xFF);

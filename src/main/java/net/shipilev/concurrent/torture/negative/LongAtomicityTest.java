@@ -1,25 +1,25 @@
-package net.shipilev.concurrent.torture.positive;
+package net.shipilev.concurrent.torture.negative;
 
 import net.shipilev.concurrent.torture.OneActorOneObserverTest;
 import net.shipilev.concurrent.torture.Outcome;
 
 /**
- * Tests if volatile primitive longs experience word tearing.
- * Volatile long tearing is not allowed by JMM.
- * The failure on this test highlights the possible bug.
+ * Tests if primitive longs experience non-atomic updates.
+ * Long tearing is allowed by JMM, and hence this is a negative test.
+ * The failure on this test DOES NOT highlight the possible bug.
  *
  * Possible observed states:
- *    - CORRECT:   default value for long (i.e. 0)
- *    - CORRECT:   value set by actor (i.e. -1)
- *    - INCORRECT: low-word set to -1, high-word still set to 0 (tearing)
- *    - INCORRECT: high-word set to -1, low-word still set to 0 (tearing)
+ *    - default value for long (i.e. 0)
+ *    - value set by actor (i.e. -1)
+ *    - low-word set to -1, high-word still set to 0 (tearing)
+ *    - high-word set to -1, low-word still set to 0 (tearing)
  *
  * All other values are forbidden because out-of-thin-air values are forbidden.
  */
-public class AtomicVolatileLongTest extends OneActorOneObserverTest<AtomicVolatileLongTest.Specimen> {
+public class LongAtomicityTest extends OneActorOneObserverTest<LongAtomicityTest.Specimen> {
 
     public static class Specimen {
-        volatile long x;
+        long x;
     }
 
     @Override
