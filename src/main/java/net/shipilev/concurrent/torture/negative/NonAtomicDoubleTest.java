@@ -4,7 +4,7 @@ import net.shipilev.concurrent.torture.OneActorOneObserverTest;
 import net.shipilev.concurrent.torture.Outcome;
 
 /**
- * Tests if primitive doubles experience word tearing.
+ * Tests if primitive doubles experience non-atomic updates.
  * Long tearing is allowed by JMM, and hence this is a negative test.
  * The failure on this test DOES NOT highlight the possible bug.
  *
@@ -16,7 +16,7 @@ import net.shipilev.concurrent.torture.Outcome;
  *
  * All other values are forbidden because out-of-thin-air values are forbidden.
  */
-public class DoubleTearingTest extends OneActorOneObserverTest<DoubleTearingTest.Specimen> {
+public class NonAtomicDoubleTest extends OneActorOneObserverTest<NonAtomicDoubleTest.Specimen> {
 
     public static class Specimen {
         double x;

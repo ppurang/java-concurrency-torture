@@ -2,10 +2,9 @@ package net.shipilev.concurrent.torture.negative;
 
 import net.shipilev.concurrent.torture.OneActorOneObserverTest;
 import net.shipilev.concurrent.torture.Outcome;
-import net.shipilev.concurrent.torture.TwoActorsOneArbiterTest;
 
 /**
- * Tests if primitive longs experience word tearing.
+ * Tests if primitive longs experience non-atomic updates.
  * Long tearing is allowed by JMM, and hence this is a negative test.
  * The failure on this test DOES NOT highlight the possible bug.
  *
@@ -17,7 +16,7 @@ import net.shipilev.concurrent.torture.TwoActorsOneArbiterTest;
  *
  * All other values are forbidden because out-of-thin-air values are forbidden.
  */
-public class LongTearingTest extends OneActorOneObserverTest<LongTearingTest.Specimen> {
+public class NonAtomicLongTest extends OneActorOneObserverTest<NonAtomicLongTest.Specimen> {
 
     public static class Specimen {
         long x;
