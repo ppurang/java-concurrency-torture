@@ -35,14 +35,14 @@ public class NonAtomicLongTest extends OneActorOneObserverTest<NonAtomicLongTest
     @Override
     protected void observe(Specimen s, byte[] result) {
         long t = s.x;
-        result[0] = (byte) ((t >> 0) & 0xFFFF);
-        result[1] = (byte) ((t >> 8) & 0xFFFF);
-        result[2] = (byte) ((t >> 16) & 0xFFFF);
-        result[3] = (byte) ((t >> 24) & 0xFFFF);
-        result[4] = (byte) ((t >> 32) & 0xFFFF);
-        result[5] = (byte) ((t >> 40) & 0xFFFF);
-        result[6] = (byte) ((t >> 48) & 0xFFFF);
-        result[7] = (byte) ((t >> 56) & 0xFFFF);
+        result[0] = (byte) ((t >> 0) & 0xFF);
+        result[1] = (byte) ((t >> 8) & 0xFF);
+        result[2] = (byte) ((t >> 16) & 0xFF);
+        result[3] = (byte) ((t >> 24) & 0xFF);
+        result[4] = (byte) ((t >> 32) & 0xFF);
+        result[5] = (byte) ((t >> 40) & 0xFF);
+        result[6] = (byte) ((t >> 48) & 0xFF);
+        result[7] = (byte) ((t >> 56) & 0xFF);
     }
 
     @Override

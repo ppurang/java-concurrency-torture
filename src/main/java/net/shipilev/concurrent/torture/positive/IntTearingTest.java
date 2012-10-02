@@ -32,10 +32,10 @@ public class IntTearingTest extends OneActorOneObserverTest<IntTearingTest.Speci
     @Override
     protected void observe(Specimen s, byte[] result) {
         long t = s.x;
-        result[0] = (byte) ((t >> 0) & 0xFFFF);
-        result[1] = (byte) ((t >> 8) & 0xFFFF);
-        result[2] = (byte) ((t >> 16) & 0xFFFF);
-        result[3] = (byte) ((t >> 24) & 0xFFFF);
+        result[0] = (byte) ((t >> 0) & 0xFF);
+        result[1] = (byte) ((t >> 8) & 0xFF);
+        result[2] = (byte) ((t >> 16) & 0xFF);
+        result[3] = (byte) ((t >> 24) & 0xFF);
     }
 
     @Override
