@@ -24,10 +24,6 @@ public class Runner {
         this.pw = new PrintWriter(System.out, true);
     }
 
-    public static class SingleSharedStateHolder<S> {
-        volatile S current;
-    }
-
     public ExecutorService getPool(int threads) {
         if (Runtime.getRuntime().availableProcessors() < threads) {
             pw.println("WARNING: This test should be run with at least " + threads + " CPUs to get reliable results");
@@ -35,14 +31,29 @@ public class Runner {
         return Executors.newFixedThreadPool(threads);
     }
 
+    /**
+     * Run the test.
+     * This method blocks until test is complete
+     *
+     * @param test test to run
+     * @param <S> test state object type
+     * @throws InterruptedException
+     * @throws ExecutionException
+     */
     public <S> void run(final OneActorOneObserverTest<S> test) throws InterruptedException, ExecutionException {
         pw.println("Running " + test.getClass().getName());
 
         ExecutorService pool = getPool(3);
 
         final SingleSharedStateHolder<S> holder = new SingleSharedStateHolder<S>();
+
+        // need to initialize so that actor thread will not NPE.
+        // once injector catches up, it will push fresh state objects
         holder.current = test.newState();
 
+        /*
+           Injector thread: injects new states until interrupted.
+         */
         pool.submit(new Runnable() {
             public void run() {
                 while (!Thread.interrupted()) {
@@ -51,6 +62,12 @@ public class Runner {
             }
         });
 
+        /*
+           Actor 1 thread.
+           The rationale for its loop is as follows:
+              a. We should be easy on checking the interrupted status, hence we do $LOOPS internally
+              b. Thread should not observe the state object more than once
+         */
         pool.submit(new Runnable() {
             public void run() {
                 S last = null;
@@ -69,24 +86,31 @@ public class Runner {
             }
         });
 
+        /*
+          Observer thread.
+          The rationale for its loop is as follows:
+              a. We should be easy on checking the interrupted status, hence we do $LOOPS internally
+              b. Thread should not observe the state object more than once
+              c. The overhead of doing the work inside the inner loop should be small
+              d. $state is getting reused, so we end up marshalling it to long to count properly
+        */
         Future<Multiset<Long>> res = pool.submit(new Callable<Multiset<Long>>() {
             public Multiset<Long> call() {
-                S last = null;
-
-                byte[] res = new byte[8];
-
                 Multiset<Long> set = new Multiset<Long>();
 
+                S last = null;
+                byte[] state = new byte[8];
                 byte[][] results = new byte[Constants.LOOPS][];
+
                 while (!Thread.interrupted()) {
                     int c = 0;
                     int l = 0;
                     while (l < Constants.LOOPS) {
                         S cur = holder.current;
                         if (last != cur) {
-                            test.observe(cur, res);
+                            test.observe(cur, state);
                             results[c] = new byte[8];
-                            System.arraycopy(res, 0, results[c], 0, 8);
+                            System.arraycopy(state, 0, results[c], 0, 8);
                             last = cur;
                             c++;
                         }
@@ -109,21 +133,23 @@ public class Runner {
         judge(test, res.get());
     }
 
-
-    public static class TwoSharedStateHolder<S> {
-        volatile S current;
-        volatile S t1;
-        volatile S t2;
-    }
-
     public <S> void run(final TwoActorsOneArbiterTest<S> test) throws InterruptedException, ExecutionException {
-        System.out.println("Running " + test.getClass().getName());
+        pw.println("Running " + test.getClass().getName());
 
         ExecutorService pool = getPool(4);
 
         final TwoSharedStateHolder<S> holder = new TwoSharedStateHolder<S>();
+
+        // need to initialize so that actor thread will not NPE.
+        // once injector catches up, it will push fresh state objects
         holder.current = test.newState();
 
+         /*
+           Injector thread: injects new states until interrupted.
+           There are an additional constraints:
+              a. If actors results are not yet consumed, do not push the new state.
+                 This will effectively block actors from working until arbiter consumes their result.
+         */
         pool.submit(new Runnable() {
             public void run() {
                 while (!Thread.interrupted()) {
@@ -133,6 +159,13 @@ public class Runner {
             }
         });
 
+        /*
+           Actor 1 thread.
+           The rationale for its loop is as follows:
+              a. We should be easy on checking the interrupted status, hence we do $LOOPS internally
+              b. Thread should not observe the state object more than once
+              c. Once thread is done with its work, it publishes the reference to state object for arbiter
+         */
         pool.submit(new Runnable() {
             public void run() {
                 S last = null;
@@ -151,6 +184,13 @@ public class Runner {
             }
         });
 
+        /*
+           Actor 2 thread.
+           The rationale for its loop is as follows:
+              a. We should be easy on checking the interrupted status, hence we do $LOOPS internally
+              b. Thread should not observe the state object more than once
+              c. Once thread is done with its work, it publishes the reference to state object for arbiter
+         */
         pool.submit(new Runnable() {
             public void run() {
                 S last = null;
@@ -169,6 +209,15 @@ public class Runner {
             }
         });
 
+        /*
+          Arbiter thread.
+          The rationale for its loop is as follows:
+              a. We should be easy on checking the interrupted status, hence we do $LOOPS internally
+              b. Thread should not observe the state object more than once
+              c. The overhead of doing the work inside the inner loop should be small
+              d. $state is getting reused, so we end up marshalling it to long to count properly
+              e. Arbiter waits until both actors have finished their work and published their results
+        */
         Future<Multiset<Long>> res = pool.submit(new Callable<Multiset<Long>>() {
             public Multiset<Long> call() {
                 byte[] res = new byte[8];
@@ -253,6 +302,16 @@ public class Runner {
     public static long byteArrToLong(byte[] b) {
         ByteBuffer buf = ByteBuffer.wrap(b);
         return buf.getLong();
+    }
+
+    public static class SingleSharedStateHolder<S> {
+        volatile S current;
+    }
+
+    public static class TwoSharedStateHolder<S> {
+        volatile S current;
+        volatile S t1;
+        volatile S t2;
     }
 
 }
