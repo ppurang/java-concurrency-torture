@@ -1,7 +1,6 @@
 package net.shipilev.concurrent.torture.positive;
 
 import net.shipilev.concurrent.torture.OneActorOneObserverTest;
-import net.shipilev.concurrent.torture.Runner;
 import net.shipilev.concurrent.torture.Outcome;
 
 /**
@@ -13,6 +12,8 @@ import net.shipilev.concurrent.torture.Outcome;
  *   [1, 1, 0]: INCORRECT: volatile write to $y had happened, and update to $x had been lost (this one is very weird)
  *   [0, 1, 1]: CORRECT: volatile write to $y had happened, and update to $x had been read
  *   [1, 1, 1]: CORRECT: volatile write to $y had happened, and update to $x had been read even before
+ *
+ * @author Aleksey Shipilev (aleksey.shipilev@oracle.com)
  */
 public class ReadTwiceOverVolatileReadTest implements OneActorOneObserverTest<ReadTwiceOverVolatileReadTest.Specimen> {
 

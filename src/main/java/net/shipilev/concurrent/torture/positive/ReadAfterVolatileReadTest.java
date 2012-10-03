@@ -1,7 +1,6 @@
 package net.shipilev.concurrent.torture.positive;
 
 import net.shipilev.concurrent.torture.OneActorOneObserverTest;
-import net.shipilev.concurrent.torture.Runner;
 import net.shipilev.concurrent.torture.Outcome;
 
 /**
@@ -13,6 +12,8 @@ import net.shipilev.concurrent.torture.Outcome;
  *   [1, 1]: INCORRECT: can't read stale value for $x after volatile write to $y happened
  *   [1, 2]: CORRECT:   read correct $x value, forced by happens-before
  *   [1, 3]: CORRECT:   read correct $x value, residual after $y update
+ *
+ *  @author Aleksey Shipilev (aleksey.shipilev@oracle.com)
  */
 public class ReadAfterVolatileReadTest implements OneActorOneObserverTest<ReadAfterVolatileReadTest.Specimen> {
 

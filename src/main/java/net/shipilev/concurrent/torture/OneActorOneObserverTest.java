@@ -8,6 +8,8 @@ package net.shipilev.concurrent.torture;
  * be provided to the tests methods to unfold even the finest races.
  *
  * @param <S> state object type
+ *
+ * @author Aleksey Shipilev (aleksey.shipilev@oracle.com)
  */
 public interface OneActorOneObserverTest<S> extends Evaluator {
 

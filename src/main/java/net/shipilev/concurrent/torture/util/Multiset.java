@@ -4,6 +4,12 @@ import java.util.Collection;
 import java.util.Collections;
 import java.util.TreeMap;
 
+/**
+ * Half-arsed, incomplete, transitional implementation of MultiSet<T>, suitable for Java 1.5.
+ *
+ * @param <T>
+ * @author Aleksey Shipilev (aleksey.shipilev@oracle.com)
+ */
 public class Multiset<T> {
 
     private final TreeMap<T, Integer> map;

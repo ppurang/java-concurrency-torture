@@ -1,5 +1,10 @@
 package net.shipilev.concurrent.torture;
 
+/**
+ * Test outcome.
+ *
+ * @author Aleksey Shipilev (aleksey.shipilev@oracle.com)
+ */
 public enum Outcome {
 
     /**

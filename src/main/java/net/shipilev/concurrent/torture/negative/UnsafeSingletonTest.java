@@ -2,7 +2,6 @@ package net.shipilev.concurrent.torture.negative;
 
 import net.shipilev.concurrent.torture.OneActorOneObserverTest;
 import net.shipilev.concurrent.torture.Outcome;
-import net.shipilev.concurrent.torture.Runner;
 
 /**
  * Tests the broken double-checked locking.
@@ -12,6 +11,8 @@ import net.shipilev.concurrent.torture.Runner;
  * The race is on getting uninitialized field in Singleton.
  *
  * Note: this is a very fine race, you might need to run longer to observe the failure.
+ *
+ * @author Aleksey Shipilev (aleksey.shipilev@oracle.com)
  */
 public class UnsafeSingletonTest implements OneActorOneObserverTest<UnsafeSingletonTest.SingletonFactory> {
 

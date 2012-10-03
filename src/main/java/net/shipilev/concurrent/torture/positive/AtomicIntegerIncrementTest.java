@@ -14,6 +14,8 @@ import java.util.concurrent.atomic.AtomicInteger;
  *    [0]: INCORRECT: complete infrastructure failure (this is an infrastructure bug to have one)
  *    [1]: INCORRECT: lost update
  *    [2]: CORRECT:   both updates are intact
+ *
+ * @author Aleksey Shipilev (aleksey.shipilev@oracle.com)
  */
 public class AtomicIntegerIncrementTest implements TwoActorsOneArbiterTest<AtomicInteger> {
 

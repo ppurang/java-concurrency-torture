@@ -15,6 +15,8 @@ import net.shipilev.concurrent.torture.Outcome;
  *    - high-word set to -1, low-word still set to 0 (tearing)
  *
  * All other values are forbidden because out-of-thin-air values are forbidden.
+ *
+ * @author Aleksey Shipilev (aleksey.shipilev@oracle.com)
  */
 public class LongAtomicityTest implements OneActorOneObserverTest<LongAtomicityTest.Specimen> {
 

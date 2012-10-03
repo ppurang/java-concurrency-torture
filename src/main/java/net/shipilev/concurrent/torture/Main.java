@@ -2,13 +2,13 @@ package net.shipilev.concurrent.torture;
 
 import net.shipilev.concurrent.torture.negative.DoubleAtomicityTest;
 import net.shipilev.concurrent.torture.negative.LongAtomicityTest;
-import net.shipilev.concurrent.torture.positive.AtomicIntegerIncrementTest;
-import net.shipilev.concurrent.torture.positive.IntAtomicityTest;
-import net.shipilev.concurrent.torture.positive.VolatileLongAtomicityTest;
 import net.shipilev.concurrent.torture.negative.UnsafeSingletonTest;
 import net.shipilev.concurrent.torture.negative.VolatileAtomicityTest;
+import net.shipilev.concurrent.torture.positive.AtomicIntegerIncrementTest;
+import net.shipilev.concurrent.torture.positive.IntAtomicityTest;
 import net.shipilev.concurrent.torture.positive.ReadAfterVolatileReadTest;
 import net.shipilev.concurrent.torture.positive.ReadTwiceOverVolatileReadTest;
+import net.shipilev.concurrent.torture.positive.VolatileLongAtomicityTest;
 
 import java.util.concurrent.ExecutionException;
 

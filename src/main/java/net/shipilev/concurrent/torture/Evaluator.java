@@ -5,6 +5,8 @@ package net.shipilev.concurrent.torture;
  *
  * Implementors of this interface should provide the basic test() method,
  * which judges the outcome given the result.
+ *
+ * @author Aleksey Shipilev (aleksey.shipilev@oracle.com)
  */
 public interface Evaluator {
 

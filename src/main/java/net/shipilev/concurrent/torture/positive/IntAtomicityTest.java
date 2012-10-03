@@ -1,7 +1,6 @@
 package net.shipilev.concurrent.torture.positive;
 
 import net.shipilev.concurrent.torture.OneActorOneObserverTest;
-import net.shipilev.concurrent.torture.Runner;
 import net.shipilev.concurrent.torture.Outcome;
 
 /**
@@ -13,6 +12,8 @@ import net.shipilev.concurrent.torture.Outcome;
  *    - value set by actor (i.e. -1)
  *
  * All other values are forbidden because out-of-thin-air values are forbidden.
+ *
+ * @author Aleksey Shipilev (aleksey.shipilev@oracle.com)
  */
 public class IntAtomicityTest implements OneActorOneObserverTest<IntAtomicityTest.Specimen> {
 

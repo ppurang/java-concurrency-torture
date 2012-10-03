@@ -12,6 +12,11 @@ import java.util.concurrent.Executors;
 import java.util.concurrent.Future;
 import java.util.concurrent.TimeUnit;
 
+/**
+ * Basic runner for concurrency tests.
+ *
+ * @author Aleksey Shipilev (aleksey.shipilev@oracle.com)
+ */
 public class Runner {
     private final PrintWriter pw;
 
