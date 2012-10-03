@@ -2,6 +2,7 @@ package net.shipilev.concurrent.torture;
 
 import net.shipilev.concurrent.torture.util.Multiset;
 
+import java.io.FileNotFoundException;
 import java.io.PrintWriter;
 import java.nio.ByteBuffer;
 import java.util.Arrays;
@@ -19,9 +20,11 @@ import java.util.concurrent.TimeUnit;
  */
 public class Runner {
     private final PrintWriter pw;
+    private final PrintWriter xml;
 
-    public Runner() {
+    public Runner(String xmlFile) throws FileNotFoundException {
         this.pw = new PrintWriter(System.out, true);
+        this.xml = new PrintWriter(xmlFile);
     }
 
     public ExecutorService getPool(int threads) {
@@ -259,6 +262,10 @@ public class Runner {
     }
 
     private void judge(Evaluator evaluator, Multiset<Long> results) {
+        xml.println("<result>");
+        xml.println("<test>" + evaluator.getClass().getName() + "</test>");
+        xml.println("<states>");
+
         pw.printf("%35s %12s %-20s\n", "Observed state", "Occurrences", "Interpretation");
         for (Long e : results.keys()) {
 
@@ -288,7 +295,17 @@ public class Runner {
             }
 
             pw.printf("%35s (%10d) %6s %-40s\n", Arrays.toString(b), results.count(e), (isFailed ? "ERROR:" : "OK:"), evaluator.test(b));
+
+            xml.println("<state>");
+            xml.println("<id>" + Arrays.toString(b) + "</id>");
+            xml.println("<count>" + results.count(e) + "</count>");
+            xml.println("<comment>" + evaluator.test(b) + "</comment>");
+            xml.println("<isFailure>" + isFailed + "</isFailure>");
+            xml.println("</state>");
         }
+        xml.println("</states>");
+        xml.println("</result>");
+
         pw.println();
     }
 
@@ -302,6 +319,10 @@ public class Runner {
     public static long byteArrToLong(byte[] b) {
         ByteBuffer buf = ByteBuffer.wrap(b);
         return buf.getLong();
+    }
+
+    public void close() {
+        xml.close();
     }
 
     public static class SingleSharedStateHolder<S> {

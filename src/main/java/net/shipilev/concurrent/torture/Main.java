@@ -14,11 +14,12 @@ import net.shipilev.concurrent.torture.positive.ReadTwiceOverVolatileReadTest;
 import net.shipilev.concurrent.torture.positive.VolatileLongAtomicityTest;
 import net.shipilev.concurrent.torture.positive.init.LongVolatileTest;
 
+import java.io.FileNotFoundException;
 import java.util.concurrent.ExecutionException;
 
 public class Main {
 
-    public static void main(String[] args) throws ExecutionException, InterruptedException {
+    public static void main(String[] args) throws ExecutionException, InterruptedException, FileNotFoundException {
         System.out.println("Java Concurrency Torture Tests");
         System.out.println("---------------------------------------------------------------------------------");
         System.out.println("Look up the Javadoc for test to look up the details about the test.");
@@ -26,7 +27,7 @@ public class Main {
         System.out.println("Each test does " + Constants.LOOPS + " internal loops, -Dloops=# to override.");
         System.out.println();
 
-        Runner r = new Runner();
+        Runner r = new Runner("results.xml");
 
         System.out.println("*** NEGATIVE TESTS (expected to fail) ***");
         r.run(new UnsafeSingletonTest());
@@ -46,6 +47,8 @@ public class Main {
         r.run(new ReadTwiceOverVolatileReadTest());
         r.run(new ReadAfterVolatileReadTest());
         r.run(new VolatileLongAtomicityTest());
+
+        r.close();
     }
 
 }
