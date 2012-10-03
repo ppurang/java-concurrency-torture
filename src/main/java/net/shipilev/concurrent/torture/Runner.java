@@ -21,10 +21,14 @@ import java.util.concurrent.TimeUnit;
 public class Runner {
     private final PrintWriter pw;
     private final PrintWriter xml;
+    private final int time;
+    private final int loops;
 
-    public Runner(String xmlFile) throws FileNotFoundException {
+    public Runner(Options opts) throws FileNotFoundException {
         this.pw = new PrintWriter(System.out, true);
-        this.xml = new PrintWriter(xmlFile);
+        this.xml = new PrintWriter(opts.getResultFile());
+        time = opts.getTime();
+        loops = opts.getLoops();
     }
 
     public ExecutorService getPool(int threads) {
@@ -77,7 +81,7 @@ public class Runner {
 
                 while (!Thread.interrupted()) {
                     int l = 0;
-                    while (l < Constants.LOOPS) {
+                    while (l < loops) {
                         S cur = holder.current;
                         if (last != cur) {
                             test.actor1(cur);
@@ -103,12 +107,12 @@ public class Runner {
 
                 S last = null;
                 byte[] state = new byte[8];
-                byte[][] results = new byte[Constants.LOOPS][];
+                byte[][] results = new byte[loops][];
 
                 while (!Thread.interrupted()) {
                     int c = 0;
                     int l = 0;
-                    while (l < Constants.LOOPS) {
+                    while (l < loops) {
                         S cur = holder.current;
                         if (last != cur) {
                             test.observe(cur, state);
@@ -128,7 +132,7 @@ public class Runner {
             }
         });
 
-        TimeUnit.MILLISECONDS.sleep(Constants.TIME_MSEC);
+        TimeUnit.MILLISECONDS.sleep(time);
 
         pool.shutdownNow();
         pool.awaitTermination(3600, TimeUnit.SECONDS);
@@ -174,7 +178,7 @@ public class Runner {
                 S last = null;
                 while (!Thread.interrupted()) {
                     int l = 0;
-                    while (l < Constants.LOOPS) {
+                    while (l < loops) {
                         S cur = holder.current;
                         if (last != cur) {
                             test.actor1(cur);
@@ -199,7 +203,7 @@ public class Runner {
                 S last = null;
                 while (!Thread.interrupted()) {
                     int l = 0;
-                    while (l < Constants.LOOPS) {
+                    while (l < loops) {
                         S cur = holder.current;
                         if (last != cur) {
                             test.actor2(cur);
@@ -227,11 +231,11 @@ public class Runner {
 
                 Multiset<Long> set = new Multiset<Long>();
 
-                byte[][] results = new byte[Constants.LOOPS][];
+                byte[][] results = new byte[loops][];
                 while (!Thread.interrupted()) {
                     int c = 0;
                     int l = 0;
-                    while (l < Constants.LOOPS) {
+                    while (l < loops) {
                         S s1 = holder.t1;
                         S s2 = holder.t2;
                         if (s1 == s2 && s1 != null) {
@@ -253,7 +257,7 @@ public class Runner {
             }
         });
 
-        TimeUnit.MILLISECONDS.sleep(Constants.TIME_MSEC);
+        TimeUnit.MILLISECONDS.sleep(time);
 
         pool.shutdownNow();
         pool.awaitTermination(3600, TimeUnit.SECONDS);

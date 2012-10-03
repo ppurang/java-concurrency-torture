@@ -15,19 +15,26 @@ import net.shipilev.concurrent.torture.positive.VolatileLongAtomicityTest;
 import net.shipilev.concurrent.torture.positive.init.LongVolatileTest;
 
 import java.io.FileNotFoundException;
+import java.io.IOException;
 import java.util.concurrent.ExecutionException;
 
 public class Main {
 
-    public static void main(String[] args) throws ExecutionException, InterruptedException, FileNotFoundException {
+    public static void main(String[] args) throws ExecutionException, InterruptedException, IOException {
         System.out.println("Java Concurrency Torture Tests");
         System.out.println("---------------------------------------------------------------------------------");
+
+        Options opts = new Options(args);
+        if (!opts.parse()) {
+            System.exit(1);
+        }
+
         System.out.println("Look up the Javadoc for test to look up the details about the test.");
-        System.out.println("Running each test for " + Constants.TIME_MSEC + "ms, -Dtime=# to override.");
-        System.out.println("Each test does " + Constants.LOOPS + " internal loops, -Dloops=# to override.");
+        System.out.println("Running each test for " + opts.getTime() + "ms");
+        System.out.println("Each test does " + opts.getLoops() + " internal loops");
         System.out.println();
 
-        Runner r = new Runner("results.xml");
+        Runner r = new Runner(opts);
 
         System.out.println("*** NEGATIVE TESTS (expected to fail) ***");
         r.run(new UnsafeSingletonTest());
