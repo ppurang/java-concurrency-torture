@@ -2,6 +2,7 @@ package net.shipilev.concurrent.torture;
 
 import net.shipilev.concurrent.torture.util.Multiset;
 
+import java.io.PrintWriter;
 import java.nio.ByteBuffer;
 import java.util.Arrays;
 import java.util.concurrent.Callable;
@@ -12,19 +13,29 @@ import java.util.concurrent.Future;
 import java.util.concurrent.TimeUnit;
 
 public class Runner {
+    private final PrintWriter pw;
+
+    public Runner() {
+        this.pw = new PrintWriter(System.out, true);
+    }
 
     public static class SingleSharedStateHolder<S> {
         volatile S current;
     }
 
+    public ExecutorService getPool(int threads) {
+        if (Runtime.getRuntime().availableProcessors() < threads) {
+            pw.println("WARNING: This test should be run with at least " + threads + " CPUs to get reliable results");
+        }
+        return Executors.newFixedThreadPool(threads);
+    }
 
     public <S> void run(final OneActorOneObserverTest<S> test) throws InterruptedException, ExecutionException {
-        System.out.println("Running " + test.getClass().getName());
+        pw.println("Running " + test.getClass().getName());
+
+        ExecutorService pool = getPool(3);
 
         final SingleSharedStateHolder<S> holder = new SingleSharedStateHolder<S>();
-
-        ExecutorService pool = Executors.newFixedThreadPool(3);
-
         holder.current = test.newSpecimen();
 
         pool.submit(new Runnable() {
@@ -40,14 +51,12 @@ public class Runner {
                 S last = null;
 
                 while (!Thread.interrupted()) {
-                    int c = 0;
                     int l = 0;
                     while (l < Constants.LOOPS) {
                         S cur = holder.current;
                         if (last != cur) {
                             test.actor1(cur);
                             last = cur;
-                            c++;
                         }
                         l++;
                     }
@@ -105,11 +114,10 @@ public class Runner {
     public <S> void run(final TwoActorsOneArbiterTest<S> test) throws InterruptedException, ExecutionException {
         System.out.println("Running " + test.getClass().getName());
 
+        ExecutorService pool = getPool(4);
+
         final TwoSharedStateHolder<S> holder = new TwoSharedStateHolder<S>();
-
         holder.current = test.newSpecimen();
-
-        ExecutorService pool = Executors.newCachedThreadPool();
 
         pool.submit(new Runnable() {
             public void run() {
@@ -124,7 +132,6 @@ public class Runner {
             public void run() {
                 S last = null;
                 while (!Thread.interrupted()) {
-                    int c = 0;
                     int l = 0;
                     while (l < Constants.LOOPS) {
                         S cur = holder.current;
@@ -132,7 +139,6 @@ public class Runner {
                             test.actor1(cur);
                             holder.t1 = cur;
                             last = cur;
-                            c++;
                         }
                         l++;
                     }
@@ -144,7 +150,6 @@ public class Runner {
             public void run() {
                 S last = null;
                 while (!Thread.interrupted()) {
-                    int c = 0;
                     int l = 0;
                     while (l < Constants.LOOPS) {
                         S cur = holder.current;
@@ -152,7 +157,6 @@ public class Runner {
                             test.actor2(cur);
                             last = cur;
                             holder.t2 = cur;
-                            c++;
                         }
                         l++;
                     }
@@ -162,7 +166,6 @@ public class Runner {
 
         Future<Multiset<Long>> res = pool.submit(new Callable<Multiset<Long>>() {
             public Multiset<Long> call() {
-                S last = null;
                 byte[] res = new byte[8];
 
                 Multiset<Long> set = new Multiset<Long>();
@@ -202,6 +205,7 @@ public class Runner {
     }
 
     private void judge(Evaluator evaluator, Multiset<Long> results) {
+        pw.printf("%35s %12s %-20s\n", "Observed state", "Occurrences", "Interpretation");
         for (Long e : results.keys()) {
 
             byte[] b = longToByteArr(e);
@@ -229,8 +233,9 @@ public class Runner {
                     throw new IllegalStateException();
             }
 
-            System.out.printf("%35s (%10d) %20s\n", Arrays.toString(b), results.count(e), isFailed ? "ERROR: " + evaluator.test(b) : "");
+            pw.printf("%35s (%10d) %6s %-40s\n", Arrays.toString(b), results.count(e), (isFailed ? "ERROR:" : "OK:"), evaluator.test(b));
         }
+        pw.println();
     }
 
 

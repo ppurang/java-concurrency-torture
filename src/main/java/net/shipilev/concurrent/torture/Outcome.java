@@ -10,12 +10,12 @@ public enum Outcome {
     /**
      * This outcome may be present.
      */
-    ACCEPTABLE("Generally present, may be missed at times"),
+    ACCEPTABLE("General case"),
 
     /**
      * This outcome may not be present.
      */
-    TRANSIENT("Generally absent, may be present at times"),
+    TRANSIENT("Non-general case"),
 
     /**
      * Should not be present.
