@@ -15,7 +15,7 @@ import java.util.concurrent.atomic.AtomicInteger;
  *    [1]: lost update
  *    [2]: both updates are intact
  */
-public class VolatileAtomicityTest extends TwoActorsOneArbiterTest<VolatileAtomicityTest.Specimen> {
+public class VolatileAtomicityTest implements TwoActorsOneArbiterTest<VolatileAtomicityTest.Specimen> {
 
     public static class Specimen {
         volatile int x;
@@ -42,7 +42,7 @@ public class VolatileAtomicityTest extends TwoActorsOneArbiterTest<VolatileAtomi
     }
 
     @Override
-    protected Outcome test(byte[] result) {
+    public Outcome test(byte[] result) {
         if (result[0] != 2) return Outcome.NOT_EXPECTED;
         return Outcome.ACCEPTABLE;
     }

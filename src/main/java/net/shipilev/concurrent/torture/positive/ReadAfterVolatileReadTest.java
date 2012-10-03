@@ -1,6 +1,7 @@
 package net.shipilev.concurrent.torture.positive;
 
 import net.shipilev.concurrent.torture.OneActorOneObserverTest;
+import net.shipilev.concurrent.torture.Runner;
 import net.shipilev.concurrent.torture.Outcome;
 
 /**
@@ -13,7 +14,7 @@ import net.shipilev.concurrent.torture.Outcome;
  *   [1, 2]: CORRECT:   read correct $x value, forced by happens-before
  *   [1, 3]: CORRECT:   read correct $x value, residual after $y update
  */
-public class ReadAfterVolatileReadTest extends OneActorOneObserverTest<ReadAfterVolatileReadTest.Specimen> {
+public class ReadAfterVolatileReadTest implements OneActorOneObserverTest<ReadAfterVolatileReadTest.Specimen> {
 
     public static class Specimen {
         int x;
@@ -40,7 +41,7 @@ public class ReadAfterVolatileReadTest extends OneActorOneObserverTest<ReadAfter
     }
 
     @Override
-    protected Outcome test(byte[] res) {
+    public Outcome test(byte[] res) {
         if (res[0] == 1 && res[1] < 2) {
             return Outcome.NOT_EXPECTED;
         }

@@ -22,19 +22,21 @@ public class Main {
         System.out.println("Each test does " + Constants.LOOPS + " internal loops, -Dloops=# to override.");
         System.out.println();
 
+        Runner r = new Runner();
+
         System.out.println("*** NEGATIVE TESTS (expected to fail) ***");
-        new UnsafeSingletonTest().run();
-        new VolatileAtomicityTest().run();
-        new LongAtomicityTest().run();
-        new DoubleAtomicityTest().run();
+        r.run(new UnsafeSingletonTest());
+        r.run(new VolatileAtomicityTest());
+        r.run(new LongAtomicityTest());
+        r.run(new DoubleAtomicityTest());
 
         System.out.println();
         System.out.println("*** POSITIVE TESTS (expected to pass) ***");
-        new AtomicIntegerIncrementTest().run();
-        new IntAtomicityTest().run();
-        new ReadTwiceOverVolatileReadTest().run();
-        new ReadAfterVolatileReadTest().run();
-        new VolatileLongAtomicityTest().run();
+        r.run(new AtomicIntegerIncrementTest());
+        r.run(new IntAtomicityTest());
+        r.run(new ReadTwiceOverVolatileReadTest());
+        r.run(new ReadAfterVolatileReadTest());
+        r.run(new VolatileLongAtomicityTest());
     }
 
 }

@@ -15,7 +15,7 @@ import java.util.concurrent.atomic.AtomicInteger;
  *    [1]: INCORRECT: lost update
  *    [2]: CORRECT:   both updates are intact
  */
-public class AtomicIntegerIncrementTest extends TwoActorsOneArbiterTest<AtomicInteger> {
+public class AtomicIntegerIncrementTest implements TwoActorsOneArbiterTest<AtomicInteger> {
 
     @Override
     public void actor1(AtomicInteger s) {
@@ -38,7 +38,7 @@ public class AtomicIntegerIncrementTest extends TwoActorsOneArbiterTest<AtomicIn
     }
 
     @Override
-    protected Outcome test(byte[] result) {
+    public Outcome test(byte[] result) {
         if (result[0] != 2)
             return Outcome.NOT_EXPECTED;
         return Outcome.ACCEPTABLE;

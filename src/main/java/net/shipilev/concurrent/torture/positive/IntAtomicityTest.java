@@ -1,6 +1,7 @@
 package net.shipilev.concurrent.torture.positive;
 
 import net.shipilev.concurrent.torture.OneActorOneObserverTest;
+import net.shipilev.concurrent.torture.Runner;
 import net.shipilev.concurrent.torture.Outcome;
 
 /**
@@ -13,7 +14,7 @@ import net.shipilev.concurrent.torture.Outcome;
  *
  * All other values are forbidden because out-of-thin-air values are forbidden.
  */
-public class IntAtomicityTest extends OneActorOneObserverTest<IntAtomicityTest.Specimen> {
+public class IntAtomicityTest implements OneActorOneObserverTest<IntAtomicityTest.Specimen> {
 
     public static class Specimen {
         int x;
@@ -30,7 +31,7 @@ public class IntAtomicityTest extends OneActorOneObserverTest<IntAtomicityTest.S
     }
 
     @Override
-    protected void observe(Specimen s, byte[] result) {
+    public void observe(Specimen s, byte[] result) {
         long t = s.x;
         result[0] = (byte) ((t >> 0) & 0xFF);
         result[1] = (byte) ((t >> 8) & 0xFF);
@@ -39,7 +40,7 @@ public class IntAtomicityTest extends OneActorOneObserverTest<IntAtomicityTest.S
     }
 
     @Override
-    protected Outcome test(byte[] res) {
+    public Outcome test(byte[] res) {
         if (res[0] != res[1] || res[1] != res[2] || res[2] != res[3])
             return Outcome.NOT_EXPECTED;
         return Outcome.ACCEPTABLE;

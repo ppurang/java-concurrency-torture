@@ -16,7 +16,7 @@ import net.shipilev.concurrent.torture.Outcome;
  *
  * All other values are forbidden because out-of-thin-air values are forbidden.
  */
-public class DoubleAtomicityTest extends OneActorOneObserverTest<DoubleAtomicityTest.Specimen> {
+public class DoubleAtomicityTest implements OneActorOneObserverTest<DoubleAtomicityTest.Specimen> {
 
     public static class Specimen {
         double x;
@@ -33,7 +33,7 @@ public class DoubleAtomicityTest extends OneActorOneObserverTest<DoubleAtomicity
     }
 
     @Override
-    protected void observe(Specimen s, byte[] result) {
+    public void observe(Specimen s, byte[] result) {
         long t = Double.doubleToRawLongBits(s.x);
         result[0] = (byte) ((t >> 0) & 0xFF);
         result[1] = (byte) ((t >> 8) & 0xFF);
@@ -46,7 +46,7 @@ public class DoubleAtomicityTest extends OneActorOneObserverTest<DoubleAtomicity
     }
 
     @Override
-    protected Outcome test(byte[] res) {
+    public Outcome test(byte[] res) {
         if (res[0] != res[1] || res[1] != res[2] || res[2] != res[3]
                 || res[3] != res[4] || res[5] != res[6] || res[6] != res[7])
             return Outcome.NOT_EXPECTED;

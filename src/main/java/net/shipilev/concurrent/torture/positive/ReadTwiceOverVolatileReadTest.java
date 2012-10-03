@@ -1,6 +1,7 @@
 package net.shipilev.concurrent.torture.positive;
 
 import net.shipilev.concurrent.torture.OneActorOneObserverTest;
+import net.shipilev.concurrent.torture.Runner;
 import net.shipilev.concurrent.torture.Outcome;
 
 /**
@@ -13,7 +14,7 @@ import net.shipilev.concurrent.torture.Outcome;
  *   [0, 1, 1]: CORRECT: volatile write to $y had happened, and update to $x had been read
  *   [1, 1, 1]: CORRECT: volatile write to $y had happened, and update to $x had been read even before
  */
-public class ReadTwiceOverVolatileReadTest extends OneActorOneObserverTest<ReadTwiceOverVolatileReadTest.Specimen> {
+public class ReadTwiceOverVolatileReadTest implements OneActorOneObserverTest<ReadTwiceOverVolatileReadTest.Specimen> {
 
     public static class Specimen {
         int x;
@@ -39,7 +40,7 @@ public class ReadTwiceOverVolatileReadTest extends OneActorOneObserverTest<ReadT
     }
 
     @Override
-    protected Outcome test(byte[] res) {
+    public Outcome test(byte[] res) {
         if (res[1] == 1 && res[2] == 0) {
             return Outcome.NOT_EXPECTED;
         }

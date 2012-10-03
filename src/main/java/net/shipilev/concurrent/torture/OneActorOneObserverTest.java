@@ -1,23 +1,12 @@
 package net.shipilev.concurrent.torture;
 
-import net.shipilev.concurrent.torture.util.Multiset;
-
-import java.nio.ByteBuffer;
-import java.util.Arrays;
-import java.util.concurrent.Callable;
-import java.util.concurrent.ExecutionException;
-import java.util.concurrent.ExecutorService;
-import java.util.concurrent.Executors;
-import java.util.concurrent.Future;
-import java.util.concurrent.TimeUnit;
-
 /**
  * This test accepts single actors (thread actively mutating the state),
  * and one observer (thread observing the state *concurrently* with actor doing dirty work).
  *
  * @param <S> specimen type
  */
-public abstract class OneActorOneObserverTest<S> {
+public interface OneActorOneObserverTest<S> extends Evaluator {
 
     /**
      * Create new object to work on.
@@ -28,7 +17,7 @@ public abstract class OneActorOneObserverTest<S> {
      *
      * @return fresh specimen
      */
-    protected abstract S newSpecimen();
+     S newSpecimen();
 
     /**
      * Body for actor 1.
@@ -38,7 +27,7 @@ public abstract class OneActorOneObserverTest<S> {
      *
      * @param specimen specimen to work on
      */
-    protected abstract void actor1(S specimen);
+    void actor1(S specimen);
 
     /**
      * Body for the observer.
@@ -51,143 +40,7 @@ public abstract class OneActorOneObserverTest<S> {
      *
      * @param specimen specimen to work on
      * @param result result array
-     * @see #resultSize()
      */
-    protected abstract void observe(S specimen, byte[] result);
-
-    /**
-     * Expected result size.
-     * @return result size.
-     *
-     * @see #observe(Object, byte[])
-     */
-    protected abstract int resultSize();
-
-    /**
-     * Analyze the result.
-     *
-     * @param result result to be analyzed
-     * @return graded outcome
-     */
-    protected abstract Outcome test(byte[] result);
-
-
-    volatile S current;
-
-    public void run() throws InterruptedException, ExecutionException {
-        System.out.println("Running " + this.getClass().getName());
-
-        ExecutorService pool = Executors.newFixedThreadPool(3);
-
-        current = newSpecimen();
-
-        pool.submit(new Runnable() {
-            public void run() {
-                while (!Thread.interrupted()) {
-                    current = newSpecimen();
-                }
-            }
-        });
-
-        pool.submit(new Runnable() {
-            public void run() {
-                S last = null;
-
-                while (!Thread.interrupted()) {
-                    int c = 0;
-                    int l = 0;
-                    while (l < Constants.LOOPS) {
-                        S cur = current;
-                        if (last != cur) {
-                            actor1(cur);
-                            last = cur;
-                            c++;
-                        }
-                        l++;
-                    }
-                }
-            }
-        });
-
-        Future<Multiset<Long>> res = pool.submit(new Callable<Multiset<Long>>() {
-            public Multiset<Long> call() {
-                S last = null;
-
-                byte[] res = new byte[8];
-
-                Multiset<Long> set = new Multiset<Long>();
-
-                byte[][] results = new byte[Constants.LOOPS][];
-                while (!Thread.interrupted()) {
-                    int c = 0;
-                    int l = 0;
-                    while (l < Constants.LOOPS) {
-                        S cur = current;
-                        if (last != cur) {
-                            observe(cur, res);
-                            results[c] = new byte[8];
-                            System.arraycopy(res, 0, results[c], 0, 8);
-                            last = cur;
-                            c++;
-                        }
-                        l++;
-                    }
-
-                    for (int i = 0; i < c; i++) {
-                        set.add(byteArrToLong(results[i]));
-                    }
-                }
-                return set;
-            }
-        });
-
-        TimeUnit.MILLISECONDS.sleep(Constants.TIME_MSEC);
-
-        pool.shutdownNow();
-
-        Multiset<Long> results = res.get();
-        for (Long e : results.keys()) {
-
-            byte[] b = longToByteArr(e);
-
-            byte[] t = new byte[resultSize()];
-            System.arraycopy(b, 0, t, 0, resultSize());
-            b = t;
-
-            boolean isFailed;
-            switch (test(b)) {
-                case ACCEPTABLE:
-                case TRANSIENT:
-                    // no implementation yet
-                    isFailed = false;
-                    break;
-
-                case EXPECTED:
-                    isFailed = (results.count(e) == 0);
-                    break;
-
-                case NOT_EXPECTED:
-                    isFailed = (results.count(e) > 0);
-                    break;
-                default:
-                    throw new IllegalStateException();
-            }
-
-            System.out.printf("%35s (%10d) %20s\n", Arrays.toString(b), results.count(e), isFailed ? "ERROR: " + test(b) : "");
-        }
-
-        pool.awaitTermination(3600, TimeUnit.SECONDS);
-    }
-
-    private byte[] longToByteArr(Long element) {
-        ByteBuffer buf = ByteBuffer.allocate(8);
-        buf.putLong(element);
-        return buf.array();
-    }
-
-    public static long byteArrToLong(byte[] b) {
-        ByteBuffer buf = ByteBuffer.wrap(b);
-        return buf.getLong();
-    }
+    void observe(S specimen, byte[] result);
 
 }
