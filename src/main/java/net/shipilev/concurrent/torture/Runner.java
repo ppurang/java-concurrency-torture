@@ -137,6 +137,7 @@ public class Runner {
         pool.shutdownNow();
         pool.awaitTermination(3600, TimeUnit.SECONDS);
 
+        dump(test, res.get());
         judge(test, res.get());
     }
 
@@ -262,14 +263,30 @@ public class Runner {
         pool.shutdownNow();
         pool.awaitTermination(3600, TimeUnit.SECONDS);
 
+        dump(test, res.get());
         judge(test, res.get());
     }
 
-    private void judge(Evaluator evaluator, Multiset<Long> results) {
+    private void dump(Evaluator evaluator, Multiset<Long> results) {
         xml.println("<result>");
         xml.println("<test>" + evaluator.getClass().getName() + "</test>");
         xml.println("<states>");
+        for (Long e : results.keys()) {
+            byte[] b = longToByteArr(e);
+            byte[] t = new byte[evaluator.resultSize()];
+            System.arraycopy(b, 0, t, 0, evaluator.resultSize());
+            b = t;
 
+            xml.println("<state>");
+            xml.println("<id>" + Arrays.toString(b) + "</id>");
+            xml.println("<count>" + results.count(e) + "</count>");
+            xml.println("</state>");
+        }
+        xml.println("</states>");
+        xml.println("</result>");
+    }
+
+    private void judge(Evaluator evaluator, Multiset<Long> results) {
         pw.printf("%35s %12s %-20s\n", "Observed state", "Occurrences", "Interpretation");
         for (Long e : results.keys()) {
 
@@ -299,16 +316,7 @@ public class Runner {
             }
 
             pw.printf("%35s (%10d) %6s %-40s\n", Arrays.toString(b), results.count(e), (isFailed ? "ERROR:" : "OK:"), evaluator.test(b));
-
-            xml.println("<state>");
-            xml.println("<id>" + Arrays.toString(b) + "</id>");
-            xml.println("<count>" + results.count(e) + "</count>");
-            xml.println("<comment>" + evaluator.test(b) + "</comment>");
-            xml.println("<isFailure>" + isFailed + "</isFailure>");
-            xml.println("</state>");
         }
-        xml.println("</states>");
-        xml.println("</result>");
 
         pw.println();
     }
