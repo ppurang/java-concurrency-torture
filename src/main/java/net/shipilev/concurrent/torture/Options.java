@@ -25,6 +25,7 @@ import java.io.IOException;
 
 public class Options {
     private String resultFile;
+    private String testRegexp;
     private int loops;
     private int time;
     private final String[] args;
@@ -40,10 +41,13 @@ public class Options {
         OptionSpec<String> result = parser.accepts("r", "Results file")
                 .withRequiredArg().ofType(String.class).describedAs("file").defaultsTo("results.xml");
 
+        OptionSpec<String> testRegexp = parser.accepts("t", "Regexp selector for tests")
+                .withRequiredArg().ofType(String.class).describedAs("file").defaultsTo(".*");
+
         OptionSpec<Integer> loops = parser.accepts("loops", "Number of internal loops")
                 .withRequiredArg().ofType(int.class).describedAs("N").defaultsTo(10000);
 
-        OptionSpec<Integer> time = parser.accepts("t", "Time per test")
+        OptionSpec<Integer> time = parser.accepts("time", "Time per test")
                 .withRequiredArg().ofType(int.class).describedAs("ms").defaultsTo(1000);
 
         parser.accepts("h", "Print this help");
@@ -66,6 +70,7 @@ public class Options {
         this.resultFile = set.valueOf(result);
         this.loops = set.valueOf(loops);
         this.time = set.valueOf(time);
+        this.testRegexp = set.valueOf(testRegexp);
         return true;
     }
 
