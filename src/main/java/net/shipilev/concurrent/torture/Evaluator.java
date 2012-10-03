@@ -3,7 +3,8 @@ package net.shipilev.concurrent.torture;
 /**
  * Marks evaluators, which can evaluate the tests results.
  *
- * Implementors of this interface should provide the basic test() method, which judges the outcome given the result.
+ * Implementors of this interface should provide the basic test() method,
+ * which judges the outcome given the result.
  */
 public interface Evaluator {
 

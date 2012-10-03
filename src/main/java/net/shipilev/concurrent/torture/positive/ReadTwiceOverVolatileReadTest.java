@@ -35,7 +35,7 @@ public class ReadTwiceOverVolatileReadTest implements OneActorOneObserverTest<Re
     }
 
     @Override
-    public Specimen newSpecimen() {
+    public Specimen newState() {
         return new Specimen();
     }
 

@@ -33,7 +33,7 @@ public class AtomicIntegerIncrementTest implements TwoActorsOneArbiterTest<Atomi
     }
 
     @Override
-    public AtomicInteger newSpecimen() {
+    public AtomicInteger newState() {
         return new AtomicInteger();
     }
 

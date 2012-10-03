@@ -37,7 +37,7 @@ public class VolatileAtomicityTest implements TwoActorsOneArbiterTest<VolatileAt
     }
 
     @Override
-    public Specimen newSpecimen() {
+    public Specimen newState() {
         return new Specimen();
     }
 

@@ -24,7 +24,7 @@ public class VolatileLongAtomicityTest implements OneActorOneObserverTest<Volati
     }
 
     @Override
-    public Specimen newSpecimen() {
+    public Specimen newState() {
         return new Specimen();
     }
 

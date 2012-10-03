@@ -36,7 +36,7 @@ public class ReadAfterVolatileReadTest implements OneActorOneObserverTest<ReadAf
     }
 
     @Override
-    public Specimen newSpecimen() {
+    public Specimen newState() {
         return new Specimen();
     }
 

@@ -36,12 +36,12 @@ public class Runner {
         ExecutorService pool = getPool(3);
 
         final SingleSharedStateHolder<S> holder = new SingleSharedStateHolder<S>();
-        holder.current = test.newSpecimen();
+        holder.current = test.newState();
 
         pool.submit(new Runnable() {
             public void run() {
                 while (!Thread.interrupted()) {
-                    holder.current = test.newSpecimen();
+                    holder.current = test.newState();
                 }
             }
         });
@@ -117,13 +117,13 @@ public class Runner {
         ExecutorService pool = getPool(4);
 
         final TwoSharedStateHolder<S> holder = new TwoSharedStateHolder<S>();
-        holder.current = test.newSpecimen();
+        holder.current = test.newState();
 
         pool.submit(new Runnable() {
             public void run() {
                 while (!Thread.interrupted()) {
                     while (holder.t1 != null && holder.t2 != null && !Thread.currentThread().isInterrupted());
-                    holder.current = test.newSpecimen();
+                    holder.current = test.newState();
                 }
             }
         });

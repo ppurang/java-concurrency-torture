@@ -4,7 +4,10 @@ package net.shipilev.concurrent.torture;
  * This test accepts two actors (threads actively mutating the state),
  * and one arbiter (thread observing the state *after* two actors finished).
  *
- * @param <S> specimen type
+ * Shared state is represented by state object. Runners will ensure enough fresh state objects would
+ * be provided to the tests methods to unfold even the finest races.
+ *
+ * @param <S> state object type
  */
 public interface TwoActorsOneArbiterTest<S> extends Evaluator {
 
@@ -12,51 +15,54 @@ public interface TwoActorsOneArbiterTest<S> extends Evaluator {
      * Create new object to work on.
      *
      * Conventions:
-     *   - this method is called only within injector thread
-     *   - this method should return new object at every call, no caching
+     *   - this method is called only within the exclusive thread
+     *   - this method should return new object at every call; answering cached object will interfere with test correctness
+     *   - there are safe publication guarantees enforced by Runner
+     *       (i.e. for any given s, (newState(s) hb actor1(s)) and (newState(s) hb actor2(s))
      *
-     * @return fresh specimen
+     * @return fresh state object
      */
-    S newSpecimen();
+    S newState();
 
     /**
      * Body for actor 1.
      *
      * Conventions:
-     *   - this method is called only by actor 1, only once per specimen
-     *   - the order vs. other actor is unspecified
+     *   - this method is called only by actor1 thread, and only once per state
+     *   - the order vs. other actors is unspecified
      *
-     * @param specimen specimen to work on
+     * @param state state to work on
      */
-    void actor1(S specimen);
+    void actor1(S state);
 
     /**
      * Body for actor 2.
      *
      * Conventions:
-     *   - this method is called only by actor 2, only once per specimen
-     *   - the order vs. other actor is unspecified
+     *   - this method is called only by actor2 thread, only once per state
+     *   - the order vs. other actors is unspecified
      *
-     * @param specimen specimen to work on
+     * @param state state to work on
      */
-    void actor2(S specimen);
+    void actor2(S state);
 
     /**
      * Body for the arbiter.
      *
      * Conventions:
-     *   - this method is called only by arbiter thread, once per specimen
-     *   - for any given specimen, arbiter would be called *after* both actors finished with the specimen
-     *   - all memory effects on specimen would make the effect before arbitrate() call
-     *      (i.e. for given specimen, (actor1() hb arbitrate()) and (actor2() hb arbitrate()))
+     *   - this method is called only by arbiter thread, once per state
+     *   - for any given state, arbiter would be called *after* both actors finished with the state
+     *   - all memory effects on state would make the effect before arbitrate() call
+     *      (i.e. for given state, (actor1() hb arbitrate()) and (actor2() hb arbitrate()))
      *   - arbiter can store the arbitrated state in the result array
+     *   - arbiter should not rely on the default values in the result array, and should set all elements on every call
      *   - arbiter can not store the reference to result array
      *
-     * @param specimen specimen to work on
+     * @param state state to work on
      * @param result result array
      * @see #resultSize()
      */
-    void arbitrate(S specimen, byte[] result);
+    void arbitrate(S state, byte[] result);
 
 
 }

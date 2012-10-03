@@ -23,7 +23,7 @@ public class LongAtomicityTest implements OneActorOneObserverTest<LongAtomicityT
     }
 
     @Override
-    public Specimen newSpecimen() {
+    public Specimen newState() {
         return new Specimen();
     }
 

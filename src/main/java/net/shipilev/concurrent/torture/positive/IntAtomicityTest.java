@@ -21,7 +21,7 @@ public class IntAtomicityTest implements OneActorOneObserverTest<IntAtomicityTes
     }
 
     @Override
-    public Specimen newSpecimen() {
+    public Specimen newState() {
         return new Specimen();
     }
 
