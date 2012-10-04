@@ -25,19 +25,21 @@ public class Runner {
     private final PrintWriter xml;
     private final int time;
     private final int loops;
+    private final ExecutorService pool;
+    private volatile boolean isStopped;
 
     public Runner(Options opts) throws FileNotFoundException {
         this.pw = new PrintWriter(System.out, true);
         this.xml = new PrintWriter(opts.getResultFile());
         time = opts.getTime();
         loops = opts.getLoops();
+        pool = Executors.newCachedThreadPool();
     }
 
-    public ExecutorService getPool(int threads) {
+    public void ensureThreads(int threads) {
         if (Runtime.getRuntime().availableProcessors() < threads) {
             pw.println("WARNING: This test should be run with at least " + threads + " CPUs to get reliable results");
         }
-        return Executors.newCachedThreadPool();
     }
 
     /**
@@ -49,29 +51,42 @@ public class Runner {
      * @throws InterruptedException
      * @throws ExecutionException
      */
-    public <S> void run(final OneActorOneObserverTest<S> test) throws InterruptedException, ExecutionException {
+    public <S> void run(OneActorOneObserverTest<S> test) throws ExecutionException, InterruptedException {
         pw.println("Running " + test.getClass().getName());
+        ensureThreads(3);
 
-        ExecutorService pool = getPool(3);
+        pw.print("Warmup ");
+        for (int c = 0; c < 5; c++) {
+            pw.print(".");
+            pw.flush();
+            run(test, true);
+        }
+        pw.println();
 
+        run(test, false);
+    }
+
+    private <S> void run(final OneActorOneObserverTest<S> test, boolean dryRun) throws InterruptedException, ExecutionException {
         final SingleSharedStateHolder<S> holder = new SingleSharedStateHolder<S>();
 
         // current should be null so that injector could inject the first instance
         holder.current = null;
 
+        isStopped = false;
+
         /*
            Injector thread: injects new states until interrupted.
          */
-        pool.submit(new Runnable() {
+        Future<?> s1 = pool.submit(new Runnable() {
             public void run() {
-                while (!Thread.interrupted()) {
+                while (!isStopped) {
                     S[] newStride = (S[]) new Object[loops];
                     for (int c = 0; c < loops; c++) {
                         newStride[c] = test.newState();
                     }
 
                     while (holder.current != null) {
-                        if (Thread.interrupted()) {
+                        if (isStopped) {
                             return;
                         }
                     }
@@ -86,11 +101,11 @@ public class Runner {
               a. We should be easy on checking the interrupted status, hence we do $LOOPS internally
               b. Thread should not observe the state object more than once
          */
-        pool.submit(new Runnable() {
+        Future<?> a1 = pool.submit(new Runnable() {
             public void run() {
                 S[] last = null;
 
-                while (!Thread.interrupted()) {
+                while (!isStopped) {
                     S[] cur = holder.current;
                     if (cur != null && last != cur) {
                         for (int l = 0; l < loops; l++) {
@@ -118,7 +133,7 @@ public class Runner {
                 byte[] state = new byte[8];
                 byte[][] results = new byte[loops][];
 
-                while (!Thread.interrupted()) {
+                while (!isStopped) {
                     S[] cur = holder.current;
 
                     if (cur != null && last != cur) {
@@ -144,23 +159,40 @@ public class Runner {
 
         TimeUnit.MILLISECONDS.sleep(time);
 
-        pool.shutdownNow();
-        pool.awaitTermination(3600, TimeUnit.SECONDS);
+        isStopped = true;
+        a1.get();
+        s1.get();
+        res.get();
 
-        dump(test, res.get());
-        judge(test, res.get());
+        if (!dryRun) {
+            dump(test, res.get());
+            judge(test, res.get());
+        }
     }
 
     public <S> void run(final TwoActorsOneArbiterTest<S> test) throws InterruptedException, ExecutionException {
         pw.println("Running " + test.getClass().getName());
+        ensureThreads(4);
 
-        ExecutorService pool = getPool(4);
+        pw.print("Warmup ");
+        for (int c = 0; c < 5; c++) {
+            pw.print(".");
+            pw.flush();
+            run(test, true);
+        }
+        pw.println();
 
+        run(test, false);
+    }
+
+    public <S> void run(final TwoActorsOneArbiterTest<S> test, boolean dryRun) throws InterruptedException, ExecutionException {
         final TwoSharedStateHolder<S> holder = new TwoSharedStateHolder<S>();
 
         // need to initialize so that actor thread will not NPE.
         // once injector catches up, it will push fresh state objects
         holder.current = test.newState();
+
+        isStopped = false;
 
          /*
            Injector thread: injects new states until interrupted.
@@ -168,10 +200,10 @@ public class Runner {
               a. If actors results are not yet consumed, do not push the new state.
                  This will effectively block actors from working until arbiter consumes their result.
          */
-        pool.submit(new Runnable() {
+        Future<?> s1 = pool.submit(new Runnable() {
             public void run() {
-                while (!Thread.interrupted()) {
-                    while (holder.t1 != null && holder.t2 != null && !Thread.currentThread().isInterrupted());
+                while (!isStopped) {
+                    while (holder.t1 != null && holder.t2 != null && !isStopped) ;
                     holder.current = test.newState();
                 }
             }
@@ -184,10 +216,10 @@ public class Runner {
               b. Thread should not observe the state object more than once
               c. Once thread is done with its work, it publishes the reference to state object for arbiter
          */
-        pool.submit(new Runnable() {
+        Future<?> a1 = pool.submit(new Runnable() {
             public void run() {
                 S last = null;
-                while (!Thread.interrupted()) {
+                while (!isStopped) {
                     int l = 0;
                     while (l < loops) {
                         S cur = holder.current;
@@ -209,10 +241,10 @@ public class Runner {
               b. Thread should not observe the state object more than once
               c. Once thread is done with its work, it publishes the reference to state object for arbiter
          */
-        pool.submit(new Runnable() {
+        Future<?> a2 = pool.submit(new Runnable() {
             public void run() {
                 S last = null;
-                while (!Thread.interrupted()) {
+                while (!isStopped) {
                     int l = 0;
                     while (l < loops) {
                         S cur = holder.current;
@@ -243,7 +275,7 @@ public class Runner {
                 Multiset<Long> set = new Multiset<Long>();
 
                 byte[][] results = new byte[loops][];
-                while (!Thread.interrupted()) {
+                while (!isStopped) {
                     int c = 0;
                     int l = 0;
                     while (l < loops) {
@@ -270,11 +302,16 @@ public class Runner {
 
         TimeUnit.MILLISECONDS.sleep(time);
 
-        pool.shutdownNow();
-        pool.awaitTermination(3600, TimeUnit.SECONDS);
+        isStopped = true;
+        s1.get();
+        a1.get();
+        a2.get();
+        res.get();
 
-        dump(test, res.get());
-        judge(test, res.get());
+        if (!dryRun) {
+            dump(test, res.get());
+            judge(test, res.get());
+        }
     }
 
     private void dump(Evaluator evaluator, Multiset<Long> results) {
@@ -344,6 +381,7 @@ public class Runner {
     }
 
     public void close() {
+        pool.shutdownNow();
         xml.close();
     }
 
