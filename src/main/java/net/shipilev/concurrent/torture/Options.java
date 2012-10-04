@@ -28,6 +28,8 @@ public class Options {
     private String testRegexp;
     private int loops;
     private int time;
+    private int wtime;
+    private int witers;
     private final String[] args;
 
     public Options(String[] args) {
@@ -50,6 +52,12 @@ public class Options {
         OptionSpec<Integer> time = parser.accepts("time", "Time per test")
                 .withRequiredArg().ofType(int.class).describedAs("ms").defaultsTo(1000);
 
+        OptionSpec<Integer> wtime = parser.accepts("wtime", "Warmup time per test")
+                .withRequiredArg().ofType(int.class).describedAs("ms").defaultsTo(1000);
+
+        OptionSpec<Integer> witers = parser.accepts("witers", "Warmup iterations per test")
+                .withRequiredArg().ofType(int.class).describedAs("N").defaultsTo(5);
+
         parser.accepts("h", "Print this help");
 
         OptionSet set;
@@ -70,6 +78,8 @@ public class Options {
         this.resultFile = set.valueOf(result);
         this.loops = set.valueOf(loops);
         this.time = set.valueOf(time);
+        this.wtime = set.valueOf(wtime);
+        this.witers = set.valueOf(witers);
         this.testRegexp = set.valueOf(testRegexp);
         return true;
     }
@@ -84,5 +94,13 @@ public class Options {
 
     public int getTime() {
         return time;
+    }
+
+    public int getWarmupTime() {
+        return wtime;
+    }
+
+    public int getWarmupIterations() {
+        return witers;
     }
 }

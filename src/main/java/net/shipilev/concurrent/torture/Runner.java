@@ -27,12 +27,16 @@ public class Runner {
     private final int loops;
     private final ExecutorService pool;
     private volatile boolean isStopped;
+    private final int wtime;
+    private final int witers;
 
     public Runner(Options opts) throws FileNotFoundException {
         this.pw = new PrintWriter(System.out, true);
         this.xml = new PrintWriter(opts.getResultFile());
         time = opts.getTime();
         loops = opts.getLoops();
+        wtime = opts.getWarmupTime();
+        witers = opts.getWarmupIterations();
         pool = Executors.newCachedThreadPool();
     }
 
@@ -56,17 +60,17 @@ public class Runner {
         ensureThreads(3);
 
         pw.print("Warmup ");
-        for (int c = 0; c < 5; c++) {
+        for (int c = 0; c < witers; c++) {
             pw.print(".");
             pw.flush();
-            run(test, true);
+            run(test, wtime, true);
         }
         pw.println();
 
-        run(test, false);
+        run(test, time, false);
     }
 
-    private <S> void run(final OneActorOneObserverTest<S> test, boolean dryRun) throws InterruptedException, ExecutionException {
+    private <S> void run(final OneActorOneObserverTest<S> test, int time, boolean dryRun) throws InterruptedException, ExecutionException {
         final SingleSharedStateHolder<S> holder = new SingleSharedStateHolder<S>();
 
         // current should be null so that injector could inject the first instance
@@ -175,17 +179,17 @@ public class Runner {
         ensureThreads(4);
 
         pw.print("Warmup ");
-        for (int c = 0; c < 5; c++) {
+        for (int c = 0; c < witers; c++) {
             pw.print(".");
             pw.flush();
-            run(test, true);
+            run(test, wtime, true);
         }
         pw.println();
 
-        run(test, false);
+        run(test, time, false);
     }
 
-    public <S> void run(final TwoActorsOneArbiterTest<S> test, boolean dryRun) throws InterruptedException, ExecutionException {
+    public <S> void run(final TwoActorsOneArbiterTest<S> test, int time, boolean dryRun) throws InterruptedException, ExecutionException {
         final TwoSharedStateHolder<S> holder = new TwoSharedStateHolder<S>();
 
         // need to initialize so that actor thread will not NPE.
