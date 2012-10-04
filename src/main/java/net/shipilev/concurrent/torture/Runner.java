@@ -6,11 +6,13 @@ import java.io.FileNotFoundException;
 import java.io.PrintWriter;
 import java.nio.ByteBuffer;
 import java.util.Arrays;
+import java.util.Random;
 import java.util.concurrent.Callable;
 import java.util.concurrent.ExecutionException;
 import java.util.concurrent.ExecutorService;
 import java.util.concurrent.Executors;
 import java.util.concurrent.Future;
+import java.util.concurrent.ThreadLocalRandom;
 import java.util.concurrent.TimeUnit;
 
 /**
@@ -35,7 +37,7 @@ public class Runner {
         if (Runtime.getRuntime().availableProcessors() < threads) {
             pw.println("WARNING: This test should be run with at least " + threads + " CPUs to get reliable results");
         }
-        return Executors.newFixedThreadPool(threads);
+        return Executors.newCachedThreadPool();
     }
 
     /**
@@ -54,9 +56,8 @@ public class Runner {
 
         final SingleSharedStateHolder<S> holder = new SingleSharedStateHolder<S>();
 
-        // need to initialize so that actor thread will not NPE.
-        // once injector catches up, it will push fresh state objects
-        holder.current = test.newState();
+        // current should be null so that injector could inject the first instance
+        holder.current = null;
 
         /*
            Injector thread: injects new states until interrupted.
@@ -64,7 +65,17 @@ public class Runner {
         pool.submit(new Runnable() {
             public void run() {
                 while (!Thread.interrupted()) {
-                    holder.current = test.newState();
+                    S[] newStride = (S[]) new Object[loops];
+                    for (int c = 0; c < loops; c++) {
+                        newStride[c] = test.newState();
+                    }
+
+                    while (holder.current != null) {
+                        if (Thread.interrupted()) {
+                            return;
+                        }
+                    }
+                    holder.current = newStride;
                 }
             }
         });
@@ -77,17 +88,15 @@ public class Runner {
          */
         pool.submit(new Runnable() {
             public void run() {
-                S last = null;
+                S[] last = null;
 
                 while (!Thread.interrupted()) {
-                    int l = 0;
-                    while (l < loops) {
-                        S cur = holder.current;
-                        if (last != cur) {
-                            test.actor1(cur);
-                            last = cur;
+                    S[] cur = holder.current;
+                    if (cur != null && last != cur) {
+                        for (int l = 0; l < loops; l++) {
+                            test.actor1(cur[l]);
                         }
-                        l++;
+                        last = cur;
                     }
                 }
             }
@@ -105,27 +114,28 @@ public class Runner {
             public Multiset<Long> call() {
                 Multiset<Long> set = new Multiset<Long>();
 
-                S last = null;
+                S[] last = null;
                 byte[] state = new byte[8];
                 byte[][] results = new byte[loops][];
 
                 while (!Thread.interrupted()) {
-                    int c = 0;
-                    int l = 0;
-                    while (l < loops) {
-                        S cur = holder.current;
-                        if (last != cur) {
-                            test.observe(cur, state);
-                            results[c] = new byte[8];
-                            System.arraycopy(state, 0, results[c], 0, 8);
-                            last = cur;
-                            c++;
-                        }
-                        l++;
-                    }
+                    S[] cur = holder.current;
 
-                    for (int i = 0; i < c; i++) {
-                        set.add(byteArrToLong(results[i]));
+                    if (cur != null && last != cur) {
+                        for (int l = 0; l < loops; l++) {
+                            test.observe(cur[l], state);
+                            results[l] = new byte[8];
+                            System.arraycopy(state, 0, results[l], 0, 8);
+                        }
+
+                        last = cur;
+
+                        for (int i = 0; i < loops; i++) {
+                            set.add(byteArrToLong(results[i]));
+                        }
+
+                        // let others proceed
+                        holder.current = null;
                     }
                 }
                 return set;
@@ -338,7 +348,7 @@ public class Runner {
     }
 
     public static class SingleSharedStateHolder<S> {
-        volatile S current;
+        volatile S[] current;
     }
 
     public static class TwoSharedStateHolder<S> {
