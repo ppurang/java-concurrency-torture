@@ -2,6 +2,7 @@ package net.shipilev.concurrent.torture;
 
 import net.shipilev.concurrent.torture.negative.DoubleAtomicityTest;
 import net.shipilev.concurrent.torture.negative.LongAtomicityTest;
+import net.shipilev.concurrent.torture.negative.RacyPublicationTest;
 import net.shipilev.concurrent.torture.negative.UnsafeSingletonTest;
 import net.shipilev.concurrent.torture.negative.VolatileAtomicityTest;
 import net.shipilev.concurrent.torture.positive.AtomicIntegerIncrementTest;
@@ -37,6 +38,7 @@ public class Main {
         Runner r = new Runner(opts);
 
         System.out.println("*** NEGATIVE TESTS (expected to fail) ***");
+        r.run(new RacyPublicationTest());
         r.run(new UnsafeSingletonTest());
         r.run(new VolatileAtomicityTest());
         r.run(new LongAtomicityTest());
