@@ -45,7 +45,7 @@ public class Options {
                 .withRequiredArg().ofType(String.class).describedAs("file").defaultsTo(".*");
 
         OptionSpec<Integer> loops = parser.accepts("loops", "Number of internal loops")
-                .withRequiredArg().ofType(int.class).describedAs("N").defaultsTo(10000);
+                .withRequiredArg().ofType(int.class).describedAs("N").defaultsTo(10);
 
         OptionSpec<Integer> time = parser.accepts("time", "Time per test")
                 .withRequiredArg().ofType(int.class).describedAs("ms").defaultsTo(1000);
