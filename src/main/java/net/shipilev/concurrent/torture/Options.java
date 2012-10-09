@@ -22,10 +22,11 @@ import joptsimple.OptionSet;
 import joptsimple.OptionSpec;
 
 import java.io.IOException;
+import java.util.regex.Pattern;
 
 public class Options {
     private String resultFile;
-    private String testRegexp;
+    private Pattern testRegexp;
     private int loops;
     private int time;
     private int wtime;
@@ -84,7 +85,7 @@ public class Options {
         this.time = set.valueOf(time);
         this.wtime = set.valueOf(wtime);
         this.witers = set.valueOf(witers);
-        this.testRegexp = set.valueOf(testRegexp);
+        this.testRegexp = Pattern.compile(set.valueOf(testRegexp));
         this.shouldYield = set.has(shouldYield);
         return true;
     }
@@ -111,5 +112,9 @@ public class Options {
 
     public boolean shouldYield() {
         return shouldYield;
+    }
+
+    public Pattern getTestRegexp() {
+        return testRegexp;
     }
 }

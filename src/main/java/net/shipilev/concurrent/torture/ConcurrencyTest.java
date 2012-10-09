@@ -1,14 +1,14 @@
 package net.shipilev.concurrent.torture;
 
 /**
- * Marks evaluators, which can evaluate the tests results.
+ * Marks tests, which can evaluate the tests results.
  *
  * Implementors of this interface should provide the basic test() method,
  * which judges the outcome given the result.
  *
  * @author Aleksey Shipilev (aleksey.shipilev@oracle.com)
  */
-public interface Evaluator {
+public interface ConcurrencyTest {
 
     /**
      * Expected result size.

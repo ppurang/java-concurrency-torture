@@ -11,7 +11,7 @@ package net.shipilev.concurrent.torture;
  *
  * @author Aleksey Shipilev (aleksey.shipilev@oracle.com)
  */
-public interface OneActorOneObserverTest<S> extends Evaluator {
+public interface OneActorOneObserverTest<S> extends ConcurrencyTest {
 
     /**
      * Create new object to work on.

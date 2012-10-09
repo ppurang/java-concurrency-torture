@@ -6,13 +6,11 @@ import java.io.FileNotFoundException;
 import java.io.PrintWriter;
 import java.nio.ByteBuffer;
 import java.util.Arrays;
-import java.util.Random;
 import java.util.concurrent.Callable;
 import java.util.concurrent.ExecutionException;
 import java.util.concurrent.ExecutorService;
 import java.util.concurrent.Executors;
 import java.util.concurrent.Future;
-import java.util.concurrent.ThreadLocalRandom;
 import java.util.concurrent.TimeUnit;
 
 /**
@@ -332,14 +330,14 @@ public class Runner {
         }
     }
 
-    private void dump(Evaluator evaluator, Multiset<Long> results) {
+    private void dump(ConcurrencyTest test, Multiset<Long> results) {
         xml.println("<result>");
-        xml.println("<test>" + evaluator.getClass().getName() + "</test>");
+        xml.println("<test>" + test.getClass().getName() + "</test>");
         xml.println("<states>");
         for (Long e : results.keys()) {
             byte[] b = longToByteArr(e);
-            byte[] t = new byte[evaluator.resultSize()];
-            System.arraycopy(b, 0, t, 0, evaluator.resultSize());
+            byte[] t = new byte[test.resultSize()];
+            System.arraycopy(b, 0, t, 0, test.resultSize());
             b = t;
 
             xml.println("<state>");
@@ -351,18 +349,18 @@ public class Runner {
         xml.println("</result>");
     }
 
-    private void judge(Evaluator evaluator, Multiset<Long> results) {
+    private void judge(ConcurrencyTest test, Multiset<Long> results) {
         pw.printf("%35s %12s %-20s\n", "Observed state", "Occurrences", "Interpretation");
         for (Long e : results.keys()) {
 
             byte[] b = longToByteArr(e);
 
-            byte[] t = new byte[evaluator.resultSize()];
-            System.arraycopy(b, 0, t, 0, evaluator.resultSize());
+            byte[] t = new byte[test.resultSize()];
+            System.arraycopy(b, 0, t, 0, test.resultSize());
             b = t;
 
             boolean isFailed;
-            switch (evaluator.test(b)) {
+            switch (test.test(b)) {
                 case ACCEPTABLE:
                 case TRANSIENT:
                     // no implementation yet
@@ -380,7 +378,7 @@ public class Runner {
                     throw new IllegalStateException();
             }
 
-            pw.printf("%35s (%10d) %6s %-40s\n", Arrays.toString(b), results.count(e), (isFailed ? "ERROR:" : "OK:"), evaluator.test(b));
+            pw.printf("%35s (%10d) %6s %-40s\n", Arrays.toString(b), results.count(e), (isFailed ? "ERROR:" : "OK:"), test.test(b));
         }
 
         pw.println();

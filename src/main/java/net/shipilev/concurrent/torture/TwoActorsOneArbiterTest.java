@@ -10,7 +10,7 @@ package net.shipilev.concurrent.torture;
  * @param <S> state object type
  * @author Aleksey Shipilev (aleksey.shipilev@oracle.com)
  */
-public interface TwoActorsOneArbiterTest<S> extends Evaluator {
+public interface TwoActorsOneArbiterTest<S> extends ConcurrencyTest {
 
     /**
      * Create new object to work on.

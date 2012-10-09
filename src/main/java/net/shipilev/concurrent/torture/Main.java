@@ -1,5 +1,6 @@
 package net.shipilev.concurrent.torture;
 
+import com.google.common.base.Predicate;
 import net.shipilev.concurrent.torture.negative.DoubleAtomicityTest;
 import net.shipilev.concurrent.torture.negative.LongAtomicityTest;
 import net.shipilev.concurrent.torture.negative.RacyPublicationTest;
@@ -15,14 +16,25 @@ import net.shipilev.concurrent.torture.positive.ReadAfterVolatileReadTest;
 import net.shipilev.concurrent.torture.positive.ReadTwiceOverVolatileReadTest;
 import net.shipilev.concurrent.torture.positive.VolatileLongAtomicityTest;
 import net.shipilev.concurrent.torture.positive.init.LongVolatileTest;
+import org.reflections.Reflections;
+import org.reflections.scanners.SubTypesScanner;
+import org.reflections.scanners.TypeAnnotationsScanner;
+import org.reflections.util.ClasspathHelper;
+import org.reflections.util.ConfigurationBuilder;
+import org.reflections.util.FilterBuilder;
 
-import java.io.FileNotFoundException;
+import javax.annotation.Nullable;
 import java.io.IOException;
+import java.util.Comparator;
+import java.util.Set;
+import java.util.SortedSet;
+import java.util.TreeSet;
 import java.util.concurrent.ExecutionException;
+import java.util.regex.Pattern;
 
 public class Main {
 
-    public static void main(String[] args) throws ExecutionException, InterruptedException, IOException {
+    public static void main(String[] args) throws ExecutionException, InterruptedException, IOException, IllegalAccessException, InstantiationException {
         System.out.println("Java Concurrency Torture Tests");
         System.out.println("---------------------------------------------------------------------------------");
 
@@ -38,28 +50,44 @@ public class Main {
 
         Runner r = new Runner(opts);
 
-        System.out.println("*** NEGATIVE TESTS (expected to fail) ***");
-        r.run(new ReadTwiceTest());
-        r.run(new RacyPublicationTest());
-        r.run(new UnsafeSingletonTest());
-        r.run(new VolatileAtomicityTest());
-        r.run(new LongAtomicityTest());
-        r.run(new DoubleAtomicityTest());
+        // FIXME: Dodgy raw types, clean up.
 
-        System.out.println();
-        System.out.println("*** POSITIVE TESTS (expected to pass) ***");
-        r.run(new LongInstanceTest());
-        r.run(new LongConstrTest());
-        r.run(new LongFinalTest());
-        r.run(new LongVolatileTest());
+        for (Class<? extends OneActorOneObserverTest> test : filterTests(opts.getTestRegexp(), OneActorOneObserverTest.class)) {
+            OneActorOneObserverTest instance = test.newInstance();
+            r.run(instance);
+        }
 
-        r.run(new AtomicIntegerIncrementTest());
-        r.run(new IntAtomicityTest());
-        r.run(new ReadTwiceOverVolatileReadTest());
-        r.run(new ReadAfterVolatileReadTest());
-        r.run(new VolatileLongAtomicityTest());
+        for (Class<? extends TwoActorsOneArbiterTest> test : filterTests(opts.getTestRegexp(), TwoActorsOneArbiterTest.class)) {
+            TwoActorsOneArbiterTest instance = test.newInstance();
+            r.run(instance);
+        }
 
         r.close();
+    }
+
+    private static <T> SortedSet<Class<? extends T>> filterTests(final Pattern pattern, Class<T> klass) {
+        // God I miss both diamonds and lambdas here.
+
+        Reflections r = new Reflections(
+                new ConfigurationBuilder()
+                        .filterInputsBy(new FilterBuilder().include("net.shipilev.concurrent.torture.*"))
+                        .filterInputsBy(new Predicate<String>() {
+                            @Override
+                            public boolean apply(@Nullable String s) {
+                                return pattern.matcher(s).matches();
+                            }
+                        })
+                        .setUrls(ClasspathHelper.forClassLoader())
+                        .setScanners(new SubTypesScanner(), new TypeAnnotationsScanner()));
+
+        SortedSet<Class<? extends T>> s = new TreeSet<Class<? extends T>>(new Comparator<Class<? extends T>>() {
+            @Override
+            public int compare(Class<? extends T> o1, Class<? extends T> o2) {
+                return o1.getName().compareTo(o2.getName());
+            }
+        });
+        s.addAll(r.getSubTypesOf(klass));
+        return s;
     }
 
 }

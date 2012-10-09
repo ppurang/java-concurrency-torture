@@ -61,5 +61,10 @@
           <artifactId>jopt-simple</artifactId>
           <version>4.3</version>
       </dependency>
+      <dependency>
+          <groupId>org.reflections</groupId>
+          <artifactId>reflections</artifactId>
+          <version>0.9.8</version>
+      </dependency>
   </dependencies>
 </project>
