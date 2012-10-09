@@ -48,21 +48,27 @@ public class Main {
         System.out.println("Each test does " + opts.getLoops() + " internal loops");
         System.out.println();
 
-        Runner r = new Runner(opts);
+        if (opts.shouldParse()) {
+            Parser p = new Parser(opts);
+            p.parse();
+        } else {
 
-        // FIXME: Dodgy raw types, clean up.
+            Runner r = new Runner(opts);
 
-        for (Class<? extends OneActorOneObserverTest> test : filterTests(opts.getTestRegexp(), OneActorOneObserverTest.class)) {
-            OneActorOneObserverTest instance = test.newInstance();
-            r.run(instance);
+            // FIXME: Dodgy raw types, clean up.
+
+            for (Class<? extends OneActorOneObserverTest> test : filterTests(opts.getTestRegexp(), OneActorOneObserverTest.class)) {
+                OneActorOneObserverTest instance = test.newInstance();
+                r.run(instance);
+            }
+
+            for (Class<? extends TwoActorsOneArbiterTest> test : filterTests(opts.getTestRegexp(), TwoActorsOneArbiterTest.class)) {
+                TwoActorsOneArbiterTest instance = test.newInstance();
+                r.run(instance);
+            }
+
+            r.close();
         }
-
-        for (Class<? extends TwoActorsOneArbiterTest> test : filterTests(opts.getTestRegexp(), TwoActorsOneArbiterTest.class)) {
-            TwoActorsOneArbiterTest instance = test.newInstance();
-            r.run(instance);
-        }
-
-        r.close();
     }
 
     private static <T> SortedSet<Class<? extends T>> filterTests(final Pattern pattern, Class<T> klass) {

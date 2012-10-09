@@ -33,6 +33,7 @@ public class Options {
     private int witers;
     private final String[] args;
     private boolean shouldYield;
+    private boolean parse;
 
     public Options(String[] args) {
         this.args = args;
@@ -44,6 +45,9 @@ public class Options {
 
         OptionSpec<String> result = parser.accepts("r", "Results file")
                 .withRequiredArg().ofType(String.class).describedAs("file").defaultsTo("results.xml");
+
+        OptionSpec<Boolean> parse = parser.accepts("p", "Run parser on the result file")
+                .withOptionalArg().ofType(boolean.class).defaultsTo(false);
 
         OptionSpec<String> testRegexp = parser.accepts("t", "Regexp selector for tests")
                 .withRequiredArg().ofType(String.class).describedAs("file").defaultsTo(".*");
@@ -87,6 +91,7 @@ public class Options {
         this.witers = set.valueOf(witers);
         this.testRegexp = Pattern.compile(set.valueOf(testRegexp));
         this.shouldYield = set.has(shouldYield);
+        this.parse = set.has(parse);
         return true;
     }
 
@@ -112,6 +117,10 @@ public class Options {
 
     public boolean shouldYield() {
         return shouldYield;
+    }
+
+    public boolean shouldParse() {
+        return parse;
     }
 
     public Pattern getTestRegexp() {
