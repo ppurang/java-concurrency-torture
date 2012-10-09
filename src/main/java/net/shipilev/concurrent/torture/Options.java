@@ -31,6 +31,7 @@ public class Options {
     private int wtime;
     private int witers;
     private final String[] args;
+    private boolean shouldYield;
 
     public Options(String[] args) {
         this.args = args;
@@ -58,6 +59,9 @@ public class Options {
         OptionSpec<Integer> witers = parser.accepts("witers", "Warmup iterations per test")
                 .withRequiredArg().ofType(int.class).describedAs("N").defaultsTo(5);
 
+        OptionSpec<Boolean> shouldYield = parser.accepts("yield", "Make yields in busyloops")
+                .withOptionalArg().ofType(boolean.class).defaultsTo(false);
+
         parser.accepts("h", "Print this help");
 
         OptionSet set;
@@ -81,6 +85,7 @@ public class Options {
         this.wtime = set.valueOf(wtime);
         this.witers = set.valueOf(witers);
         this.testRegexp = set.valueOf(testRegexp);
+        this.shouldYield = set.has(shouldYield);
         return true;
     }
 
@@ -102,5 +107,9 @@ public class Options {
 
     public int getWarmupIterations() {
         return witers;
+    }
+
+    public boolean shouldYield() {
+        return shouldYield;
     }
 }

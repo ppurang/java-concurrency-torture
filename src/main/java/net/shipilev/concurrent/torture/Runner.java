@@ -26,6 +26,7 @@ public class Runner {
     private final int time;
     private final int loops;
     private final ExecutorService pool;
+    private final boolean shouldYield;
     private volatile boolean isStopped;
     private final int wtime;
     private final int witers;
@@ -37,12 +38,13 @@ public class Runner {
         loops = opts.getLoops();
         wtime = opts.getWarmupTime();
         witers = opts.getWarmupIterations();
+        shouldYield = opts.shouldYield();
         pool = Executors.newCachedThreadPool();
     }
 
     public void ensureThreads(int threads) {
-        if (Runtime.getRuntime().availableProcessors() < threads) {
-            pw.println("WARNING: This test should be run with at least " + threads + " CPUs to get reliable results");
+        if (Runtime.getRuntime().availableProcessors() < threads && !shouldYield) {
+            pw.println("WARNING: This test should be run with at least " + threads + " CPUs to get reliable results, or enable yielding");
         }
     }
 
@@ -93,6 +95,7 @@ public class Runner {
                         if (isStopped) {
                             return;
                         }
+                        if (shouldYield) Thread.yield();
                     }
                     holder.current = newStride;
                 }
@@ -116,6 +119,8 @@ public class Runner {
                             test.actor1(cur[l]);
                         }
                         last = cur;
+                    } else {
+                        if (shouldYield) Thread.yield();
                     }
                 }
             }
@@ -155,6 +160,8 @@ public class Runner {
 
                         // let others proceed
                         holder.current = null;
+                    } else {
+                        if (shouldYield) Thread.yield();
                     }
                 }
                 return set;
@@ -207,7 +214,8 @@ public class Runner {
         Future<?> s1 = pool.submit(new Runnable() {
             public void run() {
                 while (!isStopped) {
-                    while (holder.t1 != null && holder.t2 != null && !isStopped) ;
+                    while (holder.t1 != null && holder.t2 != null && !isStopped)
+                        if (shouldYield) Thread.yield();
                     holder.current = test.newState();
                 }
             }
@@ -231,6 +239,8 @@ public class Runner {
                             test.actor1(cur);
                             holder.t1 = cur;
                             last = cur;
+                        } else {
+                            if (shouldYield) Thread.yield();
                         }
                         l++;
                     }
@@ -256,6 +266,8 @@ public class Runner {
                             test.actor2(cur);
                             last = cur;
                             holder.t2 = cur;
+                        } else {
+                            if (shouldYield) Thread.yield();
                         }
                         l++;
                     }
@@ -292,6 +304,8 @@ public class Runner {
                             c++;
                             holder.t1 = null;
                             holder.t2 = null;
+                        } else {
+                            if (shouldYield) Thread.yield();
                         }
                         l++;
                     }
