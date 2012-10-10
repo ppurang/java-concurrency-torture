@@ -15,7 +15,9 @@ import java.io.FileInputStream;
 import java.io.FileNotFoundException;
 import java.io.InputStream;
 import java.io.PrintWriter;
+import java.util.ArrayList;
 import java.util.HashMap;
+import java.util.List;
 import java.util.Map;
 
 public class Parser {
@@ -60,7 +62,12 @@ public class Parser {
             output.println("<th>Interpretation</th>");
             output.println("</tr>");
 
+            List<State> unmatchedStates = new ArrayList<State>();
+            unmatchedStates.addAll(r.getState());
             for (Case c : test.getCase()) {
+
+                boolean matched = false;
+
                 for (State s : r.getState()) {
                     if (c.getMatch().contains(s.getId())) {
                         // match!
@@ -70,9 +77,32 @@ public class Parser {
                         output.println("<td>" + c.getOutcome() + "</td>");
                         output.println("<td>" + c.getDescription() + "</td>");
                         output.println("</tr>");
+                        matched = true;
+                        unmatchedStates.remove(s);
+                    }
+                }
+
+                if (!matched) {
+                    for (String m : c.getMatch()) {
+                        output.println("<tr>");
+                        output.println("<td>" + m + "</td>");
+                        output.println("<td>" + 0 + "</td>");
+                        output.println("<td>" + c.getOutcome() + "</td>");
+                        output.println("<td>" + c.getDescription() + "</td>");
+                        output.println("</tr>");
                     }
                 }
             }
+
+            for (State s : unmatchedStates) {
+                output.println("<tr>");
+                output.println("<td>" + s.getId() + "</td>");
+                output.println("<td>" + s.getCount() + "</td>");
+                output.println("<td>" + test.getUnmatched().getOutcome() + "</td>");
+                output.println("<td>" + test.getUnmatched().getDescription() + "</td>");
+                output.println("</tr>");
+            }
+
             output.println("</table>");
 
         }
