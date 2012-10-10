@@ -1,7 +1,8 @@
 package net.shipilev.concurrent.torture.positive;
 
+import net.shipilev.concurrent.torture.evaluators.Evaluator;
 import net.shipilev.concurrent.torture.OneActorOneObserverTest;
-import net.shipilev.concurrent.torture.Outcome;
+import net.shipilev.concurrent.torture.evaluators.AllElementsAreSame;
 
 /**
  * Tests if primitive integers experience non-atomic reads/writes.
@@ -41,14 +42,8 @@ public class IntAtomicityTest implements OneActorOneObserverTest<IntAtomicityTes
     }
 
     @Override
-    public Outcome test(byte[] res) {
-        if (res[0] != res[1] || res[1] != res[2] || res[2] != res[3])
-            return Outcome.NOT_EXPECTED;
-        return Outcome.ACCEPTABLE;
-    }
-
-    public int resultSize() {
-        return 4;
+    public Evaluator getEvaluator() {
+        return new AllElementsAreSame(4);
     }
 
 }

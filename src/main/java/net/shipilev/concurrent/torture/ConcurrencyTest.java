@@ -1,5 +1,7 @@
 package net.shipilev.concurrent.torture;
 
+import net.shipilev.concurrent.torture.evaluators.Evaluator;
+
 import java.io.Serializable;
 
 /**
@@ -12,18 +14,6 @@ import java.io.Serializable;
  */
 public interface ConcurrencyTest extends Serializable {
 
-    /**
-     * Expected result size.
-     * @return result size.
-     */
-    int resultSize();
-
-    /**
-     * Analyze the result.
-     *
-     * @param result result to be analyzed
-     * @return graded outcome
-     */
-    Outcome test(byte[] result);
+    Evaluator getEvaluator();
 
 }

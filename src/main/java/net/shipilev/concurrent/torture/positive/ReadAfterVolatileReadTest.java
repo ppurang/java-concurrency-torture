@@ -1,5 +1,6 @@
 package net.shipilev.concurrent.torture.positive;
 
+import net.shipilev.concurrent.torture.evaluators.Evaluator;
 import net.shipilev.concurrent.torture.OneActorOneObserverTest;
 import net.shipilev.concurrent.torture.Outcome;
 
@@ -42,15 +43,25 @@ public class ReadAfterVolatileReadTest implements OneActorOneObserverTest<ReadAf
     }
 
     @Override
-    public Outcome test(byte[] res) {
-        if (res[0] == 1 && res[1] < 2) {
-            return Outcome.NOT_EXPECTED;
-        }
-        return Outcome.ACCEPTABLE;
+    public Evaluator getEvaluator() {
+        return new Tester();
     }
 
-    public int resultSize() {
-        return 2;
+    public static class Tester implements Evaluator {
+
+        @Override
+        public Outcome test(byte[] res) {
+            if (res[0] == 1 && res[1] < 2) {
+                return Outcome.NOT_EXPECTED;
+            }
+            return Outcome.ACCEPTABLE;
+        }
+
+        @Override
+        public int resultSize() {
+            return 2;
+        }
     }
+
 
 }

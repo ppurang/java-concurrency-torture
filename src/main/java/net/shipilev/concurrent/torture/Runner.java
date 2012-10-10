@@ -1,5 +1,6 @@
 package net.shipilev.concurrent.torture;
 
+import net.shipilev.concurrent.torture.evaluators.Evaluator;
 import net.shipilev.concurrent.torture.util.Multiset;
 
 import java.io.FileNotFoundException;
@@ -341,8 +342,8 @@ public class Runner {
         xml.println("<states>");
         for (Long e : results.keys()) {
             byte[] b = longToByteArr(e);
-            byte[] t = new byte[test.resultSize()];
-            System.arraycopy(b, 0, t, 0, test.resultSize());
+            byte[] t = new byte[test.getEvaluator().resultSize()];
+            System.arraycopy(b, 0, t, 0, test.getEvaluator().resultSize());
             b = t;
 
             xml.println("<state>");
@@ -360,12 +361,13 @@ public class Runner {
 
             byte[] b = longToByteArr(e);
 
-            byte[] t = new byte[test.resultSize()];
-            System.arraycopy(b, 0, t, 0, test.resultSize());
+            byte[] t = new byte[test.getEvaluator().resultSize()];
+            System.arraycopy(b, 0, t, 0, test.getEvaluator().resultSize());
             b = t;
 
+            Evaluator evaluator = test.getEvaluator();
             boolean isFailed;
-            switch (test.test(b)) {
+            switch (evaluator.test(b)) {
                 case ACCEPTABLE:
                 case TRANSIENT:
                     // no implementation yet
@@ -383,7 +385,7 @@ public class Runner {
                     throw new IllegalStateException();
             }
 
-            pw.printf("%35s (%10d) %6s %-40s\n", Arrays.toString(b), results.count(e), (isFailed ? "ERROR:" : "OK:"), test.test(b));
+            pw.printf("%35s (%10d) %6s %-40s\n", Arrays.toString(b), results.count(e), (isFailed ? "ERROR:" : "OK:"), evaluator.test(b));
         }
 
         pw.println();

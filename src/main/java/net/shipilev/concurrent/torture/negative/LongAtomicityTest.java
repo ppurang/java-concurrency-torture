@@ -1,7 +1,8 @@
 package net.shipilev.concurrent.torture.negative;
 
+import net.shipilev.concurrent.torture.evaluators.Evaluator;
 import net.shipilev.concurrent.torture.OneActorOneObserverTest;
-import net.shipilev.concurrent.torture.Outcome;
+import net.shipilev.concurrent.torture.evaluators.AllElementsAreSame;
 
 /**
  * Tests if primitive longs experience non-atomic updates.
@@ -48,16 +49,8 @@ public class LongAtomicityTest implements OneActorOneObserverTest<LongAtomicityT
     }
 
     @Override
-    public Outcome test(byte[] res) {
-        if (res[0] != res[1] || res[1] != res[2] || res[2] != res[3]
-                || res[3] != res[4] || res[5] != res[6] || res[6] != res[7])
-            return Outcome.NOT_EXPECTED;
-
-        return Outcome.ACCEPTABLE;
-    }
-
-    public int resultSize() {
-        return 8;
+    public Evaluator getEvaluator() {
+        return new AllElementsAreSame(8);
     }
 
 }

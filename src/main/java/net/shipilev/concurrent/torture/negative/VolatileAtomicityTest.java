@@ -1,7 +1,8 @@
 package net.shipilev.concurrent.torture.negative;
 
-import net.shipilev.concurrent.torture.Outcome;
+import net.shipilev.concurrent.torture.evaluators.Evaluator;
 import net.shipilev.concurrent.torture.TwoActorsOneArbiterTest;
+import net.shipilev.concurrent.torture.evaluators.SingleValueExpected;
 
 /**
  * Tests the atomicity of volatile increment.
@@ -42,13 +43,8 @@ public class VolatileAtomicityTest implements TwoActorsOneArbiterTest<VolatileAt
     }
 
     @Override
-    public Outcome test(byte[] result) {
-        if (result[0] != 2) return Outcome.NOT_EXPECTED;
-        return Outcome.ACCEPTABLE;
-    }
-
-    public int resultSize() {
-        return 1;
+    public Evaluator getEvaluator() {
+        return new SingleValueExpected(2);
     }
 
 }

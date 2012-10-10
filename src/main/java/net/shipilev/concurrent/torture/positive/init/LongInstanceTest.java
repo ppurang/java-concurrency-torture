@@ -1,7 +1,8 @@
 package net.shipilev.concurrent.torture.positive.init;
 
+import net.shipilev.concurrent.torture.evaluators.Evaluator;
 import net.shipilev.concurrent.torture.OneActorOneObserverTest;
-import net.shipilev.concurrent.torture.Outcome;
+import net.shipilev.concurrent.torture.evaluators.AllElementsAreSameAndEqualTo;
 
 /**
  * Tests if final primitive longs experience tearing when initialized by instance initializer.
@@ -68,20 +69,8 @@ public class LongInstanceTest implements OneActorOneObserverTest<LongInstanceTes
     }
 
     @Override
-    public Outcome test(byte[] res) {
-        if (res[0] != res[1] || res[1] != res[2] || res[2] != res[3]
-                || res[3] != res[4] || res[5] != res[6] || res[6] != res[7]) {
-            return Outcome.NOT_EXPECTED; // tearing
-        }
-
-        if (res[0] != -1 && res[0] != 42 && res[0] != 0)
-            return Outcome.NOT_EXPECTED; // unexpected value
-
-        return Outcome.ACCEPTABLE;
-    }
-
-    public int resultSize() {
-        return 8;
+    public Evaluator getEvaluator() {
+        return new AllElementsAreSameAndEqualTo(8, 42, 0, -1);
     }
 
 }

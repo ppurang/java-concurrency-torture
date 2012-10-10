@@ -1,7 +1,8 @@
 package net.shipilev.concurrent.torture.negative;
 
+import net.shipilev.concurrent.torture.evaluators.Evaluator;
 import net.shipilev.concurrent.torture.OneActorOneObserverTest;
-import net.shipilev.concurrent.torture.Outcome;
+import net.shipilev.concurrent.torture.evaluators.SingleValueExpected;
 
 /**
  * Tests the broken double-checked locking.
@@ -63,16 +64,8 @@ public class UnsafeSingletonTest implements OneActorOneObserverTest<UnsafeSingle
     }
 
     @Override
-    public Outcome test(byte[] res) {
-        if (res[0] != 42) {
-            return Outcome.NOT_EXPECTED;
-        }
-        return Outcome.EXPECTED;
-    }
-
-    @Override
-    public int resultSize() {
-        return 1;
+    public Evaluator getEvaluator() {
+        return new SingleValueExpected(42);
     }
 
 }
