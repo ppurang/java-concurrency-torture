@@ -2,6 +2,7 @@ package net.shipilev.concurrent.torture;
 
 
 import net.shipilev.concurrency.torture.schema.descr.Case;
+import net.shipilev.concurrency.torture.schema.descr.OutcomeType;
 import net.shipilev.concurrency.torture.schema.descr.Test;
 import net.shipilev.concurrency.torture.schema.descr.Testsuite;
 import net.shipilev.concurrency.torture.schema.result.Result;
@@ -11,6 +12,7 @@ import net.shipilev.concurrency.torture.schema.result.State;
 import javax.xml.bind.JAXBContext;
 import javax.xml.bind.JAXBException;
 import javax.xml.bind.Unmarshaller;
+import java.awt.*;
 import java.io.FileInputStream;
 import java.io.FileNotFoundException;
 import java.io.InputStream;
@@ -73,7 +75,7 @@ public class Parser {
                 for (State s : r.getState()) {
                     if (c.getMatch().contains(s.getId())) {
                         // match!
-                        output.println("<tr>");
+                        output.println("<tr bgColor=" + selectHTMLColor(c.getOutcome(), s.getCount() == 0) + ">");
                         output.println("<td>" + s.getId() + "</td>");
                         output.println("<td>" + s.getCount() + "</td>");
                         output.println("<td>" + c.getOutcome() + "</td>");
@@ -86,7 +88,7 @@ public class Parser {
 
                 if (!matched) {
                     for (String m : c.getMatch()) {
-                        output.println("<tr>");
+                        output.println("<tr bgColor=" + selectHTMLColor(c.getOutcome(), true) + ">");
                         output.println("<td>" + m + "</td>");
                         output.println("<td>" + 0 + "</td>");
                         output.println("<td>" + c.getOutcome() + "</td>");
@@ -97,7 +99,7 @@ public class Parser {
             }
 
             for (State s : unmatchedStates) {
-                output.println("<tr>");
+                output.println("<tr bgColor=" + selectHTMLColor(test.getUnmatched().getOutcome(), s.getCount() == 0) + ">");
                 output.println("<td>" + s.getId() + "</td>");
                 output.println("<td>" + s.getCount() + "</td>");
                 output.println("<td>" + test.getUnmatched().getOutcome() + "</td>");
@@ -110,6 +112,30 @@ public class Parser {
         }
 
         output.close();
+    }
+
+    public String selectHTMLColor(OutcomeType type, boolean isZero) {
+        String rgb = Integer.toHexString(selectColor(type, isZero).getRGB());
+        return "#" + rgb.substring(2, rgb.length());
+    }
+
+    public Color selectColor(OutcomeType type, boolean isZero) {
+        switch (type) {
+            case POSITIVE_REQUIRED:
+                return isZero ? Color.RED : Color.GREEN;
+            case POSITIVE_ACCEPTABLE:
+                return isZero ? Color.LIGHT_GRAY : Color.GREEN;
+            case POSITIVE_FAILURE:
+                return isZero ? Color.LIGHT_GRAY : Color.RED;
+            case NEGATIVE_REQUIRED:
+                return isZero ? Color.CYAN : Color.GREEN;
+            case NEGATIVE_ACCEPTABLE:
+                return isZero ? Color.LIGHT_GRAY : Color.GREEN;
+            case NEGATIVE_FAILURE:
+                return isZero ? Color.LIGHT_GRAY : Color.CYAN;
+            default:
+                throw new IllegalStateException();
+        }
     }
 
     public <T> T unmarshal(Class<T> docClass, InputStream inputStream)
