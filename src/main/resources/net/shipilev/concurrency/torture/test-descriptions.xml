@@ -1,0 +1,94 @@
+<testsuite suite="primitiveAtomics">
+    <test>
+        <name>DoubleAtomicityTest</name>
+        <file>negative/DoubleAtomicityTest.java</file>
+        <contributed-by>Aleksey Shipilev (aleksey.shipilev@oracle.com)</contributed-by>
+        <description>
+          Tests if primitive doubles experience non-atomic updates.
+        </description>
+        <states>
+            <state>
+                <case>[0, 0, 0, 0, 0, 0, 0, 0]</case>
+                <result>EXPECTED</result>
+                <description>
+                    Default value for the field. Observers are allowed to see the default value for the field,
+                    because there is the data race between reader and writer.
+                </description>
+            </state>
+            <state>
+                <case>[-1, -1, -1, -1, -1, -1, -1, -1]</case>
+                <outcome>EXPECTED</outcome>
+                <description>
+                    The value set by the actor thread. Observer sees the complete update.
+                </description>
+            </state>
+            <state>
+                <case>[0, 0, 0, 0, -1, -1, -1, -1]</case>
+                <case>[-1, -1, -1, -1, 0, 0, 0, 0]</case>
+                <outcome>EXPECTED_ODDITY</outcome>
+                <description>
+                    Seeing the torn value. This is specifically allowed by JLS 17.7.
+                    This is not a surprising behavior on some 32-bit systems which do not have full-double instructions.
+                </description>
+            </state>
+            <state>
+                <default-case/>
+                <outcome>NOT_EXPECTED_ATTENTION_REQUIRED</outcome>
+                <description>
+                    This case is not expected.
+                </description>
+            </state>
+        </states>
+    </test>
+
+    <test>
+        <name>ReadTwice</name>
+        <file>negative/ReadTwice.java</file>
+        <contributed-by>Aleksey Shipilev (aleksey.shipilev@oracle.com)</contributed-by>
+        <description>
+            Tests if intervening writes break the ordering.
+        </description>
+        <states>
+            <state>
+                <case>[0, 0, 0]</case>
+                <result>EXPECTED</result>
+                <description>
+                    Default value for the fields. Observers are allowed to see the default value for the field,
+                    because there is the data race between reader and writer.
+                </description>
+            </state>
+            <state>
+                <case>[0, 1, 0]</case>
+                <outcome>EXPECTED_ODDITY</outcome>
+                <description>
+                    The evidence for the correct reordering: the later write is seen first.
+                </description>
+            </state>
+            <state>
+                <case>[0, 1, 1]</case>
+                <outcome>EXPECTED</outcome>
+                <description>
+                    Usual case: the writes appear the the writers' order.
+                    This code also means the compiler had not hoisted the load for $x.
+                </description>
+            </state>
+            <state>
+                <case>[1, 0, 0]</case>
+                <case>[1, 1, 0]</case>
+                <outcome>EXPECTED_ODDITY</outcome>
+                <description>
+                    TODO: Odd, but legal case?
+                </description>
+            </state>
+            <state>
+                <case>[1, 1, 1]</case>
+                <outcome>EXPECTED</outcome>
+                <description>
+                    Both updates are visible.
+                </description>
+            </state>
+        </states>
+    </test>
+
+
+</testsuite>
