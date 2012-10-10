@@ -54,6 +54,8 @@ public class Parser {
                 continue;
             }
 
+            output.println("<p>" + test.getDescription() + "</p>");
+
             output.println("<table>");
             output.println("<tr>");
             output.println("<th>Observed state</th>");
