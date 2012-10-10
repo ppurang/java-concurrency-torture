@@ -28,6 +28,7 @@
             <xsd:element name="name" type="xsd:string"/>
             <xsd:element name="file" type="xsd:string"/>
             <xsd:element name="contributed-by" type="xsd:string"/>
+            <xsd:element name="description" type="xsd:string"/>
             <xsd:element name="case" type="case" maxOccurs="unbounded"/>
             <xsd:element name="unmatched" type="unmatched" />
         </xsd:sequence>
