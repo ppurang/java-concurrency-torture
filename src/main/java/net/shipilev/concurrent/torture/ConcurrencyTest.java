@@ -1,5 +1,7 @@
 package net.shipilev.concurrent.torture;
 
+import java.io.Serializable;
+
 /**
  * Marks tests, which can evaluate the tests results.
  *
@@ -8,7 +10,7 @@ package net.shipilev.concurrent.torture;
  *
  * @author Aleksey Shipilev (aleksey.shipilev@oracle.com)
  */
-public interface ConcurrencyTest {
+public interface ConcurrencyTest extends Serializable {
 
     /**
      * Expected result size.

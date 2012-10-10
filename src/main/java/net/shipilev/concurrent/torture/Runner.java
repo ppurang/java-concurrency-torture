@@ -3,6 +3,7 @@ package net.shipilev.concurrent.torture;
 import net.shipilev.concurrent.torture.util.Multiset;
 
 import java.io.FileNotFoundException;
+import java.io.ObjectStreamClass;
 import java.io.PrintWriter;
 import java.nio.ByteBuffer;
 import java.util.Arrays;
@@ -336,6 +337,7 @@ public class Runner {
     private void dump(ConcurrencyTest test, Multiset<Long> results) {
         xml.println("<result>");
         xml.println("<test>" + test.getClass().getName() + "</test>");
+        xml.println("<uid>" + ObjectStreamClass.lookup(test.getClass()).getSerialVersionUID() + "</uid>");
         xml.println("<states>");
         for (Long e : results.keys()) {
             byte[] b = longToByteArr(e);
