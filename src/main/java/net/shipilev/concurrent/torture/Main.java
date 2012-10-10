@@ -58,12 +58,12 @@ public class Main {
             // FIXME: Dodgy raw types, clean up.
 
             for (Class<? extends OneActorOneObserverTest> test : filterTests(opts.getTestRegexp(), OneActorOneObserverTest.class)) {
-                OneActorOneObserverTest instance = test.newInstance();
+                OneActorOneObserverTest<?> instance = test.newInstance();
                 r.run(instance);
             }
 
             for (Class<? extends TwoActorsOneArbiterTest> test : filterTests(opts.getTestRegexp(), TwoActorsOneArbiterTest.class)) {
-                TwoActorsOneArbiterTest instance = test.newInstance();
+                TwoActorsOneArbiterTest<?> instance = test.newInstance();
                 r.run(instance);
             }
 

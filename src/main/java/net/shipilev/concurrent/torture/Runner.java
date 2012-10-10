@@ -84,7 +84,10 @@ public class Runner {
         Future<?> s1 = pool.submit(new Runnable() {
             public void run() {
                 while (!isStopped) {
+
+                    @SuppressWarnings("unchecked")
                     S[] newStride = (S[]) new Object[loops];
+
                     for (int c = 0; c < loops; c++) {
                         newStride[c] = test.newState();
                     }
