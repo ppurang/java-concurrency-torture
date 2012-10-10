@@ -24,14 +24,14 @@
         <case>
             <match>[0, 0, 0, 0, -1, -1, -1, -1]</match>
             <match>[-1, -1, -1, -1, 0, 0, 0, 0]</match>
-            <outcome>NEGATIVE_FAILURE</outcome>
+            <outcome>NEGATIVE_MISSING</outcome>
             <description>
                 Seeing the torn value. This is specifically allowed by JLS 17.7.
                 This is not a surprising behavior on some 32-bit systems which do not have full-double instructions.
             </description>
         </case>
         <unmatched>
-            <outcome>POSITIVE_FAILURE</outcome>
+            <outcome>POSITIVE_MISSING</outcome>
             <description>
                 This case is not expected.
             </description>
@@ -63,14 +63,14 @@
         <case>
             <match>[0, 0, 0, 0, -1, -1, -1, -1]</match>
             <match>[-1, -1, -1, -1, 0, 0, 0, 0]</match>
-            <outcome>NEGATIVE_FAILURE</outcome>
+            <outcome>NEGATIVE_MISSING</outcome>
             <description>
                 Seeing the torn value. This is specifically allowed by JLS 17.7.
                 This is not a surprising behavior on some 32-bit systems which do not have full-double instructions.
             </description>
         </case>
         <unmatched>
-            <outcome>POSITIVE_FAILURE</outcome>
+            <outcome>POSITIVE_MISSING</outcome>
             <description>
                 This case is not expected.
             </description>
@@ -94,21 +94,21 @@
         </case>
         <case>
             <match>[0, 1, 0]</match>
-            <outcome>POSITIVE_ACCEPTABLE</outcome>
+            <outcome>ACCEPTABLE</outcome>
             <description>
                 The evidence for the correct reordering: the later write is seen first.
             </description>
         </case>
         <case>
             <match>[1, 0, 1]</match>
-            <outcome>POSITIVE_ACCEPTABLE</outcome>
+            <outcome>ACCEPTABLE</outcome>
             <description>
                 Write to $y is still in flight, $x is already here.
             </description>
         </case>
         <case>
             <match>[0, 0, 1]</match>
-            <outcome>POSITIVE_ACCEPTABLE</outcome>
+            <outcome>ACCEPTABLE</outcome>
             <description>
                 Write to $y is still in flight, $x is arriving late.
                 This is the evidence the compiler had not merged the loads for $x.
@@ -116,7 +116,7 @@
         </case>
         <case>
             <match>[0, 1, 1]</match>
-            <outcome>POSITIVE_ACCEPTABLE</outcome>
+            <outcome>ACCEPTABLE</outcome>
             <description>
                 The writes appear the the writers' order.
                 This code also means the compiler had not merged the loads for $x.
@@ -125,7 +125,7 @@
         <case>
             <match>[1, 0, 0]</match>
             <match>[1, 1, 0]</match>
-            <outcome>POSITIVE_ACCEPTABLE</outcome>
+            <outcome>ACCEPTABLE</outcome>
             <description>
                 TODO: Odd, but legal case?
             </description>
@@ -138,7 +138,7 @@
             </description>
         </case>
         <unmatched>
-            <outcome>POSITIVE_FAILURE</outcome>
+            <outcome>POSITIVE_MISSING</outcome>
             <description>
                 This case is not expected.
             </description>
@@ -162,14 +162,14 @@
         </case>
         <case>
             <match>[0, 1, 0]</match>
-            <outcome>POSITIVE_FAILURE</outcome>
+            <outcome>POSITIVE_MISSING</outcome>
             <description>
                 Volatile write to $y had happened, and update to $x had been lost.
             </description>
         </case>
         <case>
             <match>[1, 1, 0]</match>
-            <outcome>POSITIVE_FAILURE</outcome>
+            <outcome>POSITIVE_MISSING</outcome>
             <description>
                 Volatile write to $y had happened, and update to $x had been lost (this one is very weird).
             </description>
@@ -177,7 +177,7 @@
         <case>
             <match>[0, 0, 1]</match>
             <match>[1, 0, 1]</match>
-            <outcome>POSITIVE_ACCEPTABLE</outcome>
+            <outcome>ACCEPTABLE</outcome>
             <description>
                 Write to $y is still in flight, $x is arriving late.
                 This is the evidence the compiler had not merged the loads for $x.
@@ -185,7 +185,7 @@
         </case>
         <case>
             <match>[0, 1, 1]</match>
-            <outcome>POSITIVE_ACCEPTABLE</outcome>
+            <outcome>ACCEPTABLE</outcome>
             <description>
                 The writes appear the the writers' order.
                 This code also means the compiler had not merged the loads for $x.
@@ -199,7 +199,7 @@
             </description>
         </case>
         <unmatched>
-            <outcome>POSITIVE_FAILURE</outcome>
+            <outcome>POSITIVE_MISSING</outcome>
             <description>
                 This case is not expected.
             </description>

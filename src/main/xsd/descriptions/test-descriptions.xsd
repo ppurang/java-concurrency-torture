@@ -6,11 +6,10 @@
     <xsd:simpleType name="outcomeType">
         <xsd:restriction base="xsd:string">
             <xsd:enumeration value="POSITIVE_REQUIRED"/>
-            <xsd:enumeration value="POSITIVE_ACCEPTABLE"/>
-            <xsd:enumeration value="POSITIVE_FAILURE"/>
+            <xsd:enumeration value="POSITIVE_MISSING"/>
             <xsd:enumeration value="NEGATIVE_REQUIRED"/>
-            <xsd:enumeration value="NEGATIVE_ACCEPTABLE"/>
-            <xsd:enumeration value="NEGATIVE_FAILURE"/>
+            <xsd:enumeration value="NEGATIVE_MISSING"/>
+            <xsd:enumeration value="ACCEPTABLE"/>
         </xsd:restriction>
     </xsd:simpleType>
 

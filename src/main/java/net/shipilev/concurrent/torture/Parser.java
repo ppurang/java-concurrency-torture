@@ -123,16 +123,14 @@ public class Parser {
         switch (type) {
             case POSITIVE_REQUIRED:
                 return isZero ? Color.RED : Color.GREEN;
-            case POSITIVE_ACCEPTABLE:
-                return isZero ? Color.LIGHT_GRAY : Color.GREEN;
-            case POSITIVE_FAILURE:
+            case POSITIVE_MISSING:
                 return isZero ? Color.LIGHT_GRAY : Color.RED;
             case NEGATIVE_REQUIRED:
                 return isZero ? Color.CYAN : Color.GREEN;
-            case NEGATIVE_ACCEPTABLE:
-                return isZero ? Color.LIGHT_GRAY : Color.GREEN;
-            case NEGATIVE_FAILURE:
+            case NEGATIVE_MISSING:
                 return isZero ? Color.LIGHT_GRAY : Color.CYAN;
+            case ACCEPTABLE:
+                return isZero ? Color.LIGHT_GRAY : Color.GREEN;
             default:
                 throw new IllegalStateException();
         }
