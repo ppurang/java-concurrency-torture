@@ -3,6 +3,17 @@
             xmlns:jxb="http://java.sun.com/xml/ns/jaxb"
             jxb:version="2.0">
 
+    <xsd:simpleType name="outcomeType">
+        <xsd:restriction base="xsd:string">
+            <xsd:enumeration value="POSITIVE_REQUIRED"/>
+            <xsd:enumeration value="POSITIVE_ACCEPTABLE"/>
+            <xsd:enumeration value="POSITIVE_FAILURE"/>
+            <xsd:enumeration value="NEGATIVE_REQUIRED"/>
+            <xsd:enumeration value="NEGATIVE_ACCEPTABLE"/>
+            <xsd:enumeration value="NEGATIVE_FAILURE"/>
+        </xsd:restriction>
+    </xsd:simpleType>
+
     <xsd:element name="testsuite">
         <xsd:complexType>
             <xsd:sequence>
@@ -24,7 +35,7 @@
     <xsd:complexType name="case">
         <xsd:sequence>
             <xsd:element name="match" type="xsd:string" maxOccurs="unbounded"/>
-            <xsd:element name="outcome" type="xsd:string"/>
+            <xsd:element name="outcome" type="outcomeType"/>
             <xsd:element name="description" type="xsd:string"/>
         </xsd:sequence>
     </xsd:complexType>

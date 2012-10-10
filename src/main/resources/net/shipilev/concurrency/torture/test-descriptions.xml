@@ -8,7 +8,7 @@
         </description>
         <case>
             <match>[0, 0, 0, 0, 0, 0, 0, 0]</match>
-            <outcome>EXPECTED</outcome>
+            <outcome>POSITIVE_REQUIRED</outcome>
             <description>
                 Default value for the field. Observers are allowed to see the default value for the field,
                 because there is the data race between reader and writer.
@@ -16,7 +16,7 @@
         </case>
         <case>
             <match>[-1, -1, -1, -1, -1, -1, -1, -1]</match>
-            <outcome>EXPECTED</outcome>
+            <outcome>POSITIVE_REQUIRED</outcome>
             <description>
                 The value set by the actor thread. Observer sees the complete update.
             </description>
@@ -24,7 +24,7 @@
         <case>
             <match>[0, 0, 0, 0, -1, -1, -1, -1]</match>
             <match>[-1, -1, -1, -1, 0, 0, 0, 0]</match>
-            <outcome>EXPECTED_ODDITY</outcome>
+            <outcome>NEGATIVE_FAILURE</outcome>
             <description>
                 Seeing the torn value. This is specifically allowed by JLS 17.7.
                 This is not a surprising behavior on some 32-bit systems which do not have full-double instructions.
@@ -32,7 +32,7 @@
         </case>
         <case>
             <match></match>
-            <outcome>NOT_EXPECTED_ATTENTION_REQUIRED</outcome>
+            <outcome>NEGATIVE_FAILURE</outcome>
             <description>
                 This case is not expected.
             </description>
@@ -48,7 +48,7 @@
         </description>
         <case>
             <match>[0, 0, 0]</match>
-            <result>EXPECTED</result>
+            <result>POSITIVE_REQUIRED</result>
             <description>
                 Default value for the fields. Observers are allowed to see the default value for the field,
                 because there is the data race between reader and writer.
@@ -56,14 +56,14 @@
         </case>
         <case>
             <match>[0, 1, 0]</match>
-            <outcome>EXPECTED_ODDITY</outcome>
+            <outcome>POSITIVE_ACCEPTABLE</outcome>
             <description>
                 The evidence for the correct reordering: the later write is seen first.
             </description>
         </case>
         <case>
             <match>[0, 1, 1]</match>
-            <outcome>EXPECTED</outcome>
+            <outcome>POSITIVE_ACCEPTABLE</outcome>
             <description>
                 Usual case: the writes appear the the writers' order.
                 This code also means the compiler had not hoisted the load for $x.
@@ -72,14 +72,14 @@
         <case>
             <match>[1, 0, 0]</match>
             <match>[1, 1, 0]</match>
-            <outcome>EXPECTED_ODDITY</outcome>
+            <outcome>POSITIVE_ACCEPTABLE</outcome>
             <description>
                 TODO: Odd, but legal case?
             </description>
         </case>
         <case>
             <match>[1, 1, 1]</match>
-            <outcome>EXPECTED</outcome>
+            <outcome>POSITIVE_REQUIRED</outcome>
             <description>
                 Both updates are visible.
             </description>
