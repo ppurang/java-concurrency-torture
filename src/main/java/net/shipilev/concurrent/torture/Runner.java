@@ -1,10 +1,16 @@
 package net.shipilev.concurrent.torture;
 
+import net.shipilev.concurrency.torture.schema.result.ObjectFactory;
+import net.shipilev.concurrency.torture.schema.result.Result;
+import net.shipilev.concurrency.torture.schema.result.Results;
+import net.shipilev.concurrency.torture.schema.result.State;
 import net.shipilev.concurrent.torture.evaluators.Evaluator;
 import net.shipilev.concurrent.torture.util.Multiset;
 
+import javax.xml.bind.JAXBContext;
+import javax.xml.bind.Marshaller;
+import java.io.File;
 import java.io.FileNotFoundException;
-import java.io.ObjectStreamClass;
 import java.io.PrintWriter;
 import java.nio.ByteBuffer;
 import java.util.Arrays;
@@ -22,7 +28,7 @@ import java.util.concurrent.TimeUnit;
  */
 public class Runner {
     private final PrintWriter pw;
-    private final PrintWriter xml;
+    private final File xml;
     private final int time;
     private final int loops;
     private final ExecutorService pool;
@@ -30,16 +36,19 @@ public class Runner {
     private volatile boolean isStopped;
     private final int wtime;
     private final int witers;
+    private final Results root;
 
     public Runner(Options opts) throws FileNotFoundException {
         this.pw = new PrintWriter(System.out, true);
-        this.xml = new PrintWriter(opts.getResultFile());
+        this.xml = new File(opts.getResultFile());
         time = opts.getTime();
         loops = opts.getLoops();
         wtime = opts.getWarmupTime();
         witers = opts.getWarmupIterations();
         shouldYield = opts.shouldYield();
         pool = Executors.newCachedThreadPool();
+
+        root = new ObjectFactory().createResults();
     }
 
     public void ensureThreads(int threads) {
@@ -336,23 +345,23 @@ public class Runner {
     }
 
     private void dump(ConcurrencyTest test, Multiset<Long> results) {
-        xml.println("<result>");
-        xml.println("<test>" + test.getClass().getName() + "</test>");
-        xml.println("<uid>" + ObjectStreamClass.lookup(test.getClass()).getSerialVersionUID() + "</uid>");
-        xml.println("<states>");
+        ObjectFactory factory = new ObjectFactory();
+        Result result = factory.createResult();
+
+        root.getResult().add(result);
+        result.setName(test.getClass().getName());
+
         for (Long e : results.keys()) {
             byte[] b = longToByteArr(e);
-            byte[] t = new byte[test.getEvaluator().resultSize()];
-            System.arraycopy(b, 0, t, 0, test.getEvaluator().resultSize());
-            b = t;
+            byte[] temp = new byte[test.getEvaluator().resultSize()];
+            System.arraycopy(b, 0, temp, 0, test.getEvaluator().resultSize());
+            b = temp;
 
-            xml.println("<state>");
-            xml.println("<id>" + Arrays.toString(b) + "</id>");
-            xml.println("<count>" + results.count(e) + "</count>");
-            xml.println("</state>");
+            State state = factory.createState();
+            state.setId(Arrays.toString(b));
+            state.setCount(results.count(e));
+            result.getState().add(state);
         }
-        xml.println("</states>");
-        xml.println("</result>");
     }
 
     private void judge(ConcurrencyTest test, Multiset<Long> results) {
@@ -405,7 +414,16 @@ public class Runner {
 
     public void close() {
         pool.shutdownNow();
-        xml.close();
+
+        try {
+            String packageName = Results.class.getPackage().getName();
+            JAXBContext jc = JAXBContext.newInstance(packageName);
+            Marshaller marshaller = jc.createMarshaller();
+            marshaller.setProperty(Marshaller.JAXB_FORMATTED_OUTPUT, true);
+            marshaller.marshal(root, xml);
+        } catch (Throwable e) {
+            e.printStackTrace();
+        }
     }
 
     public static class SingleSharedStateHolder<S> {

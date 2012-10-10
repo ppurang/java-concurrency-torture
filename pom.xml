@@ -31,6 +31,56 @@
                 </configuration>
             </plugin>
             <plugin>
+                <groupId>org.codehaus.mojo</groupId>
+                <artifactId>build-helper-maven-plugin</artifactId>
+                <version>1.7</version>
+                <executions>
+                    <execution>
+                        <id>add-source</id>
+                        <phase>generate-sources</phase>
+                        <goals>
+                            <goal>add-source</goal>
+                        </goals>
+                        <configuration>
+                            <sources>
+                                <source>${project.build.directory}/generated-sources/descriptions/</source>
+                                <source>${project.build.directory}/generated-sources/results/</source>
+                            </sources>
+                        </configuration>
+                    </execution>
+                </executions>
+            </plugin>
+            <plugin>
+                <groupId>org.codehaus.mojo</groupId>
+                <artifactId>jaxb2-maven-plugin</artifactId>
+                <executions>
+                    <execution>
+                        <id>schema-descr</id>
+                        <goals>
+                            <goal>xjc</goal>
+                        </goals>
+                        <configuration>
+                            <packageName>net.shipilev.concurrency.torture.schema.descr</packageName>
+                            <outputDirectory>${project.build.directory}/generated-sources/descriptions/</outputDirectory>
+                            <schemaDirectory>${project.basedir}/src/main/xsd/descriptions/</schemaDirectory>
+                            <staleFile>${project.build.directory}/jaxb2/.xjcStaleFlag1</staleFile>
+                        </configuration>
+                    </execution>
+                    <execution>
+                        <id>schema-result</id>
+                        <goals>
+                            <goal>xjc</goal>
+                        </goals>
+                        <configuration>
+                            <packageName>net.shipilev.concurrency.torture.schema.result</packageName>
+                            <outputDirectory>${project.build.directory}/generated-sources/results/</outputDirectory>
+                            <schemaDirectory>${project.basedir}/src/main/xsd/results/</schemaDirectory>
+                            <staleFile>${project.build.directory}/jaxb2/.xjcStaleFlag2</staleFile>
+                        </configuration>
+                    </execution>
+                </executions>
+            </plugin>
+            <plugin>
                 <groupId>org.apache.maven.plugins</groupId>
                 <artifactId>maven-shade-plugin</artifactId>
                 <version>1.7.1</version>
@@ -77,6 +127,16 @@
             <groupId>org.reflections</groupId>
             <artifactId>reflections</artifactId>
             <version>0.9.8</version>
+        </dependency>
+        <dependency>
+            <groupId>javax.xml.bind</groupId>
+            <artifactId>jaxb-api</artifactId>
+            <version>2.1</version>
+        </dependency>
+        <dependency>
+            <groupId>com.sun.xml.bind</groupId>
+            <artifactId>jaxb-impl</artifactId>
+            <version>2.1.3</version>
         </dependency>
     </dependencies>
 </project>
