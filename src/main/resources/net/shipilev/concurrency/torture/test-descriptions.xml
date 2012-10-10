@@ -145,5 +145,66 @@
         </unmatched>
     </test>
 
+    <test>
+        <name>net.shipilev.concurrent.torture.positive.ReadTwiceOverVolatileReadTest</name>
+        <file>negative/ReadTwice.java</file>
+        <contributed-by>Aleksey Shipilev (aleksey.shipilev@oracle.com)</contributed-by>
+        <description>
+            Test if volatile write-read induces happens-before if in between two non-volatile reads.
+        </description>
+        <case>
+            <match>[0, 0, 0]</match>
+            <outcome>POSITIVE_REQUIRED</outcome>
+            <description>
+                Default value for the fields. Observers are allowed to see the default value for the field,
+                because there is the data race between reader and writer.
+            </description>
+        </case>
+        <case>
+            <match>[0, 1, 0]</match>
+            <outcome>POSITIVE_FAILURE</outcome>
+            <description>
+                Volatile write to $y had happened, and update to $x had been lost.
+            </description>
+        </case>
+        <case>
+            <match>[1, 1, 0]</match>
+            <outcome>POSITIVE_FAILURE</outcome>
+            <description>
+                Volatile write to $y had happened, and update to $x had been lost (this one is very weird).
+            </description>
+        </case>
+        <case>
+            <match>[0, 0, 1]</match>
+            <match>[1, 0, 1]</match>
+            <outcome>POSITIVE_ACCEPTABLE</outcome>
+            <description>
+                Write to $y is still in flight, $x is arriving late.
+                This is the evidence the compiler had not merged the loads for $x.
+            </description>
+        </case>
+        <case>
+            <match>[0, 1, 1]</match>
+            <outcome>POSITIVE_ACCEPTABLE</outcome>
+            <description>
+                The writes appear the the writers' order.
+                This code also means the compiler had not merged the loads for $x.
+            </description>
+        </case>
+        <case>
+            <match>[1, 1, 1]</match>
+            <outcome>POSITIVE_REQUIRED</outcome>
+            <description>
+                Both updates are visible.
+            </description>
+        </case>
+        <unmatched>
+            <outcome>POSITIVE_FAILURE</outcome>
+            <description>
+                This case is not expected.
+            </description>
+        </unmatched>
+    </test>
+
 
 </testsuite>
