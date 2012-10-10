@@ -44,7 +44,7 @@ public class Parser {
 
         for (Result r : result.getResult()) {
 
-            output.println("<p>" + r.getName() + "</p>");
+            output.println("<h2>" + r.getName() + "</h2>");
 
             Test test = descriptions.get(r.getName());
             if (test == null) {
