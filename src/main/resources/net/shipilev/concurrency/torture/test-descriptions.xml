@@ -8,7 +8,7 @@
         </description>
         <case>
             <match>[0, 0, 0, 0, 0, 0, 0, 0]</match>
-            <result>EXPECTED</result>
+            <outcome>EXPECTED</outcome>
             <description>
                 Default value for the field. Observers are allowed to see the default value for the field,
                 because there is the data race between reader and writer.
