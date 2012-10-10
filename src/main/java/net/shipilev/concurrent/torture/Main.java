@@ -24,6 +24,7 @@ import org.reflections.util.ConfigurationBuilder;
 import org.reflections.util.FilterBuilder;
 
 import javax.annotation.Nullable;
+import javax.xml.bind.JAXBException;
 import java.io.IOException;
 import java.util.Comparator;
 import java.util.Set;
@@ -34,7 +35,7 @@ import java.util.regex.Pattern;
 
 public class Main {
 
-    public static void main(String[] args) throws ExecutionException, InterruptedException, IOException, IllegalAccessException, InstantiationException {
+    public static void main(String[] args) throws ExecutionException, InterruptedException, IOException, IllegalAccessException, InstantiationException, JAXBException {
         System.out.println("Java Concurrency Torture Tests");
         System.out.println("---------------------------------------------------------------------------------");
 
