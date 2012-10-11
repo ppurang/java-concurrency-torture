@@ -68,7 +68,7 @@ public class Options {
                 .withOptionalArg().ofType(boolean.class).defaultsTo(false);
 
         OptionSpec<Boolean> shouldFork = parser.accepts("f", "Should fork")
-                .withOptionalArg().ofType(boolean.class).defaultsTo(false);
+                .withOptionalArg().ofType(boolean.class).defaultsTo(true);
 
         parser.accepts("h", "Print this help");
 
@@ -94,7 +94,7 @@ public class Options {
         this.witers = set.valueOf(witers);
         this.testFilter = set.valueOf(testFilter);
         this.shouldYield = set.valueOf(shouldYield);
-        this.shouldFork = set.has(shouldFork);
+        this.shouldFork = set.valueOf(shouldFork);
         this.parse = set.has(parse);
 
         return true;
@@ -102,7 +102,7 @@ public class Options {
 
     public String buildForkedCmdLine() {
         // omit -f, -p, -t
-        return "-r " + resultDir + " -loops " + loops + " -time " + time + " -wtime " + wtime + " -witers " + witers + " -yield " + shouldYield;
+        return "-r " + resultDir + " -loops " + loops + " -time " + time + " -wtime " + wtime + " -witers " + witers + " -yield " + shouldYield + " -f false";
     }
 
     public int getLoops() {

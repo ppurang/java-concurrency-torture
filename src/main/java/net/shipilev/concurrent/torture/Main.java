@@ -39,6 +39,9 @@ public class Main {
 
         if (!opts.shouldParse()) {
             if (opts.shouldFork()) {
+                System.out.println("Running in forked mode...");
+                System.out.println();
+
                 for (Class<? extends ConcurrencyTest> test : filterTests(opts.getTestFilter(), OneActorOneObserverTest.class)) {
                     runForked(opts, test);
                 }
@@ -46,11 +49,14 @@ public class Main {
                     runForked(opts, test);
                 }
             } else {
+                System.out.println("Running in embedded mode...");
+                System.out.println();
+
                 runAll(opts);
             }
         } else {
             System.out.println("Re-interpreting the results...");
-            System.out.println("Look in results.html for the results");
+            System.out.println("Look at " + opts.getResultDest() + "/index.html for the results");
             System.out.println();
         }
 

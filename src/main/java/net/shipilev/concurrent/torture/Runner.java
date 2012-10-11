@@ -75,13 +75,15 @@ public class Runner {
         pw.println("Running " + test.getClass().getName());
         ensureThreads(3);
 
-        pw.print("Warmup ");
-        for (int c = 0; c < witers; c++) {
-            pw.print(".");
-            pw.flush();
-            run(test, wtime, true);
+        if (witers > 0) {
+            pw.print("Warmup ");
+            for (int c = 0; c < witers; c++) {
+                pw.print(".");
+                pw.flush();
+                run(test, wtime, true);
+            }
+            pw.println();
         }
-        pw.println();
 
         run(test, time, false);
     }
@@ -202,13 +204,15 @@ public class Runner {
         pw.println("Running " + test.getClass().getName());
         ensureThreads(4);
 
-        pw.print("Warmup ");
-        for (int c = 0; c < witers; c++) {
-            pw.print(".");
-            pw.flush();
-            run(test, wtime, true);
+        if (witers > 0) {
+            pw.print("Warmup ");
+            for (int c = 0; c < witers; c++) {
+                pw.print(".");
+                pw.flush();
+                run(test, wtime, true);
+            }
+            pw.println();
         }
-        pw.println();
 
         run(test, time, false);
     }
