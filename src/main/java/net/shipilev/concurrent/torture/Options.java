@@ -22,10 +22,9 @@ import joptsimple.OptionSet;
 import joptsimple.OptionSpec;
 
 import java.io.IOException;
-import java.util.regex.Pattern;
 
 public class Options {
-    private String resultFile;
+    private String resultDir;
     private String testFilter;
     private int loops;
     private int time;
@@ -44,8 +43,8 @@ public class Options {
         OptionParser parser = new OptionParser();
         parser.formatHelpWith(new OptFormatter());
 
-        OptionSpec<String> result = parser.accepts("r", "Results file")
-                .withRequiredArg().ofType(String.class).describedAs("file").defaultsTo("results.xml");
+        OptionSpec<String> result = parser.accepts("r", "Results dir")
+                .withRequiredArg().ofType(String.class).describedAs("dir").defaultsTo("results/");
 
         OptionSpec<Boolean> parse = parser.accepts("p", "Run parser on the result file")
                 .withOptionalArg().ofType(boolean.class).defaultsTo(false);
@@ -69,7 +68,7 @@ public class Options {
                 .withOptionalArg().ofType(boolean.class).defaultsTo(false);
 
         OptionSpec<Boolean> shouldFork = parser.accepts("f", "Should fork")
-                .withOptionalArg().ofType(boolean.class).defaultsTo(true);
+                .withOptionalArg().ofType(boolean.class).defaultsTo(false);
 
         parser.accepts("h", "Print this help");
 
@@ -88,24 +87,30 @@ public class Options {
             return false;
         }
 
-        this.resultFile = set.valueOf(result);
+        this.resultDir = set.valueOf(result);
         this.loops = set.valueOf(loops);
         this.time = set.valueOf(time);
         this.wtime = set.valueOf(wtime);
         this.witers = set.valueOf(witers);
         this.testFilter = set.valueOf(testFilter);
         this.shouldYield = set.valueOf(shouldYield);
-        this.shouldFork = set.has(shouldFork) || set.valueOf(shouldFork);
+        this.shouldFork = set.has(shouldFork);
         this.parse = set.has(parse);
+
         return true;
+    }
+
+    public String buildForkedCmdLine() {
+        // omit -f, -p, -t
+        return "-r " + resultDir + " -loops " + loops + " -time " + time + " -wtime " + wtime + " -witers " + witers + " -yield " + shouldYield;
     }
 
     public int getLoops() {
         return loops;
     }
 
-    public String getResultFile() {
-        return resultFile;
+    public String getResultDest() {
+        return resultDir;
     }
 
     public int getTime() {

@@ -3,11 +3,9 @@ package net.shipilev.concurrent.torture;
 
 import com.google.common.base.Predicate;
 import net.shipilev.concurrency.torture.schema.descr.Case;
-import net.shipilev.concurrency.torture.schema.descr.OutcomeType;
 import net.shipilev.concurrency.torture.schema.descr.Test;
 import net.shipilev.concurrency.torture.schema.descr.Testsuite;
 import net.shipilev.concurrency.torture.schema.result.Result;
-import net.shipilev.concurrency.torture.schema.result.Results;
 import net.shipilev.concurrency.torture.schema.result.State;
 import org.reflections.Reflections;
 import org.reflections.scanners.ResourcesScanner;
@@ -19,8 +17,6 @@ import javax.annotation.Nullable;
 import javax.xml.bind.JAXBContext;
 import javax.xml.bind.JAXBException;
 import javax.xml.bind.Unmarshaller;
-import java.awt.*;
-import java.io.FileInputStream;
 import java.io.FileNotFoundException;
 import java.io.InputStream;
 import java.io.PrintWriter;
@@ -86,7 +82,6 @@ public class TextResultPrinter {
         }
 
         output.printf("%35s %12s %20s %-20s\n", "Observed state", "Occurrences", "Outcome", "Interpretation");
-
 
         List<State> unmatchedStates = new ArrayList<State>();
         unmatchedStates.addAll(r.getState());

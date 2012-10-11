@@ -2,7 +2,6 @@ package net.shipilev.concurrent.torture;
 
 import net.shipilev.concurrency.torture.schema.result.ObjectFactory;
 import net.shipilev.concurrency.torture.schema.result.Result;
-import net.shipilev.concurrency.torture.schema.result.Results;
 import net.shipilev.concurrency.torture.schema.result.State;
 import net.shipilev.concurrent.torture.util.Multiset;
 
@@ -28,7 +27,7 @@ import java.util.concurrent.TimeUnit;
  */
 public class Runner {
     private final PrintWriter pw;
-    private final File xml;
+    private final File destDir;
     private final int time;
     private final int loops;
     private final ExecutorService pool;
@@ -36,7 +35,6 @@ public class Runner {
     private volatile boolean isStopped;
     private final int wtime;
     private final int witers;
-    private final Results root;
     private final XMLtoHTMLResultPrinter xmlPrinter;
     private final TextResultPrinter printer;
 
@@ -44,16 +42,16 @@ public class Runner {
         printer = new TextResultPrinter(opts);
         xmlPrinter = new XMLtoHTMLResultPrinter(opts);
 
-        this.pw = new PrintWriter(System.out, true);
-        this.xml = new File(opts.getResultFile());
+        pw = new PrintWriter(System.out, true);
+        destDir = new File(opts.getResultDest());
+        destDir.mkdirs();
+
         time = opts.getTime();
         loops = opts.getLoops();
         wtime = opts.getWarmupTime();
         witers = opts.getWarmupIterations();
         shouldYield = opts.shouldYield();
         pool = Executors.newCachedThreadPool();
-
-        root = new ObjectFactory().createResults();
     }
 
     public void ensureThreads(int threads) {
@@ -353,7 +351,6 @@ public class Runner {
         ObjectFactory factory = new ObjectFactory();
         Result result = factory.createResult();
 
-        root.getResult().add(result);
         result.setName(test.getClass().getName());
 
         for (Long e : results.keys()) {
@@ -367,6 +364,17 @@ public class Runner {
             state.setCount(results.count(e));
             result.getState().add(state);
         }
+
+        try {
+            String packageName = Result.class.getPackage().getName();
+            JAXBContext jc = JAXBContext.newInstance(packageName);
+            Marshaller marshaller = jc.createMarshaller();
+            marshaller.setProperty(Marshaller.JAXB_FORMATTED_OUTPUT, true);
+            marshaller.marshal(result, new File(destDir + "/" + test.getClass().getName() + ".xml"));
+        } catch (Throwable e) {
+            e.printStackTrace();
+        }
+
         return result;
     }
 
@@ -388,18 +396,7 @@ public class Runner {
 
     public void close() throws FileNotFoundException, JAXBException {
         pool.shutdownNow();
-
-        xmlPrinter.parse(root);
-
-        try {
-            String packageName = Results.class.getPackage().getName();
-            JAXBContext jc = JAXBContext.newInstance(packageName);
-            Marshaller marshaller = jc.createMarshaller();
-            marshaller.setProperty(Marshaller.JAXB_FORMATTED_OUTPUT, true);
-            marshaller.marshal(root, xml);
-        } catch (Throwable e) {
-            e.printStackTrace();
-        }
+        xmlPrinter.parse();
     }
 
     public static class SingleSharedStateHolder<S> {

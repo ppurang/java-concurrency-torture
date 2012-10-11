@@ -7,7 +7,6 @@ import net.shipilev.concurrency.torture.schema.descr.OutcomeType;
 import net.shipilev.concurrency.torture.schema.descr.Test;
 import net.shipilev.concurrency.torture.schema.descr.Testsuite;
 import net.shipilev.concurrency.torture.schema.result.Result;
-import net.shipilev.concurrency.torture.schema.result.Results;
 import net.shipilev.concurrency.torture.schema.result.State;
 import org.reflections.Reflections;
 import org.reflections.scanners.ResourcesScanner;
@@ -20,8 +19,10 @@ import javax.xml.bind.JAXBContext;
 import javax.xml.bind.JAXBException;
 import javax.xml.bind.Unmarshaller;
 import java.awt.*;
+import java.io.File;
 import java.io.FileInputStream;
 import java.io.FileNotFoundException;
+import java.io.FilenameFilter;
 import java.io.InputStream;
 import java.io.PrintWriter;
 import java.util.ArrayList;
@@ -32,11 +33,11 @@ import java.util.Set;
 
 public class XMLtoHTMLResultPrinter {
 
-    private final String src;
+    private final String resultDir;
     private final Map<String, Test> descriptions;
 
     public XMLtoHTMLResultPrinter(Options opts) throws JAXBException, FileNotFoundException {
-        src = opts.getResultFile();
+        resultDir = opts.getResultDest();
         descriptions = new HashMap<String, Test>();
         readDescriptions();
     }
@@ -69,80 +70,86 @@ public class XMLtoHTMLResultPrinter {
     }
 
     public void parse() throws FileNotFoundException, JAXBException {
-        parse(unmarshal(Results.class, new FileInputStream(src)));
-    }
+        PrintWriter output = new PrintWriter(resultDir + "/index.html");
 
-    public void parse(Results result) throws FileNotFoundException, JAXBException {
-        PrintWriter output = new PrintWriter("results.html");
-
-        for (Result r : result.getResult()) {
-
-            output.println("<h2>" + r.getName() + "</h2>");
-
-            Test test = descriptions.get(r.getName());
-            if (test == null) {
-                output.println("Missing description for " + r.getName());
-                System.err.println("Missing description for " + r.getName());
-                continue;
+        File[] files = new File(resultDir).listFiles(new FilenameFilter() {
+            @Override
+            public boolean accept(File dir, String name) {
+                return name.endsWith("xml");
             }
+        });
 
-            output.println("<p>" + test.getDescription() + "</p>");
-
-            output.println("<table width=1000>");
-            output.println("<tr>");
-            output.println("<th width=250>Observed state</th>");
-            output.println("<th width=50>Occurence</th>");
-            output.println("<th width=50>Outcome</th>");
-            output.println("<th width=600>Interpretation</th>");
-            output.println("</tr>");
-
-            List<State> unmatchedStates = new ArrayList<State>();
-            unmatchedStates.addAll(r.getState());
-            for (Case c : test.getCase()) {
-
-                boolean matched = false;
-
-                for (State s : r.getState()) {
-                    if (c.getMatch().contains(s.getId())) {
-                        // match!
-                        output.println("<tr bgColor=" + selectHTMLColor(c.getOutcome(), s.getCount() == 0) + ">");
-                        output.println("<td>" + s.getId() + "</td>");
-                        output.println("<td align=center>" + s.getCount() + "</td>");
-                        output.println("<td align=center>" + c.getOutcome() + "</td>");
-                        output.println("<td>" + c.getDescription() + "</td>");
-                        output.println("</tr>");
-                        matched = true;
-                        unmatchedStates.remove(s);
-                    }
-                }
-
-                if (!matched) {
-                    for (String m : c.getMatch()) {
-                        output.println("<tr bgColor=" + selectHTMLColor(c.getOutcome(), true) + ">");
-                        output.println("<td>" + m + "</td>");
-                        output.println("<td align=center>" + 0 + "</td>");
-                        output.println("<td align=center>" + c.getOutcome() + "</td>");
-                        output.println("<td>" + c.getDescription() + "</td>");
-                        output.println("</tr>");
-                    }
-                }
-            }
-
-            for (State s : unmatchedStates) {
-                output.println("<tr bgColor=" + selectHTMLColor(test.getUnmatched().getOutcome(), s.getCount() == 0) + ">");
-                output.println("<td>" + s.getId() + "</td>");
-                output.println("<td align=center>" + s.getCount() + "</td>");
-                output.println("<td align=center>" + test.getUnmatched().getOutcome() + "</td>");
-                output.println("<td>" + test.getUnmatched().getDescription() + "</td>");
-                output.println("</tr>");
-            }
-
-            output.println("</table>");
+        for (File f : files) {
+            parse(output, unmarshal(Result.class, new FileInputStream(f)));
         }
 
         output.println("<p>Please report the errors in test grading to <a href='https://github.com/shipilev/java-concurrency-torture'>https://github.com/shipilev/java-concurrency-torture</a></p>");
-
         output.close();
+    }
+
+    public void parse(PrintWriter output, Result r) throws FileNotFoundException, JAXBException {
+
+        output.println("<h2>" + r.getName() + "</h2>");
+
+        Test test = descriptions.get(r.getName());
+        if (test == null) {
+            output.println("Missing description for " + r.getName());
+            System.err.println("Missing description for " + r.getName());
+            return;
+        }
+
+        output.println("<p>" + test.getDescription() + "</p>");
+
+        output.println("<table width=1000>");
+        output.println("<tr>");
+        output.println("<th width=250>Observed state</th>");
+        output.println("<th width=50>Occurence</th>");
+        output.println("<th width=50>Outcome</th>");
+        output.println("<th width=600>Interpretation</th>");
+        output.println("</tr>");
+
+        List<State> unmatchedStates = new ArrayList<State>();
+        unmatchedStates.addAll(r.getState());
+        for (Case c : test.getCase()) {
+
+            boolean matched = false;
+
+            for (State s : r.getState()) {
+                if (c.getMatch().contains(s.getId())) {
+                    // match!
+                    output.println("<tr bgColor=" + selectHTMLColor(c.getOutcome(), s.getCount() == 0) + ">");
+                    output.println("<td>" + s.getId() + "</td>");
+                    output.println("<td align=center>" + s.getCount() + "</td>");
+                    output.println("<td align=center>" + c.getOutcome() + "</td>");
+                    output.println("<td>" + c.getDescription() + "</td>");
+                    output.println("</tr>");
+                    matched = true;
+                    unmatchedStates.remove(s);
+                }
+            }
+
+            if (!matched) {
+                for (String m : c.getMatch()) {
+                    output.println("<tr bgColor=" + selectHTMLColor(c.getOutcome(), true) + ">");
+                    output.println("<td>" + m + "</td>");
+                    output.println("<td align=center>" + 0 + "</td>");
+                    output.println("<td align=center>" + c.getOutcome() + "</td>");
+                    output.println("<td>" + c.getDescription() + "</td>");
+                    output.println("</tr>");
+                }
+            }
+        }
+
+        for (State s : unmatchedStates) {
+            output.println("<tr bgColor=" + selectHTMLColor(test.getUnmatched().getOutcome(), s.getCount() == 0) + ">");
+            output.println("<td>" + s.getId() + "</td>");
+            output.println("<td align=center>" + s.getCount() + "</td>");
+            output.println("<td align=center>" + test.getUnmatched().getOutcome() + "</td>");
+            output.println("<td>" + test.getUnmatched().getDescription() + "</td>");
+            output.println("</tr>");
+        }
+
+        output.println("</table>");
     }
 
     public String selectHTMLColor(OutcomeType type, boolean isZero) {

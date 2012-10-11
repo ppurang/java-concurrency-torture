@@ -3,20 +3,14 @@
             xmlns:jxb="http://java.sun.com/xml/ns/jaxb"
             jxb:version="2.0">
 
-    <xsd:element name="results">
+    <xsd:element name="result">
         <xsd:complexType>
             <xsd:sequence>
-                <xsd:element name="result" type="result" maxOccurs="unbounded"/>
+                <xsd:element name="state" type="state" maxOccurs="unbounded"/>
             </xsd:sequence>
+            <xsd:attribute name="name"/>
         </xsd:complexType>
     </xsd:element>
-
-    <xsd:complexType name="result">
-        <xsd:sequence>
-            <xsd:element name="state" type="state" maxOccurs="unbounded"/>
-        </xsd:sequence>
-        <xsd:attribute name="name"/>
-    </xsd:complexType>
 
     <xsd:complexType name="state">
         <xsd:sequence>

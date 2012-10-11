@@ -44,10 +44,10 @@ public class Main {
         } else {
             if (opts.shouldFork()) {
                 for (Class<? extends ConcurrencyTest> test : filterTests(opts.getTestFilter(), OneActorOneObserverTest.class)) {
-                    runForked(test);
+                    runForked(opts, test);
                 }
                 for (Class<? extends ConcurrencyTest> test : filterTests(opts.getTestFilter(), TwoActorsOneArbiterTest.class)) {
-                    runForked(test);
+                    runForked(opts, test);
                 }
             } else {
                 runAll(opts);
@@ -55,12 +55,10 @@ public class Main {
         }
     }
 
-    private static void runForked(Class<? extends ConcurrencyTest>  test) {
+    private static void runForked(Options opts, Class<? extends ConcurrencyTest>  test) {
         try {
-
-//            String commandString = "java -jar target/concurrency-torture.jar -fork false -t " + test.getName();
-            String commandString = getSeparateExecutionCommand(test.getName());
-            System.err.println("Invoking: " + commandString);
+            String commandString = getSeparateExecutionCommand(opts, test.getName());
+//            System.err.println("Invoking: " + commandString);
             Process p = Runtime.getRuntime().exec(commandString);
 
             InputStreamDrainer errDrainer = new InputStreamDrainer(p.getErrorStream(), System.err);
@@ -106,7 +104,7 @@ public class Main {
         r.close();
     }
 
-    public static String getSeparateExecutionCommand(String test) {
+    public static String getSeparateExecutionCommand(Options opts, String test) {
         Properties props = System.getProperties();
         String javaHome = (String) props.get("java.home");
         String separator = File.separator;
@@ -161,7 +159,7 @@ public class Main {
         command.append(' ');
         command.append(ForkedMain.class.getName());
 
-        return command.toString() + " -t " + test + "";
+        return command.toString() + " " + opts.buildForkedCmdLine() + " -t " + test;
     }
 
 
