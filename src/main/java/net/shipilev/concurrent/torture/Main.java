@@ -37,14 +37,7 @@ public class Main {
             System.exit(1);
         }
 
-        if (opts.shouldParse()) {
-            System.out.println("Re-interpreting the results...");
-            System.out.println("Look in results.html for the results");
-            System.out.println();
-
-            XMLtoHTMLResultPrinter p = new XMLtoHTMLResultPrinter(opts);
-            p.parse();
-        } else {
+        if (!opts.shouldParse()) {
             if (opts.shouldFork()) {
                 for (Class<? extends ConcurrencyTest> test : filterTests(opts.getTestFilter(), OneActorOneObserverTest.class)) {
                     runForked(opts, test);
@@ -55,7 +48,14 @@ public class Main {
             } else {
                 runAll(opts);
             }
+        } else {
+            System.out.println("Re-interpreting the results...");
+            System.out.println("Look in results.html for the results");
+            System.out.println();
         }
+
+        XMLtoHTMLResultPrinter p = new XMLtoHTMLResultPrinter(opts);
+        p.parse();
     }
 
     private static void runForked(Options opts, Class<? extends ConcurrencyTest>  test) {

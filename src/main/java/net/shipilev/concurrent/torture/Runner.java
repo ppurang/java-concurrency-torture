@@ -29,22 +29,21 @@ import java.util.concurrent.TimeUnit;
  * @author Aleksey Shipilev (aleksey.shipilev@oracle.com)
  */
 public class Runner {
-    private final PrintWriter pw;
     private final File destDir;
     private final int time;
     private final int loops;
-    private final ExecutorService pool;
     private final boolean shouldYield;
-    private volatile boolean isStopped;
     private final int wtime;
     private final int witers;
-    private final XMLtoHTMLResultPrinter xmlPrinter;
+
+    private final ExecutorService pool;
+    private volatile boolean isStopped;
+
+    private final PrintWriter pw;
     private final TextResultPrinter printer;
 
     public Runner(Options opts) throws FileNotFoundException, JAXBException {
         printer = new TextResultPrinter(opts);
-        xmlPrinter = new XMLtoHTMLResultPrinter(opts);
-
         pw = new PrintWriter(System.out, true);
         destDir = new File(opts.getResultDest());
         destDir.mkdirs();
@@ -399,7 +398,6 @@ public class Runner {
 
     public void close() throws FileNotFoundException, JAXBException {
         pool.shutdownNow();
-        xmlPrinter.parse();
     }
 
     public static class SingleSharedStateHolder<S> {
