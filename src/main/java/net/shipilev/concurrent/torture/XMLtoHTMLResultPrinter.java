@@ -125,6 +125,8 @@ public class XMLtoHTMLResultPrinter {
                 Result result = results.get(test.getName());
                 if (result != null) {
                     parse(output, result, test);
+                } else {
+                    output.println("Missing description for " + test.getName());
                 }
             }
 
@@ -132,8 +134,6 @@ public class XMLtoHTMLResultPrinter {
 
 //        output.println("Missing description for " + r.getName());
 //        System.err.println("Missing description for " + r.getName());
-
-
 
         output.println("<p>Please report the errors in test grading to <a href='https://github.com/shipilev/java-concurrency-torture/issues'>https://github.com/shipilev/java-concurrency-torture/issues</a></p>");
 
