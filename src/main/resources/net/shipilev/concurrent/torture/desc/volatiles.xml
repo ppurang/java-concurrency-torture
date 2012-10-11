@@ -170,7 +170,7 @@
         </unmatched>
     </test>
 
-    <test name="net.shipilev.concurrent.torture.tests.volatiles.VolatileAtomicityTest">
+    <test name="net.shipilev.concurrent.torture.tests.volatiles.VolatileIncrementAtomicityTest">
         <contributed-by>Aleksey Shipilev (aleksey.shipilev@oracle.com)</contributed-by>
         <description>
             Tests the atomicity of volatile increment.

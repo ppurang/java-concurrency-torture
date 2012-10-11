@@ -7,7 +7,7 @@ import net.shipilev.concurrent.torture.tests.TwoActorsOneArbiterTest;
  *
  * @author Aleksey Shipilev (aleksey.shipilev@oracle.com)
  */
-public class VolatileAtomicityTest implements TwoActorsOneArbiterTest<VolatileAtomicityTest.Specimen> {
+public class VolatileIncrementAtomicityTest implements TwoActorsOneArbiterTest<VolatileIncrementAtomicityTest.Specimen> {
 
     public static class Specimen {
         volatile int x;
