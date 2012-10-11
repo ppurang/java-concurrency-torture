@@ -1,22 +1,9 @@
 package net.shipilev.concurrent.torture.positive.init;
 
-import net.shipilev.concurrent.torture.evaluators.Evaluator;
 import net.shipilev.concurrent.torture.OneActorOneObserverTest;
-import net.shipilev.concurrent.torture.evaluators.AllElementsAreSameAndEqualTo;
 
 /**
  * Tests if final primitive longs experience tearing when initialized by instance initializer.
- * TODO: Is this a forbidden behavior?
- * The failure on this test highlights the possible bug.
- *
- * Possible observed states:
- *    - CORRECT:   shell == null
- *    - CORRECT:   default value for long (i.e. 0)
- *    - CORRECT:   value set by constructor (i.e. -1)
- *    - INCORRECT: low-word set to -1, high-word still set to 0 (tearing)
- *    - INCORRECT: high-word set to -1, low-word still set to 0 (tearing)
- *
- * All other values are forbidden because out-of-thin-air values are forbidden.
  *
  * @author Aleksey Shipilev (aleksey.shipilev@oracle.com)
  */
@@ -69,8 +56,8 @@ public class LongInstanceTest implements OneActorOneObserverTest<LongInstanceTes
     }
 
     @Override
-    public Evaluator getEvaluator() {
-        return new AllElementsAreSameAndEqualTo(8, 42, 0, -1);
+    public int resultSize() {
+        return 8;
     }
 
 }

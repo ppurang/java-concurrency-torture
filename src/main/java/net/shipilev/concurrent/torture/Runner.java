@@ -4,7 +4,6 @@ import net.shipilev.concurrency.torture.schema.result.ObjectFactory;
 import net.shipilev.concurrency.torture.schema.result.Result;
 import net.shipilev.concurrency.torture.schema.result.Results;
 import net.shipilev.concurrency.torture.schema.result.State;
-import net.shipilev.concurrent.torture.evaluators.Evaluator;
 import net.shipilev.concurrent.torture.util.Multiset;
 
 import javax.xml.bind.JAXBContext;
@@ -355,8 +354,8 @@ public class Runner {
 
         for (Long e : results.keys()) {
             byte[] b = longToByteArr(e);
-            byte[] temp = new byte[test.getEvaluator().resultSize()];
-            System.arraycopy(b, 0, temp, 0, test.getEvaluator().resultSize());
+            byte[] temp = new byte[test.resultSize()];
+            System.arraycopy(b, 0, temp, 0, test.resultSize());
             b = temp;
 
             State state = factory.createState();

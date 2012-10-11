@@ -1,17 +1,9 @@
 package net.shipilev.concurrent.torture.negative;
 
-import net.shipilev.concurrent.torture.evaluators.Evaluator;
 import net.shipilev.concurrent.torture.OneActorOneObserverTest;
-import net.shipilev.concurrent.torture.evaluators.AllElementsAreSame;
 
 /**
  * Tests the broken double-checked locking.
- * This is allowed by JMM, and hence this is a negative test.
- * The failure on this test DOES NOT highlight the possible bug.
- *
- * The race is on getting uninitialized field in Singleton.
- *
- * Note: this is a very fine race, you might need to run longer to observe the failure.
  *
  * @author Aleksey Shipilev (aleksey.shipilev@oracle.com)
  */
@@ -57,8 +49,8 @@ public class RacyPublicationTest implements OneActorOneObserverTest<RacyPublicat
     }
 
     @Override
-    public Evaluator getEvaluator() {
-        return new AllElementsAreSame(8);
+    public int resultSize() {
+        return 8;
     }
 
 }

@@ -1,22 +1,9 @@
 package net.shipilev.concurrent.torture.negative;
 
-import net.shipilev.concurrent.torture.evaluators.Evaluator;
 import net.shipilev.concurrent.torture.OneActorOneObserverTest;
-import net.shipilev.concurrent.torture.evaluators.AllElementsAreSame;
 
 /**
  * Tests if primitive doubles experience non-atomic updates.
- * Long tearing is allowed by JMM, and hence this is a negative test.
- * The failure on this test DOES NOT highlight the possible bug.
- *
- * Possible observed states:
- *    - default value for default (i.e. 0)
- *    - value set by actor (i.e. -1)
- *    - low-word set to -1, high-word still set to 0 (tearing)
- *    - high-word set to -1, low-word still set to 0 (tearing)
- *
- * All other values are forbidden because out-of-thin-air values are forbidden.
- *
  * @author Aleksey Shipilev (aleksey.shipilev@oracle.com)
  */
 public class DoubleAtomicityTest implements OneActorOneObserverTest<DoubleAtomicityTest.Specimen> {
@@ -49,8 +36,8 @@ public class DoubleAtomicityTest implements OneActorOneObserverTest<DoubleAtomic
     }
 
     @Override
-    public Evaluator getEvaluator() {
-        return new AllElementsAreSame(8);
+    public int resultSize() {
+        return 8;
     }
 
 }

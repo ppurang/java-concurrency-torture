@@ -1,8 +1,6 @@
 package net.shipilev.concurrent.torture.negative;
 
-import net.shipilev.concurrent.torture.evaluators.Evaluator;
 import net.shipilev.concurrent.torture.OneActorOneObserverTest;
-import net.shipilev.concurrent.torture.Outcome;
 
 /**
  * Test if intervening write breaks reordering.
@@ -35,25 +33,8 @@ public class ReadTwiceTest implements OneActorOneObserverTest<ReadTwiceTest.Spec
     }
 
     @Override
-    public Evaluator getEvaluator() {
-        return new Tester();
+    public int resultSize() {
+        return 3;
     }
-
-    public static class Tester implements Evaluator {
-
-        @Override
-        public Outcome test(byte[] res) {
-            if (res[1] == 1 && res[2] == 0) {
-                return Outcome.NOT_EXPECTED;
-            }
-            return Outcome.ACCEPTABLE;
-        }
-
-        public int resultSize() {
-            return 3;
-        }
-
-    }
-
 
 }

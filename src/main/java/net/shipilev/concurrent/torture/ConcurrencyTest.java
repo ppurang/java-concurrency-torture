@@ -1,19 +1,17 @@
 package net.shipilev.concurrent.torture;
 
-import net.shipilev.concurrent.torture.evaluators.Evaluator;
-
-import java.io.Serializable;
-
 /**
- * Marks tests, which can evaluate the tests results.
+ * Marks concurrency tests.
  *
- * Implementors of this interface should provide the basic test() method,
- * which judges the outcome given the result.
+ * This interface is used to track the test definitions.
  *
  * @author Aleksey Shipilev (aleksey.shipilev@oracle.com)
  */
-public interface ConcurrencyTest extends Serializable {
+public interface ConcurrencyTest {
 
-    Evaluator getEvaluator();
-
+    /**
+     * Returns the expected result size.
+     * @return result size
+     */
+    int resultSize();
 }

@@ -1,18 +1,9 @@
 package net.shipilev.concurrent.torture.positive;
 
-import net.shipilev.concurrent.torture.evaluators.Evaluator;
 import net.shipilev.concurrent.torture.OneActorOneObserverTest;
-import net.shipilev.concurrent.torture.evaluators.AllElementsAreSame;
 
 /**
  * Tests if primitive integers experience non-atomic reads/writes.
- * This behavior is forbidden by JMM, so the failures on this tests highlight the possible bug.
- *
- * Possible observed states:
- *    - default value for integer (i.e. 0)
- *    - value set by actor (i.e. -1)
- *
- * All other values are forbidden because out-of-thin-air values are forbidden.
  *
  * @author Aleksey Shipilev (aleksey.shipilev@oracle.com)
  */
@@ -42,8 +33,8 @@ public class IntAtomicityTest implements OneActorOneObserverTest<IntAtomicityTes
     }
 
     @Override
-    public Evaluator getEvaluator() {
-        return new AllElementsAreSame(4);
+    public int resultSize() {
+        return 4;
     }
 
 }

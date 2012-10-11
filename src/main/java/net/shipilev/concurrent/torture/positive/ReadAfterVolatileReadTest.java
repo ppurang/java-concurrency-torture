@@ -1,18 +1,9 @@
 package net.shipilev.concurrent.torture.positive;
 
-import net.shipilev.concurrent.torture.evaluators.Evaluator;
 import net.shipilev.concurrent.torture.OneActorOneObserverTest;
-import net.shipilev.concurrent.torture.Outcome;
 
 /**
  * Tests if volatile write-read induce proper happens-before.
- *
- * Possible states are:
- *   [0, *]: CORRECT:   volatile write to $y had not yet happened, no constraints on $x
- *   [1, 0]: INCORRECT: can't read default value for $x after volatile write to $y happened
- *   [1, 1]: INCORRECT: can't read stale value for $x after volatile write to $y happened
- *   [1, 2]: CORRECT:   read correct $x value, forced by happens-before
- *   [1, 3]: CORRECT:   read correct $x value, residual after $y update
  *
  *  @author Aleksey Shipilev (aleksey.shipilev@oracle.com)
  */
@@ -43,25 +34,8 @@ public class ReadAfterVolatileReadTest implements OneActorOneObserverTest<ReadAf
     }
 
     @Override
-    public Evaluator getEvaluator() {
-        return new Tester();
+    public int resultSize() {
+        return 2;
     }
-
-    public static class Tester implements Evaluator {
-
-        @Override
-        public Outcome test(byte[] res) {
-            if (res[0] == 1 && res[1] < 2) {
-                return Outcome.NOT_EXPECTED;
-            }
-            return Outcome.ACCEPTABLE;
-        }
-
-        @Override
-        public int resultSize() {
-            return 2;
-        }
-    }
-
 
 }
