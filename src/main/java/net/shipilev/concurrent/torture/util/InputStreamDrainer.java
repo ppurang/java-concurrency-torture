@@ -1,3 +1,19 @@
+/*
+ * Copyright (c) 2012 Aleksey Shipilev
+ *
+ * Licensed under the Apache License, Version 2.0 (the "License");
+ * you may not use this file except in compliance with the License.
+ * You may obtain a copy of the License at
+ *
+ * http://www.apache.org/licenses/LICENSE-2.0
+ *
+ * Unless required by applicable law or agreed to in writing, software
+ * distributed under the License is distributed on an "AS IS" BASIS,
+ * WITHOUT WARRANTIES OR CONDITIONS OF ANY KIND, either express or implied.
+ * See the License for the specific language governing permissions and
+ * limitations under the License.
+ */
+
 package net.shipilev.concurrent.torture.util;
 
 import java.io.IOException;
@@ -11,7 +27,7 @@ import java.util.logging.Logger;
 public class InputStreamDrainer extends Thread {
 
     private static final int BUF_SIZE = 1024;
-    private final List<OutputStream> outs;
+    private final OutputStream out;
     private final InputStream in;
 
     /**
@@ -31,19 +47,7 @@ public class InputStreamDrainer extends Thread {
      */
     public InputStreamDrainer(InputStream in, OutputStream out) {
         this.in = in;
-        outs = new ArrayList<OutputStream>();
-        addOutputStream(out);
-    }
-
-    /**
-     * Adds an output stream to drain the output to.
-     *
-     * @param out The output stream
-     */
-    public void addOutputStream(OutputStream out) {
-        if (out != null) {
-            outs.add(out);
-        }
+        this.out = out;
     }
 
     /** Drain the stream. */
@@ -52,11 +56,11 @@ public class InputStreamDrainer extends Thread {
         try {
             int read;
             while ((read = in.read(buf)) != -1) {
-                for (OutputStream out : outs) {
+                if (out != null) {
                     out.write(buf, 0, read);
                 }
             }
-            for (OutputStream out : outs) {
+            if (out != null) {
                 out.flush();
             }
         } catch (IOException ioe) {
