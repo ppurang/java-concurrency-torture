@@ -33,12 +33,14 @@ public class Runner {
     private final int loops;
     private final ExecutorService pool;
     private final boolean shouldYield;
+    private final Parser parser;
     private volatile boolean isStopped;
     private final int wtime;
     private final int witers;
     private final Results root;
 
-    public Runner(Options opts) throws FileNotFoundException {
+    public Runner(Parser p, Options opts) throws FileNotFoundException {
+        parser = p;
         this.pw = new PrintWriter(System.out, true);
         this.xml = new File(opts.getResultFile());
         time = opts.getTime();
@@ -188,8 +190,8 @@ public class Runner {
         res.get();
 
         if (!dryRun) {
-            dump(test, res.get());
-            judge(test, res.get());
+            Result r = dump(test, res.get());
+            judge(r);
         }
     }
 
@@ -339,12 +341,12 @@ public class Runner {
         res.get();
 
         if (!dryRun) {
-            dump(test, res.get());
-            judge(test, res.get());
+            Result r = dump(test, res.get());
+            judge(r);
         }
     }
 
-    private void dump(ConcurrencyTest test, Multiset<Long> results) {
+    private Result dump(ConcurrencyTest test, Multiset<Long> results) {
         ObjectFactory factory = new ObjectFactory();
         Result result = factory.createResult();
 
@@ -362,41 +364,11 @@ public class Runner {
             state.setCount(results.count(e));
             result.getState().add(state);
         }
+        return result;
     }
 
-    private void judge(ConcurrencyTest test, Multiset<Long> results) {
-        pw.printf("%35s %12s %-20s\n", "Observed state", "Occurrences", "Interpretation");
-        for (Long e : results.keys()) {
-
-            byte[] b = longToByteArr(e);
-
-            byte[] t = new byte[test.getEvaluator().resultSize()];
-            System.arraycopy(b, 0, t, 0, test.getEvaluator().resultSize());
-            b = t;
-
-            Evaluator evaluator = test.getEvaluator();
-            boolean isFailed;
-            switch (evaluator.test(b)) {
-                case ACCEPTABLE:
-                case TRANSIENT:
-                    // no implementation yet
-                    isFailed = false;
-                    break;
-
-                case EXPECTED:
-                    isFailed = (results.count(e) == 0);
-                    break;
-
-                case NOT_EXPECTED:
-                    isFailed = (results.count(e) > 0);
-                    break;
-                default:
-                    throw new IllegalStateException();
-            }
-
-            pw.printf("%35s (%10d) %6s %-40s\n", Arrays.toString(b), results.count(e), (isFailed ? "ERROR:" : "OK:"), evaluator.test(b));
-        }
-
+    private void judge(Result result) {
+        parser.parseText(pw, result);
         pw.println();
     }
 

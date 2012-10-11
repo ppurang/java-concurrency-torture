@@ -1,21 +1,6 @@
 package net.shipilev.concurrent.torture;
 
 import com.google.common.base.Predicate;
-import net.shipilev.concurrent.torture.negative.DoubleAtomicityTest;
-import net.shipilev.concurrent.torture.negative.LongAtomicityTest;
-import net.shipilev.concurrent.torture.negative.RacyPublicationTest;
-import net.shipilev.concurrent.torture.negative.ReadTwiceTest;
-import net.shipilev.concurrent.torture.negative.UnsafeSingletonTest;
-import net.shipilev.concurrent.torture.negative.VolatileAtomicityTest;
-import net.shipilev.concurrent.torture.positive.AtomicIntegerIncrementTest;
-import net.shipilev.concurrent.torture.positive.init.LongFinalTest;
-import net.shipilev.concurrent.torture.positive.init.LongConstrTest;
-import net.shipilev.concurrent.torture.positive.init.LongInstanceTest;
-import net.shipilev.concurrent.torture.positive.IntAtomicityTest;
-import net.shipilev.concurrent.torture.positive.ReadAfterVolatileReadTest;
-import net.shipilev.concurrent.torture.positive.ReadTwiceOverVolatileReadTest;
-import net.shipilev.concurrent.torture.positive.VolatileLongAtomicityTest;
-import net.shipilev.concurrent.torture.positive.init.LongVolatileTest;
 import org.reflections.Reflections;
 import org.reflections.scanners.SubTypesScanner;
 import org.reflections.scanners.TypeAnnotationsScanner;
@@ -27,7 +12,6 @@ import javax.annotation.Nullable;
 import javax.xml.bind.JAXBException;
 import java.io.IOException;
 import java.util.Comparator;
-import java.util.Set;
 import java.util.SortedSet;
 import java.util.TreeSet;
 import java.util.concurrent.ExecutionException;
@@ -49,14 +33,12 @@ public class Main {
         System.out.println("Each test does " + opts.getLoops() + " internal loops");
         System.out.println();
 
+        Parser p = new Parser(opts);
+
         if (opts.shouldParse()) {
-            Parser p = new Parser(opts);
-            p.parse();
+            p.parseHTML();
         } else {
-
-            Runner r = new Runner(opts);
-
-            // FIXME: Dodgy raw types, clean up.
+            Runner r = new Runner(p, opts);
 
             for (Class<? extends OneActorOneObserverTest> test : filterTests(opts.getTestRegexp(), OneActorOneObserverTest.class)) {
                 OneActorOneObserverTest<?> instance = test.newInstance();
