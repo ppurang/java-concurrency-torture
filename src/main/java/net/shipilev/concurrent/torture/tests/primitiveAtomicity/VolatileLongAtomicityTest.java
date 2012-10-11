@@ -4,8 +4,6 @@ import net.shipilev.concurrent.torture.tests.OneActorOneObserverTest;
 
 /**
  * Tests if volatile primitive longs experience word tearing.
- * Volatile long tearing is not allowed by JMM.
- * The failure on this test highlights the possible bug.
  *
  * @author Aleksey Shipilev (aleksey.shipilev@oracle.com)
  */

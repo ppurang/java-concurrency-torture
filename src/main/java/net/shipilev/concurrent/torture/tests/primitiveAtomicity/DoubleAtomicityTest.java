@@ -4,6 +4,7 @@ import net.shipilev.concurrent.torture.tests.OneActorOneObserverTest;
 
 /**
  * Tests if primitive doubles experience non-atomic updates.
+ *
  * @author Aleksey Shipilev (aleksey.shipilev@oracle.com)
  */
 public class DoubleAtomicityTest implements OneActorOneObserverTest<DoubleAtomicityTest.Specimen> {

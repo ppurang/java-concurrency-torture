@@ -3,7 +3,7 @@ package net.shipilev.concurrent.torture.tests.primitiveAtomicity;
 import net.shipilev.concurrent.torture.tests.OneActorOneObserverTest;
 
 /**
- * Tests if primitive integers experience non-atomic reads/writes.
+ * Tests if primitive shorts experience non-atomic reads/writes.
  *
  * @author Aleksey Shipilev (aleksey.shipilev@oracle.com)
  */
