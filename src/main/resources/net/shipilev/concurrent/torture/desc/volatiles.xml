@@ -129,6 +129,7 @@
             <expect>ABSENT</expect>
             <description>
                 Volatile write to $y had happened, and update to $x had been lost.
+                Known bug in JDK 7u4 and lower client compiler, see <![CDATA[<a href="http://bugs.sun.com/bugdatabase/view_bug.do?bug_id=7170145">CR 7170145</a>]]>
             </description>
         </case>
         <case>
