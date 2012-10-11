@@ -1,6 +1,7 @@
 package net.shipilev.concurrent.torture;
 
 import com.google.common.base.Predicate;
+import net.shipilev.concurrent.torture.util.InputStreamDrainer;
 import org.reflections.Reflections;
 import org.reflections.scanners.SubTypesScanner;
 import org.reflections.scanners.TypeAnnotationsScanner;
@@ -10,12 +11,20 @@ import org.reflections.util.FilterBuilder;
 
 import javax.annotation.Nullable;
 import javax.xml.bind.JAXBException;
+import java.io.File;
+import java.io.FileNotFoundException;
 import java.io.IOException;
+import java.lang.management.ManagementFactory;
+import java.lang.management.RuntimeMXBean;
 import java.lang.reflect.Modifier;
 import java.util.Comparator;
+import java.util.List;
+import java.util.Properties;
 import java.util.SortedSet;
 import java.util.TreeSet;
 import java.util.concurrent.ExecutionException;
+import java.util.logging.Level;
+import java.util.logging.Logger;
 import java.util.regex.Pattern;
 
 public class Main {
@@ -29,35 +38,137 @@ public class Main {
             System.exit(1);
         }
 
-        Parser p = new Parser(opts);
-
         if (opts.shouldParse()) {
             System.out.println("Re-interpreting the results...");
             System.out.println("Look in results.html for the results");
             System.out.println();
 
+            Parser p = new Parser(opts);
             p.parseHTML();
         } else {
-            System.out.println("Running each test for " + opts.getTime() + "ms");
-            System.out.println("Each test does " + opts.getLoops() + " internal loops");
-            System.out.println("Look in results.html for the results");
-            System.out.println();
-
-            Runner r = new Runner(p, opts);
-
-            for (Class<? extends OneActorOneObserverTest> test : filterTests(opts.getTestRegexp(), OneActorOneObserverTest.class)) {
-                OneActorOneObserverTest<?> instance = test.newInstance();
-                r.run(instance);
+            if (opts.shouldFork()) {
+                for (Class<? extends ConcurrencyTest> test : filterTests(opts.getTestRegexp(), OneActorOneObserverTest.class)) {
+                    runForked(test);
+                }
+                for (Class<? extends ConcurrencyTest> test : filterTests(opts.getTestRegexp(), TwoActorsOneArbiterTest.class)) {
+                    runForked(test);
+                }
+            } else {
+                runAll(opts);
             }
-
-            for (Class<? extends TwoActorsOneArbiterTest> test : filterTests(opts.getTestRegexp(), TwoActorsOneArbiterTest.class)) {
-                TwoActorsOneArbiterTest<?> instance = test.newInstance();
-                r.run(instance);
-            }
-
-            r.close();
         }
     }
+
+    private static void runForked(Class<? extends ConcurrencyTest>  test) {
+        try {
+
+//            String commandString = "java -jar target/concurrency-torture.jar -fork false -t " + test.getName();
+            String commandString = getSeparateExecutionCommand(test.getName());
+            System.err.println("Invoking: " + commandString);
+            Process p = Runtime.getRuntime().exec(commandString);
+
+            InputStreamDrainer errDrainer = new InputStreamDrainer(p.getErrorStream(), System.err);
+            InputStreamDrainer outDrainer = new InputStreamDrainer(p.getInputStream(), System.out);
+
+            errDrainer.start();
+            outDrainer.start();
+
+            int ecode = p.waitFor();
+
+            if (ecode != 0) {
+                throw new IllegalStateException("WARNING: Forked process returned code: " + ecode);
+            }
+
+            errDrainer.join();
+            outDrainer.join();
+
+        } catch (IOException ex) {
+            ex.printStackTrace();
+        } catch (InterruptedException ex) {
+            ex.printStackTrace();
+        }
+    }
+
+    private static void runAll(Options opts) throws FileNotFoundException, InstantiationException, IllegalAccessException, ExecutionException, InterruptedException, JAXBException {
+        System.out.println("Running each test for " + opts.getTime() + "ms");
+        System.out.println("Each test does " + opts.getLoops() + " internal loops");
+        System.out.println("Look in results.html for the results");
+        System.out.println();
+
+        Parser p = new Parser(opts);
+        Runner r = new Runner(p, opts);
+
+        for (Class<? extends OneActorOneObserverTest> test : filterTests(opts.getTestRegexp(), OneActorOneObserverTest.class)) {
+            OneActorOneObserverTest<?> instance = test.newInstance();
+            r.run(instance);
+        }
+
+        for (Class<? extends TwoActorsOneArbiterTest> test : filterTests(opts.getTestRegexp(), TwoActorsOneArbiterTest.class)) {
+            TwoActorsOneArbiterTest<?> instance = test.newInstance();
+            r.run(instance);
+        }
+
+        r.close();
+    }
+
+    public static String getSeparateExecutionCommand(String test) {
+        Properties props = System.getProperties();
+        String javaHome = (String) props.get("java.home");
+        String separator = File.separator;
+        String osName = props.getProperty("os.name");
+        boolean isOnWindows = osName.contains("indows");
+        String platformSpecificBinaryPostfix = isOnWindows ? ".exe" : "";
+
+        String classPath = (String) props.get("java.class.path");
+
+        if (isOnWindows) {
+            classPath = '"' + classPath + '"';
+        }
+
+        // else find out which one parent is and use that
+        StringBuilder javaExecutable = new StringBuilder();
+        javaExecutable.append(javaHome);
+        javaExecutable.append(separator);
+        javaExecutable.append("bin");
+        javaExecutable.append(separator);
+        javaExecutable.append("java");
+        javaExecutable.append(platformSpecificBinaryPostfix);
+        String javaExecutableString = javaExecutable.toString();
+
+
+        // else use same jvm args given to this runner
+        StringBuilder jvmArguments = new StringBuilder();
+        RuntimeMXBean RuntimemxBean = ManagementFactory.getRuntimeMXBean();
+        List<String> args = RuntimemxBean.getInputArguments();
+
+        for (String arg : args) {
+            jvmArguments.append(arg);
+            jvmArguments.append(' ');
+        }
+        if (jvmArguments.length() > 0) {
+            jvmArguments.setLength(jvmArguments.length() - 1);
+        }
+
+        String jvmArgumentsString = jvmArguments.toString();
+
+        // assemble final process command
+
+        StringBuilder command = new StringBuilder();
+        command.append(javaExecutableString);
+
+        if (!jvmArgumentsString.isEmpty()) {
+            command.append(' ');
+            command.append(jvmArgumentsString);
+        }
+
+        command.append(" -cp ");
+        command.append(classPath);
+        command.append(' ');
+        command.append(Main.class.getName());
+
+        return command.toString() + " -t " + test + " -fork false";
+    }
+
 
     private static <T> SortedSet<Class<? extends T>> filterTests(final Pattern pattern, Class<T> klass) {
         // God I miss both diamonds and lambdas here.
@@ -65,12 +176,6 @@ public class Main {
         Reflections r = new Reflections(
                 new ConfigurationBuilder()
                         .filterInputsBy(new FilterBuilder().include("net.shipilev.concurrent.torture.*"))
-                        .filterInputsBy(new Predicate<String>() {
-                            @Override
-                            public boolean apply(@Nullable String s) {
-                                return pattern.matcher(s).matches();
-                            }
-                        })
                         .setUrls(ClasspathHelper.forClassLoader())
                         .setScanners(new SubTypesScanner(), new TypeAnnotationsScanner()));
 
@@ -82,9 +187,14 @@ public class Main {
         });
 
         for (Class<? extends T> k : r.getSubTypesOf(klass)) {
-            if (!Modifier.isAbstract(k.getModifiers())) {
-                s.add(k);
+//            System.err.println("matching " + k);
+            if (!pattern.matcher(k.getName()).matches()) {
+                continue;
             }
+            if (Modifier.isAbstract(k.getModifiers())) {
+                continue;
+            }
+            s.add(k);
         }
 
         return s;

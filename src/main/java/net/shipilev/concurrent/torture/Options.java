@@ -34,6 +34,7 @@ public class Options {
     private final String[] args;
     private boolean shouldYield;
     private boolean parse;
+    private boolean shouldFork;
 
     public Options(String[] args) {
         this.args = args;
@@ -67,6 +68,9 @@ public class Options {
         OptionSpec<Boolean> shouldYield = parser.accepts("yield", "Make yields in busyloops")
                 .withOptionalArg().ofType(boolean.class).defaultsTo(false);
 
+        OptionSpec<Boolean> shouldFork = parser.accepts("fork", "Should fork")
+                .withOptionalArg().ofType(boolean.class).defaultsTo(false);
+
         parser.accepts("h", "Print this help");
 
         OptionSet set;
@@ -90,7 +94,8 @@ public class Options {
         this.wtime = set.valueOf(wtime);
         this.witers = set.valueOf(witers);
         this.testRegexp = Pattern.compile(set.valueOf(testRegexp));
-        this.shouldYield = set.has(shouldYield);
+        this.shouldYield = set.valueOf(shouldYield);
+        this.shouldFork = set.valueOf(shouldFork);
         this.parse = set.has(parse);
         return true;
     }
@@ -125,5 +130,9 @@ public class Options {
 
     public Pattern getTestRegexp() {
         return testRegexp;
+    }
+
+    public boolean shouldFork() {
+        return shouldFork;
     }
 }
