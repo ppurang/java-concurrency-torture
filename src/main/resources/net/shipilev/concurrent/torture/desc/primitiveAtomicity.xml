@@ -93,7 +93,63 @@
         </unmatched>
     </test>
 
+    <test name="net.shipilev.concurrent.torture.tests.primitiveAtomicity.VolatileIntAtomicityTest">
+        <contributed-by>Aleksey Shipilev (aleksey.shipilev@oracle.com)</contributed-by>
+        <description>
+            Tests if primitive integers experience non-atomic updates.
+        </description>
+        <case>
+            <match>[0, 0, 0, 0]</match>
+            <expect>REQUIRED</expect>
+            <description>
+                Default value for the field. Observers are allowed to see the default value for the field,
+                because there is the data race between reader and writer.
+            </description>
+        </case>
+        <case>
+            <match>[-1, -1, -1, -1]</match>
+            <expect>REQUIRED</expect>
+            <description>
+                The value set by the actor thread. Observer sees the complete update.
+            </description>
+        </case>
+        <unmatched>
+            <expect>ABSENT</expect>
+            <description>
+                This case is not expected.
+            </description>
+        </unmatched>
+    </test>
+
     <test name="net.shipilev.concurrent.torture.tests.primitiveAtomicity.FloatAtomicityTest">
+        <contributed-by>Aleksey Shipilev (aleksey.shipilev@oracle.com)</contributed-by>
+        <description>
+            Tests if primitive integers experience non-atomic updates.
+        </description>
+        <case>
+            <match>[0, 0, 0, 0]</match>
+            <expect>REQUIRED</expect>
+            <description>
+                Default value for the field. Observers are allowed to see the default value for the field,
+                because there is the data race between reader and writer.
+            </description>
+        </case>
+        <case>
+            <match>[-1, -1, -1, -1]</match>
+            <expect>REQUIRED</expect>
+            <description>
+                The value set by the actor thread. Observer sees the complete update.
+            </description>
+        </case>
+        <unmatched>
+            <expect>ABSENT</expect>
+            <description>
+                This case is not expected.
+            </description>
+        </unmatched>
+    </test>
+
+    <test name="net.shipilev.concurrent.torture.tests.primitiveAtomicity.VolatileFloatAtomicityTest">
         <contributed-by>Aleksey Shipilev (aleksey.shipilev@oracle.com)</contributed-by>
         <description>
             Tests if primitive integers experience non-atomic updates.
@@ -158,7 +214,63 @@
         </unmatched>
     </test>
 
+    <test name="net.shipilev.concurrent.torture.tests.primitiveAtomicity.VolatileLongAtomicityTest">
+        <contributed-by>Aleksey Shipilev (aleksey.shipilev@oracle.com)</contributed-by>
+        <description>
+            Tests if volatile longs experience non-atomic updates.
+        </description>
+        <case>
+            <match>[0, 0, 0, 0, 0, 0, 0, 0]</match>
+            <expect>REQUIRED</expect>
+            <description>
+                Default value for the field. Observers are allowed to see the default value for the field,
+                because there is the data race between reader and writer.
+            </description>
+        </case>
+        <case>
+            <match>[-1, -1, -1, -1, -1, -1, -1, -1]</match>
+            <expect>REQUIRED</expect>
+            <description>
+                The value set by the actor thread. Observer sees the complete update.
+            </description>
+        </case>
+        <unmatched>
+            <expect>ABSENT</expect>
+            <description>
+                Seeing other values is forbidden by JMM.
+            </description>
+        </unmatched>
+    </test>
+
     <test name="net.shipilev.concurrent.torture.tests.primitiveAtomicity.CharAtomicityTest">
+        <contributed-by>Aleksey Shipilev (aleksey.shipilev@oracle.com)</contributed-by>
+        <description>
+            Tests if primitive chars experience non-atomic updates.
+        </description>
+        <case>
+            <match>[0, 0]</match>
+            <expect>REQUIRED</expect>
+            <description>
+                Default value for the field. Observers are allowed to see the default value for the field,
+                because there is the data race between reader and writer.
+            </description>
+        </case>
+        <case>
+            <match>[-1, -1]</match>
+            <expect>REQUIRED</expect>
+            <description>
+                The value set by the actor thread. Observer sees the complete update.
+            </description>
+        </case>
+        <unmatched>
+            <expect>ABSENT</expect>
+            <description>
+                This case is not expected.
+            </description>
+        </unmatched>
+    </test>
+
+    <test name="net.shipilev.concurrent.torture.tests.primitiveAtomicity.VolatileCharAtomicityTest">
         <contributed-by>Aleksey Shipilev (aleksey.shipilev@oracle.com)</contributed-by>
         <description>
             Tests if primitive chars experience non-atomic updates.
@@ -242,13 +354,13 @@
         </unmatched>
     </test>
 
-    <test name="net.shipilev.concurrent.torture.tests.primitiveAtomicity.VolatileLongAtomicityTest">
+    <test name="net.shipilev.concurrent.torture.tests.primitiveAtomicity.ByteAtomicityTest">
         <contributed-by>Aleksey Shipilev (aleksey.shipilev@oracle.com)</contributed-by>
         <description>
-            Tests if volatile longs experience non-atomic updates.
+            Tests if primitive bytes experience non-atomic updates.
         </description>
         <case>
-            <match>[0, 0, 0, 0, 0, 0, 0, 0]</match>
+            <match>[0]</match>
             <expect>REQUIRED</expect>
             <description>
                 Default value for the field. Observers are allowed to see the default value for the field,
@@ -256,7 +368,7 @@
             </description>
         </case>
         <case>
-            <match>[-1, -1, -1, -1, -1, -1, -1, -1]</match>
+            <match>[-1]</match>
             <expect>REQUIRED</expect>
             <description>
                 The value set by the actor thread. Observer sees the complete update.
@@ -265,9 +377,38 @@
         <unmatched>
             <expect>ABSENT</expect>
             <description>
-                Seeing other values is forbidden by JMM.
+                This case is not expected.
             </description>
         </unmatched>
     </test>
+
+    <test name="net.shipilev.concurrent.torture.tests.primitiveAtomicity.VolatileByteAtomicityTest">
+        <contributed-by>Aleksey Shipilev (aleksey.shipilev@oracle.com)</contributed-by>
+        <description>
+            Tests if primitive volatile bytes experience non-atomic updates.
+        </description>
+        <case>
+            <match>[0]</match>
+            <expect>REQUIRED</expect>
+            <description>
+                Default value for the field. Observers are allowed to see the default value for the field,
+                because there is the data race between reader and writer.
+            </description>
+        </case>
+        <case>
+            <match>[-1]</match>
+            <expect>REQUIRED</expect>
+            <description>
+                The value set by the actor thread. Observer sees the complete update.
+            </description>
+        </case>
+        <unmatched>
+            <expect>ABSENT</expect>
+            <description>
+                This case is not expected.
+            </description>
+        </unmatched>
+    </test>
+
 
 </testsuite>
