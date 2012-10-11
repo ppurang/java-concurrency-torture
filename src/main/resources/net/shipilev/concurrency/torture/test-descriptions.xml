@@ -1,7 +1,5 @@
 <testsuite suite="primitiveAtomics">
-    <test>
-        <name>net.shipilev.concurrent.torture.negative.DoubleAtomicityTest</name>
-        <file>negative/DoubleAtomicityTest.java</file>
+    <test name="net.shipilev.concurrent.torture.negative.DoubleAtomicityTest">
         <contributed-by>Aleksey Shipilev (aleksey.shipilev@oracle.com)</contributed-by>
         <description>
             Tests if primitive doubles experience non-atomic updates.
@@ -38,9 +36,7 @@
         </unmatched>
     </test>
 
-    <test>
-        <name>net.shipilev.concurrent.torture.positive.IntAtomicityTest</name>
-        <file>negative/DoubleAtomicityTest.java</file>
+    <test name="net.shipilev.concurrent.torture.positive.IntAtomicityTest">
         <contributed-by>Aleksey Shipilev (aleksey.shipilev@oracle.com)</contributed-by>
         <description>
             Tests if primitive integers experience non-atomic updates.
@@ -68,9 +64,7 @@
         </unmatched>
     </test>
 
-    <test>
-        <name>net.shipilev.concurrent.torture.negative.LongAtomicityTest</name>
-        <file>negative/DoubleAtomicityTest.java</file>
+    <test name="net.shipilev.concurrent.torture.negative.LongAtomicityTest">
         <contributed-by>Aleksey Shipilev (aleksey.shipilev@oracle.com)</contributed-by>
         <description>
             Tests if primitive longs experience non-atomic updates.
@@ -107,9 +101,7 @@
         </unmatched>
     </test>
 
-    <test>
-        <name>net.shipilev.concurrent.torture.positive.VolatileLongAtomicityTest</name>
-        <file>negative/DoubleAtomicityTest.java</file>
+    <test name="net.shipilev.concurrent.torture.positive.VolatileLongAtomicityTest">
         <contributed-by>Aleksey Shipilev (aleksey.shipilev@oracle.com)</contributed-by>
         <description>
             Tests if volatile longs experience non-atomic updates.
@@ -137,9 +129,7 @@
         </unmatched>
     </test>
 
-    <test>
-        <name>net.shipilev.concurrent.torture.negative.ReadTwiceTest</name>
-        <file>negative/ReadTwice.java</file>
+    <test name="net.shipilev.concurrent.torture.negative.ReadTwiceTest">
         <contributed-by>Aleksey Shipilev (aleksey.shipilev@oracle.com)</contributed-by>
         <description>
             Tests if intervening writes break the ordering.
@@ -205,9 +195,7 @@
         </unmatched>
     </test>
 
-    <test>
-        <name>net.shipilev.concurrent.torture.positive.ReadAfterVolatileReadTest</name>
-        <file>negative/ReadTwice.java</file>
+    <test name="net.shipilev.concurrent.torture.positive.ReadAfterVolatileReadTest">
         <contributed-by>Aleksey Shipilev (aleksey.shipilev@oracle.com)</contributed-by>
         <description>
             Tests if volatile write-read induce proper happens-before.
@@ -252,9 +240,7 @@
         </unmatched>
     </test>
 
-    <test>
-        <name>net.shipilev.concurrent.torture.positive.ReadTwiceOverVolatileReadTest</name>
-        <file>negative/ReadTwice.java</file>
+    <test name="net.shipilev.concurrent.torture.positive.ReadTwiceOverVolatileReadTest">
         <contributed-by>Aleksey Shipilev (aleksey.shipilev@oracle.com)</contributed-by>
         <description>
             Test if volatile write-read induces happens-before if in between two non-volatile reads.
@@ -313,9 +299,7 @@
         </unmatched>
     </test>
 
-    <test>
-        <name>net.shipilev.concurrent.torture.positive.AtomicIntegerIncrementTest</name>
-        <file>negative/ReadTwice.java</file>
+    <test name="net.shipilev.concurrent.torture.positive.AtomicIntegerIncrementTest">
         <contributed-by>Aleksey Shipilev (aleksey.shipilev@oracle.com)</contributed-by>
         <description>
             Tests the atomicity of AtomicInteger incrementAndGet.
@@ -335,9 +319,7 @@
         </unmatched>
     </test>
 
-    <test>
-        <name>net.shipilev.concurrent.torture.negative.VolatileAtomicityTest</name>
-        <file>negative/ReadTwice.java</file>
+    <test name="net.shipilev.concurrent.torture.negative.VolatileAtomicityTest">
         <contributed-by>Aleksey Shipilev (aleksey.shipilev@oracle.com)</contributed-by>
         <description>
             Tests the atomicity of volatile increment.
@@ -371,9 +353,7 @@
         </unmatched>
     </test>
 
-    <test>
-        <name>net.shipilev.concurrent.torture.negative.RacyPublicationTest</name>
-        <file>negative/ReadTwice.java</file>
+    <test name="net.shipilev.concurrent.torture.negative.RacyPublicationTest">
         <contributed-by>Aleksey Shipilev (aleksey.shipilev@oracle.com)</contributed-by>
         <description>
             Tests the races during unsafe publication.
@@ -401,9 +381,7 @@
         </unmatched>
     </test>
 
-    <test>
-        <name>net.shipilev.concurrent.torture.negative.UnsafeSingletonTest</name>
-        <file>negative/ReadTwice.java</file>
+    <test name="net.shipilev.concurrent.torture.negative.UnsafeSingletonTest">
         <contributed-by>Aleksey Shipilev (aleksey.shipilev@oracle.com)</contributed-by>
         <description>
             Tests the broken DCL-style singleton.
@@ -438,9 +416,7 @@
         </unmatched>
     </test>
 
-    <test>
-        <name>net.shipilev.concurrent.torture.positive.init.LongConstrTest</name>
-        <file>negative/DoubleAtomicityTest.java</file>
+    <test name="net.shipilev.concurrent.torture.positive.init.LongConstrTest">
         <contributed-by>Aleksey Shipilev (aleksey.shipilev@oracle.com)</contributed-by>
         <description>
             Tests if primitive long fields are properly initialized (in constructor).
@@ -476,9 +452,7 @@
         </unmatched>
     </test>
 
-    <test>
-        <name>net.shipilev.concurrent.torture.positive.init.LongInstanceTest</name>
-        <file>negative/DoubleAtomicityTest.java</file>
+    <test name="net.shipilev.concurrent.torture.positive.init.LongInstanceTest">
         <contributed-by>Aleksey Shipilev (aleksey.shipilev@oracle.com)</contributed-by>
         <description>
             Tests if primitive long fields are properly initialized (by instance initializer).
@@ -514,9 +488,7 @@
         </unmatched>
     </test>
 
-    <test>
-        <name>net.shipilev.concurrent.torture.positive.init.LongFinalTest</name>
-        <file>negative/DoubleAtomicityTest.java</file>
+    <test name="net.shipilev.concurrent.torture.positive.init.LongFinalTest">
         <contributed-by>Aleksey Shipilev (aleksey.shipilev@oracle.com)</contributed-by>
         <description>
             Tests if primitive long fields are properly initialized (final field set in constructor).
@@ -552,9 +524,7 @@
         </unmatched>
     </test>
 
-    <test>
-        <name>net.shipilev.concurrent.torture.positive.init.Long</name>
-        <file>negative/DoubleAtomicityTest.java</file>
+    <test name="net.shipilev.concurrent.torture.positive.init.Long">
         <contributed-by>Aleksey Shipilev (aleksey.shipilev@oracle.com)</contributed-by>
         <description>
             Tests if primitive long fields are properly initialized (volatile field set in constructor).
