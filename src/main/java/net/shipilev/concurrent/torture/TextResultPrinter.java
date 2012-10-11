@@ -3,6 +3,7 @@ package net.shipilev.concurrent.torture;
 
 import com.google.common.base.Predicate;
 import net.shipilev.concurrency.torture.schema.descr.Case;
+import net.shipilev.concurrency.torture.schema.descr.ExpectType;
 import net.shipilev.concurrency.torture.schema.descr.Test;
 import net.shipilev.concurrency.torture.schema.descr.Testsuite;
 import net.shipilev.concurrency.torture.schema.result.Result;
@@ -78,6 +79,16 @@ public class TextResultPrinter {
         Test test = descriptions.get(r.getName());
         if (test == null) {
             output.println("Missing description for " + r.getName());
+
+            output.printf("%35s %12s %20s %-20s\n", "Observed state", "Occurrences", "Expectation", "Interpretation");
+            for (State s : r.getState()) {
+                    output.printf("%35s (%10d) %20s %-40s\n",
+                            s.getId(),
+                            s.getCount(),
+                            ExpectType.UNKNOWN,
+                            "N/A");
+            }
+
             return;
         }
 
