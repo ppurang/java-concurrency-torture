@@ -58,12 +58,12 @@ public class Parser {
 
             output.println("<p>" + test.getDescription() + "</p>");
 
-            output.println("<table>");
+            output.println("<table width=1000>");
             output.println("<tr>");
-            output.println("<th>Observed state</th>");
-            output.println("<th>Occurence</th>");
-            output.println("<th>Outcome</th>");
-            output.println("<th>Interpretation</th>");
+            output.println("<th width=250>Observed state</th>");
+            output.println("<th width=50>Occurence</th>");
+            output.println("<th width=50>Outcome</th>");
+            output.println("<th width=600>Interpretation</th>");
             output.println("</tr>");
 
             List<State> unmatchedStates = new ArrayList<State>();
@@ -77,8 +77,8 @@ public class Parser {
                         // match!
                         output.println("<tr bgColor=" + selectHTMLColor(c.getOutcome(), s.getCount() == 0) + ">");
                         output.println("<td>" + s.getId() + "</td>");
-                        output.println("<td>" + s.getCount() + "</td>");
-                        output.println("<td>" + c.getOutcome() + "</td>");
+                        output.println("<td align=center>" + s.getCount() + "</td>");
+                        output.println("<td align=center>" + c.getOutcome() + "</td>");
                         output.println("<td>" + c.getDescription() + "</td>");
                         output.println("</tr>");
                         matched = true;
@@ -90,8 +90,8 @@ public class Parser {
                     for (String m : c.getMatch()) {
                         output.println("<tr bgColor=" + selectHTMLColor(c.getOutcome(), true) + ">");
                         output.println("<td>" + m + "</td>");
-                        output.println("<td>" + 0 + "</td>");
-                        output.println("<td>" + c.getOutcome() + "</td>");
+                        output.println("<td align=center>" + 0 + "</td>");
+                        output.println("<td align=center>" + c.getOutcome() + "</td>");
                         output.println("<td>" + c.getDescription() + "</td>");
                         output.println("</tr>");
                     }
@@ -101,15 +101,16 @@ public class Parser {
             for (State s : unmatchedStates) {
                 output.println("<tr bgColor=" + selectHTMLColor(test.getUnmatched().getOutcome(), s.getCount() == 0) + ">");
                 output.println("<td>" + s.getId() + "</td>");
-                output.println("<td>" + s.getCount() + "</td>");
-                output.println("<td>" + test.getUnmatched().getOutcome() + "</td>");
+                output.println("<td align=center>" + s.getCount() + "</td>");
+                output.println("<td align=center>" + test.getUnmatched().getOutcome() + "</td>");
                 output.println("<td>" + test.getUnmatched().getDescription() + "</td>");
                 output.println("</tr>");
             }
 
             output.println("</table>");
-
         }
+
+        output.println("<p>Please report the errors in test grading to <a href='https://github.com/shipilev/java-concurrency-torture'>https://github.com/shipilev/java-concurrency-torture</a></p>");
 
         output.close();
     }
