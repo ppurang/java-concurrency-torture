@@ -45,3 +45,17 @@ Developing tests:
  for those tests. If you need some other test interface/harness support,
  please don't hesitate to raise the issue and describe the scenario you
  want to test.
+
+ Test interpretation is handled elsewhere, you can see at
+    src/main/resources/net/shipilev/concurrent/torturn/desc/
+
+ Each XML file there describes the test suite, which is the collection of
+ tests. It can match the output for each test and mark if that state is:
+    - REQUIRED:      should always be present
+    - ACCEPTABLE:    may be present, may be absent
+    - ABSENT:        should always be absent
+    - KNOWN_SPECIAL: may be present, special known case
+                     (useful to document known corner cases)
+
+ You are encouraged to provide the thorough explanation why particular
+ state has required/acceptable/absent/special.
