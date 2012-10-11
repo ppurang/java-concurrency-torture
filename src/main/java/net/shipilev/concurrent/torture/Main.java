@@ -11,6 +11,7 @@ import org.reflections.util.FilterBuilder;
 import javax.annotation.Nullable;
 import javax.xml.bind.JAXBException;
 import java.io.IOException;
+import java.lang.reflect.Modifier;
 import java.util.Comparator;
 import java.util.SortedSet;
 import java.util.TreeSet;
@@ -79,7 +80,13 @@ public class Main {
                 return o1.getName().compareTo(o2.getName());
             }
         });
-        s.addAll(r.getSubTypesOf(klass));
+
+        for (Class<? extends T> k : r.getSubTypesOf(klass)) {
+            if (!Modifier.isAbstract(k.getModifiers())) {
+                s.add(k);
+            }
+        }
+
         return s;
     }
 
