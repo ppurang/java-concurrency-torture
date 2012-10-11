@@ -26,7 +26,7 @@ import java.util.regex.Pattern;
 
 public class Options {
     private String resultFile;
-    private Pattern testRegexp;
+    private String testFilter;
     private int loops;
     private int time;
     private int wtime;
@@ -50,7 +50,7 @@ public class Options {
         OptionSpec<Boolean> parse = parser.accepts("p", "Run parser on the result file")
                 .withOptionalArg().ofType(boolean.class).defaultsTo(false);
 
-        OptionSpec<String> testRegexp = parser.accepts("t", "Regexp selector for tests")
+        OptionSpec<String> testFilter = parser.accepts("t", "Regexp selector for tests")
                 .withRequiredArg().ofType(String.class).describedAs("file").defaultsTo(".*");
 
         OptionSpec<Integer> loops = parser.accepts("loops", "Number of internal loops")
@@ -68,8 +68,8 @@ public class Options {
         OptionSpec<Boolean> shouldYield = parser.accepts("yield", "Make yields in busyloops")
                 .withOptionalArg().ofType(boolean.class).defaultsTo(false);
 
-        OptionSpec<Boolean> shouldFork = parser.accepts("fork", "Should fork")
-                .withOptionalArg().ofType(boolean.class).defaultsTo(false);
+        OptionSpec<Boolean> shouldFork = parser.accepts("f", "Should fork")
+                .withOptionalArg().ofType(boolean.class).defaultsTo(true);
 
         parser.accepts("h", "Print this help");
 
@@ -93,9 +93,9 @@ public class Options {
         this.time = set.valueOf(time);
         this.wtime = set.valueOf(wtime);
         this.witers = set.valueOf(witers);
-        this.testRegexp = Pattern.compile(set.valueOf(testRegexp));
+        this.testFilter = set.valueOf(testFilter);
         this.shouldYield = set.valueOf(shouldYield);
-        this.shouldFork = set.valueOf(shouldFork);
+        this.shouldFork = set.has(shouldFork) || set.valueOf(shouldFork);
         this.parse = set.has(parse);
         return true;
     }
@@ -128,8 +128,8 @@ public class Options {
         return parse;
     }
 
-    public Pattern getTestRegexp() {
-        return testRegexp;
+    public String getTestFilter() {
+        return testFilter;
     }
 
     public boolean shouldFork() {

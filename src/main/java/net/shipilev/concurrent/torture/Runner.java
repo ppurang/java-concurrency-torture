@@ -33,14 +33,17 @@ public class Runner {
     private final int loops;
     private final ExecutorService pool;
     private final boolean shouldYield;
-    private final Parser parser;
     private volatile boolean isStopped;
     private final int wtime;
     private final int witers;
     private final Results root;
+    private final XMLtoHTMLResultPrinter xmlPrinter;
+    private final TextResultPrinter printer;
 
-    public Runner(Parser p, Options opts) throws FileNotFoundException {
-        parser = p;
+    public Runner(Options opts) throws FileNotFoundException, JAXBException {
+        printer = new TextResultPrinter(opts);
+        xmlPrinter = new XMLtoHTMLResultPrinter(opts);
+
         this.pw = new PrintWriter(System.out, true);
         this.xml = new File(opts.getResultFile());
         time = opts.getTime();
@@ -368,10 +371,9 @@ public class Runner {
     }
 
     private void judge(Result result) {
-        parser.parseText(pw, result);
+        printer.parse(pw, result);
         pw.println();
     }
-
 
     private byte[] longToByteArr(Long element) {
         ByteBuffer buf = ByteBuffer.allocate(8);
@@ -387,6 +389,8 @@ public class Runner {
     public void close() throws FileNotFoundException, JAXBException {
         pool.shutdownNow();
 
+        xmlPrinter.parse(root);
+
         try {
             String packageName = Results.class.getPackage().getName();
             JAXBContext jc = JAXBContext.newInstance(packageName);
@@ -396,8 +400,6 @@ public class Runner {
         } catch (Throwable e) {
             e.printStackTrace();
         }
-
-        parser.parseHTML();
     }
 
     public static class SingleSharedStateHolder<S> {

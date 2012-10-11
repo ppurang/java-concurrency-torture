@@ -11,8 +11,6 @@ import net.shipilev.concurrency.torture.schema.result.Results;
 import net.shipilev.concurrency.torture.schema.result.State;
 import org.reflections.Reflections;
 import org.reflections.scanners.ResourcesScanner;
-import org.reflections.scanners.SubTypesScanner;
-import org.reflections.scanners.TypeAnnotationsScanner;
 import org.reflections.util.ClasspathHelper;
 import org.reflections.util.ConfigurationBuilder;
 import org.reflections.util.FilterBuilder;
@@ -32,12 +30,12 @@ import java.util.List;
 import java.util.Map;
 import java.util.Set;
 
-public class Parser {
+public class XMLtoHTMLResultPrinter {
 
     private final String src;
     private final Map<String, Test> descriptions;
 
-    public Parser(Options opts) throws JAXBException, FileNotFoundException {
+    public XMLtoHTMLResultPrinter(Options opts) throws JAXBException, FileNotFoundException {
         src = opts.getResultFile();
         descriptions = new HashMap<String, Test>();
         readDescriptions();
@@ -57,12 +55,9 @@ public class Parser {
             }
         });
 
-        System.out.println("Loading test descriptions");
         for (String res : resources) {
-            System.out.println("  Loading " + res);
             loadDescription(res);
         }
-        System.out.println();
     }
 
     private void loadDescription(String name) throws JAXBException {
@@ -73,10 +68,12 @@ public class Parser {
         }
     }
 
-    public void parseHTML() throws FileNotFoundException, JAXBException {
-        PrintWriter output = new PrintWriter("results.html");
+    public void parse() throws FileNotFoundException, JAXBException {
+        parse(unmarshal(Results.class, new FileInputStream(src)));
+    }
 
-        Results result = unmarshal(Results.class, new FileInputStream(src));
+    public void parse(Results result) throws FileNotFoundException, JAXBException {
+        PrintWriter output = new PrintWriter("results.html");
 
         for (Result r : result.getResult()) {
 
@@ -180,71 +177,6 @@ public class Parser {
         T unmarshal = (T) u.unmarshal(inputStream);
 
         return unmarshal;
-    }
-
-    public void parseText(PrintWriter output, Result r) {
-//        output.println(r.getName());
-
-        Test test = descriptions.get(r.getName());
-        if (test == null) {
-            output.println("Missing description for " + r.getName());
-            return;
-        }
-
-        output.printf("%35s %12s %20s %-20s\n", "Observed state", "Occurrences", "Outcome", "Interpretation");
-
-
-        List<State> unmatchedStates = new ArrayList<State>();
-        unmatchedStates.addAll(r.getState());
-        for (Case c : test.getCase()) {
-
-            boolean matched = false;
-
-            for (State s : r.getState()) {
-                if (c.getMatch().contains(s.getId())) {
-                    // match!
-                    output.printf("%35s (%10d) %20s %-40s\n",
-                            s.getId(),
-                            s.getCount(),
-                            c.getOutcome(),
-                            cutoff(c.getDescription()));
-                    matched = true;
-                    unmatchedStates.remove(s);
-                }
-            }
-
-            if (!matched) {
-                for (String m : c.getMatch()) {
-                    output.printf("%35s (%10d) %20s %-40s\n",
-                            m,
-                            0,
-                            c.getOutcome(),
-                            cutoff(c.getDescription()));
-                }
-            }
-        }
-
-        for (State s : unmatchedStates) {
-            output.printf("%35s (%10d) %20s %-40s\n",
-                    s.getId(),
-                    s.getCount(),
-                    test.getUnmatched().getOutcome(),
-                    cutoff(test.getUnmatched().getDescription()));
-        }
-
-    }
-
-    private static String cutoff(String src) {
-        while (src.contains("  ")) {
-            src = src.replaceAll("  ", " ");
-        }
-        String trim = src.replaceAll("\n", "").trim();
-        String substring = trim.substring(0, Math.min(60, trim.length()));
-        if (!substring.equals(trim)) {
-            return substring + "...";
-        } else {
-            return substring;
-        }
     }
 
 }

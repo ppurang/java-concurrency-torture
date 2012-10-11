@@ -1,6 +1,5 @@
 package net.shipilev.concurrent.torture;
 
-import com.google.common.base.Predicate;
 import net.shipilev.concurrent.torture.util.InputStreamDrainer;
 import org.reflections.Reflections;
 import org.reflections.scanners.SubTypesScanner;
@@ -9,7 +8,6 @@ import org.reflections.util.ClasspathHelper;
 import org.reflections.util.ConfigurationBuilder;
 import org.reflections.util.FilterBuilder;
 
-import javax.annotation.Nullable;
 import javax.xml.bind.JAXBException;
 import java.io.File;
 import java.io.FileNotFoundException;
@@ -23,8 +21,6 @@ import java.util.Properties;
 import java.util.SortedSet;
 import java.util.TreeSet;
 import java.util.concurrent.ExecutionException;
-import java.util.logging.Level;
-import java.util.logging.Logger;
 import java.util.regex.Pattern;
 
 public class Main {
@@ -43,14 +39,14 @@ public class Main {
             System.out.println("Look in results.html for the results");
             System.out.println();
 
-            Parser p = new Parser(opts);
-            p.parseHTML();
+            XMLtoHTMLResultPrinter p = new XMLtoHTMLResultPrinter(opts);
+            p.parse();
         } else {
             if (opts.shouldFork()) {
-                for (Class<? extends ConcurrencyTest> test : filterTests(opts.getTestRegexp(), OneActorOneObserverTest.class)) {
+                for (Class<? extends ConcurrencyTest> test : filterTests(opts.getTestFilter(), OneActorOneObserverTest.class)) {
                     runForked(test);
                 }
-                for (Class<? extends ConcurrencyTest> test : filterTests(opts.getTestRegexp(), TwoActorsOneArbiterTest.class)) {
+                for (Class<? extends ConcurrencyTest> test : filterTests(opts.getTestFilter(), TwoActorsOneArbiterTest.class)) {
                     runForked(test);
                 }
             } else {
@@ -95,15 +91,14 @@ public class Main {
         System.out.println("Look in results.html for the results");
         System.out.println();
 
-        Parser p = new Parser(opts);
-        Runner r = new Runner(p, opts);
+        Runner r = new Runner(opts);
 
-        for (Class<? extends OneActorOneObserverTest> test : filterTests(opts.getTestRegexp(), OneActorOneObserverTest.class)) {
+        for (Class<? extends OneActorOneObserverTest> test : filterTests(opts.getTestFilter(), OneActorOneObserverTest.class)) {
             OneActorOneObserverTest<?> instance = test.newInstance();
             r.run(instance);
         }
 
-        for (Class<? extends TwoActorsOneArbiterTest> test : filterTests(opts.getTestRegexp(), TwoActorsOneArbiterTest.class)) {
+        for (Class<? extends TwoActorsOneArbiterTest> test : filterTests(opts.getTestFilter(), TwoActorsOneArbiterTest.class)) {
             TwoActorsOneArbiterTest<?> instance = test.newInstance();
             r.run(instance);
         }
@@ -164,14 +159,16 @@ public class Main {
         command.append(" -cp ");
         command.append(classPath);
         command.append(' ');
-        command.append(Main.class.getName());
+        command.append(ForkedMain.class.getName());
 
-        return command.toString() + " -t " + test + " -fork false";
+        return command.toString() + " -t " + test + "";
     }
 
 
-    private static <T> SortedSet<Class<? extends T>> filterTests(final Pattern pattern, Class<T> klass) {
+    private static <T> SortedSet<Class<? extends T>> filterTests(final String filter, Class<T> klass) {
         // God I miss both diamonds and lambdas here.
+
+        Pattern pattern = Pattern.compile(filter);
 
         Reflections r = new Reflections(
                 new ConfigurationBuilder()
