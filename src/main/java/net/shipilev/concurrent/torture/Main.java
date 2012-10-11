@@ -28,16 +28,20 @@ public class Main {
             System.exit(1);
         }
 
-        System.out.println("Look up the Javadoc for test to look up the details about the test.");
-        System.out.println("Running each test for " + opts.getTime() + "ms");
-        System.out.println("Each test does " + opts.getLoops() + " internal loops");
-        System.out.println();
-
         Parser p = new Parser(opts);
 
         if (opts.shouldParse()) {
+            System.out.println("Re-interpreting the results...");
+            System.out.println("Look in results.html for the results");
+            System.out.println();
+
             p.parseHTML();
         } else {
+            System.out.println("Running each test for " + opts.getTime() + "ms");
+            System.out.println("Each test does " + opts.getLoops() + " internal loops");
+            System.out.println("Look in results.html for the results");
+            System.out.println();
+
             Runner r = new Runner(p, opts);
 
             for (Class<? extends OneActorOneObserverTest> test : filterTests(opts.getTestRegexp(), OneActorOneObserverTest.class)) {
