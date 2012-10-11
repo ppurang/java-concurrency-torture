@@ -26,10 +26,13 @@ import java.io.FilenameFilter;
 import java.io.InputStream;
 import java.io.PrintWriter;
 import java.util.ArrayList;
+import java.util.Arrays;
+import java.util.Comparator;
 import java.util.HashMap;
 import java.util.List;
 import java.util.Map;
 import java.util.Set;
+import java.util.TreeMap;
 
 public class XMLtoHTMLResultPrinter {
 
@@ -38,7 +41,7 @@ public class XMLtoHTMLResultPrinter {
 
     public XMLtoHTMLResultPrinter(Options opts) throws JAXBException, FileNotFoundException {
         resultDir = opts.getResultDest();
-        descriptions = new HashMap<String, Test>();
+        descriptions = new TreeMap<String, Test>();
         readDescriptions();
     }
 
@@ -82,6 +85,8 @@ public class XMLtoHTMLResultPrinter {
                 return name.endsWith("xml");
             }
         });
+
+        Arrays.sort(files);
 
         for (File f : files) {
             parse(output, unmarshal(Result.class, new FileInputStream(f)));
