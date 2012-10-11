@@ -81,7 +81,7 @@ public class TextResultPrinter {
             return;
         }
 
-        output.printf("%35s %12s %20s %-20s\n", "Observed state", "Occurrences", "Outcome", "Interpretation");
+        output.printf("%35s %12s %20s %-20s\n", "Observed state", "Occurrences", "Expectation", "Interpretation");
 
         List<State> unmatchedStates = new ArrayList<State>();
         unmatchedStates.addAll(r.getState());
@@ -95,7 +95,7 @@ public class TextResultPrinter {
                     output.printf("%35s (%10d) %20s %-40s\n",
                             s.getId(),
                             s.getCount(),
-                            c.getOutcome(),
+                            c.getExpect(),
                             cutoff(c.getDescription()));
                     matched = true;
                     unmatchedStates.remove(s);
@@ -107,7 +107,7 @@ public class TextResultPrinter {
                     output.printf("%35s (%10d) %20s %-40s\n",
                             m,
                             0,
-                            c.getOutcome(),
+                            c.getExpect(),
                             cutoff(c.getDescription()));
                 }
             }
@@ -117,7 +117,7 @@ public class TextResultPrinter {
             output.printf("%35s (%10d) %20s %-40s\n",
                     s.getId(),
                     s.getCount(),
-                    test.getUnmatched().getOutcome(),
+                    test.getUnmatched().getExpect(),
                     cutoff(test.getUnmatched().getDescription()));
         }
 

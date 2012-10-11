@@ -3,7 +3,7 @@ package net.shipilev.concurrent.torture;
 
 import com.google.common.base.Predicate;
 import net.shipilev.concurrency.torture.schema.descr.Case;
-import net.shipilev.concurrency.torture.schema.descr.OutcomeType;
+import net.shipilev.concurrency.torture.schema.descr.ExpectType;
 import net.shipilev.concurrency.torture.schema.descr.Test;
 import net.shipilev.concurrency.torture.schema.descr.Testsuite;
 import net.shipilev.concurrency.torture.schema.result.Result;
@@ -111,8 +111,8 @@ public class XMLtoHTMLResultPrinter {
         output.println("<table width=100%>");
         output.println("<tr>");
         output.println("<th width=250>Observed state</th>");
-        output.println("<th width=50>Occurence</th>");
-        output.println("<th width=50>Outcome</th>");
+        output.println("<th width=50>Occurrence</th>");
+        output.println("<th width=50>Expectation</th>");
         output.println("<th>Interpretation</th>");
         output.println("</tr>");
 
@@ -125,10 +125,10 @@ public class XMLtoHTMLResultPrinter {
             for (State s : r.getState()) {
                 if (c.getMatch().contains(s.getId())) {
                     // match!
-                    output.println("<tr bgColor=" + selectHTMLColor(c.getOutcome(), s.getCount() == 0) + ">");
+                    output.println("<tr bgColor=" + selectHTMLColor(c.getExpect(), s.getCount() == 0) + ">");
                     output.println("<td>" + s.getId() + "</td>");
                     output.println("<td align=center>" + s.getCount() + "</td>");
-                    output.println("<td align=center>" + c.getOutcome() + "</td>");
+                    output.println("<td align=center>" + c.getExpect() + "</td>");
                     output.println("<td>" + c.getDescription() + "</td>");
                     output.println("</tr>");
                     matched = true;
@@ -138,10 +138,10 @@ public class XMLtoHTMLResultPrinter {
 
             if (!matched) {
                 for (String m : c.getMatch()) {
-                    output.println("<tr bgColor=" + selectHTMLColor(c.getOutcome(), true) + ">");
+                    output.println("<tr bgColor=" + selectHTMLColor(c.getExpect(), true) + ">");
                     output.println("<td>" + m + "</td>");
                     output.println("<td align=center>" + 0 + "</td>");
-                    output.println("<td align=center>" + c.getOutcome() + "</td>");
+                    output.println("<td align=center>" + c.getExpect() + "</td>");
                     output.println("<td>" + c.getDescription() + "</td>");
                     output.println("</tr>");
                 }
@@ -149,10 +149,10 @@ public class XMLtoHTMLResultPrinter {
         }
 
         for (State s : unmatchedStates) {
-            output.println("<tr bgColor=" + selectHTMLColor(test.getUnmatched().getOutcome(), s.getCount() == 0) + ">");
+            output.println("<tr bgColor=" + selectHTMLColor(test.getUnmatched().getExpect(), s.getCount() == 0) + ">");
             output.println("<td>" + s.getId() + "</td>");
             output.println("<td align=center>" + s.getCount() + "</td>");
-            output.println("<td align=center>" + test.getUnmatched().getOutcome() + "</td>");
+            output.println("<td align=center>" + test.getUnmatched().getExpect() + "</td>");
             output.println("<td>" + test.getUnmatched().getDescription() + "</td>");
             output.println("</tr>");
         }
@@ -160,23 +160,21 @@ public class XMLtoHTMLResultPrinter {
         output.println("</table>");
     }
 
-    public String selectHTMLColor(OutcomeType type, boolean isZero) {
+    public String selectHTMLColor(ExpectType type, boolean isZero) {
         String rgb = Integer.toHexString(selectColor(type, isZero).getRGB());
         return "#" + rgb.substring(2, rgb.length());
     }
 
-    public Color selectColor(OutcomeType type, boolean isZero) {
+    public Color selectColor(ExpectType type, boolean isZero) {
         switch (type) {
-            case POSITIVE_REQUIRED:
+            case REQUIRED:
                 return isZero ? Color.RED : Color.GREEN;
-            case POSITIVE_MISSING:
-                return isZero ? Color.LIGHT_GRAY : Color.RED;
-            case NEGATIVE_REQUIRED:
-                return isZero ? Color.CYAN : Color.GREEN;
-            case NEGATIVE_MISSING:
-                return isZero ? Color.LIGHT_GRAY : Color.CYAN;
             case ACCEPTABLE:
                 return isZero ? Color.LIGHT_GRAY : Color.GREEN;
+            case ABSENT:
+                return isZero ? Color.LIGHT_GRAY : Color.RED;
+            case KNOWN_SPECIAL:
+                return isZero ? Color.LIGHT_GRAY : Color.CYAN;
             default:
                 throw new IllegalStateException();
         }

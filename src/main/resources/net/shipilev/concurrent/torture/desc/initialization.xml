@@ -7,7 +7,7 @@
         </description>
         <case>
             <match>[0, 0, 0, 0, 0, 0, 0, 0]</match>
-            <outcome>ACCEPTABLE</outcome>
+            <expect>ACCEPTABLE</expect>
             <description>
                 Seeing the default value for long field. The update to the field in the constructor is lost.
                 This is a legal JMM behavior.
@@ -15,21 +15,21 @@
         </case>
         <case>
             <match>[-1, -1, -1, -1, -1, -1, -1, -1]</match>
-            <outcome>POSITIVE_REQUIRED</outcome>
+            <expect>REQUIRED</expect>
             <description>
                 The value set by the actor thread. Observer sees the complete update.
             </description>
         </case>
         <case>
             <match>[42, 42, 42, 42, 42, 42, 42, 42]</match>
-            <outcome>ACCEPTABLE</outcome>
+            <expect>ACCEPTABLE</expect>
             <description>
                 The observer sees the empty shell.
                 This is a legal JMM behavior, since there is a race between actor and observer.
             </description>
         </case>
         <unmatched>
-            <outcome>POSITIVE_MISSING</outcome>
+            <expect>ABSENT</expect>
             <description>
                 This case is not expected.
             </description>
@@ -43,7 +43,7 @@
         </description>
         <case>
             <match>[0, 0, 0, 0, 0, 0, 0, 0]</match>
-            <outcome>ACCEPTABLE</outcome>
+            <expect>ACCEPTABLE</expect>
             <description>
                 Seeing the default value for long field. The update to the field in the constructor is lost.
                 This is a legal JMM behavior.
@@ -51,21 +51,21 @@
         </case>
         <case>
             <match>[-1, -1, -1, -1, -1, -1, -1, -1]</match>
-            <outcome>POSITIVE_REQUIRED</outcome>
+            <expect>REQUIRED</expect>
             <description>
                 The value set by the actor thread. Observer sees the complete update.
             </description>
         </case>
         <case>
             <match>[42, 42, 42, 42, 42, 42, 42, 42]</match>
-            <outcome>ACCEPTABLE</outcome>
+            <expect>ACCEPTABLE</expect>
             <description>
                 The observer sees the empty shell.
                 This is a legal JMM behavior, since there is a race between actor and observer.
             </description>
         </case>
         <unmatched>
-            <outcome>POSITIVE_MISSING</outcome>
+            <expect>ABSENT</expect>
             <description>
                 This case is not expected.
             </description>
@@ -79,7 +79,7 @@
         </description>
         <case>
             <match>[0, 0, 0, 0, 0, 0, 0, 0]</match>
-            <outcome>POSITIVE_MISSING</outcome>
+            <expect>ABSENT</expect>
             <description>
                 Seeing the default value for long field. The update to the field in the constructor is lost.
                 This is a legal JMM behavior.
@@ -87,21 +87,21 @@
         </case>
         <case>
             <match>[-1, -1, -1, -1, -1, -1, -1, -1]</match>
-            <outcome>POSITIVE_REQUIRED</outcome>
+            <expect>REQUIRED</expect>
             <description>
                 The value set by the actor thread. Observer sees the complete update.
             </description>
         </case>
         <case>
             <match>[42, 42, 42, 42, 42, 42, 42, 42]</match>
-            <outcome>ACCEPTABLE</outcome>
+            <expect>ACCEPTABLE</expect>
             <description>
                 The observer sees the empty shell.
                 This is a legal JMM behavior, since there is a race between actor and observer.
             </description>
         </case>
         <unmatched>
-            <outcome>POSITIVE_MISSING</outcome>
+            <expect>ABSENT</expect>
             <description>
                 This case is not expected.
             </description>
@@ -115,7 +115,7 @@
         </description>
         <case>
             <match>[0, 0, 0, 0, 0, 0, 0, 0]</match>
-            <outcome>POSITIVE_MISSING</outcome>
+            <expect>ABSENT</expect>
             <description>
                 Seeing the default value for long field. The update to the field in the constructor is lost.
                 This is a legal JMM behavior.
@@ -123,21 +123,21 @@
         </case>
         <case>
             <match>[-1, -1, -1, -1, -1, -1, -1, -1]</match>
-            <outcome>POSITIVE_REQUIRED</outcome>
+            <expect>REQUIRED</expect>
             <description>
                 The value set by the actor thread. Observer sees the complete update.
             </description>
         </case>
         <case>
             <match>[42, 42, 42, 42, 42, 42, 42, 42]</match>
-            <outcome>ACCEPTABLE</outcome>
+            <expect>ACCEPTABLE</expect>
             <description>
                 The observer sees the empty shell.
                 This is a legal JMM behavior, since there is a race between actor and observer.
             </description>
         </case>
         <unmatched>
-            <outcome>POSITIVE_MISSING</outcome>
+            <expect>ABSENT</expect>
             <description>
                 This case is not expected.
             </description>
@@ -151,21 +151,21 @@
         </description>
         <case>
             <match>[1, 1, 1, 1, 1, 1, 1, 1]</match>
-            <outcome>POSITIVE_REQUIRED</outcome>
+            <expect>REQUIRED</expect>
             <description>
                 Seeing the object in fully-constructed way.
             </description>
         </case>
         <case>
             <match>[-1, -1, -1, -1, -1, -1, -1, -1]</match>
-            <outcome>POSITIVE_REQUIRED</outcome>
+            <expect>REQUIRED</expect>
             <description>
                 Observer sees null reference to the object.
                 This is the correct case, since there is an intrinsic race between actor and observer.
             </description>
         </case>
         <unmatched>
-            <outcome>NEGATIVE_MISSING</outcome>
+            <expect>KNOWN_SPECIAL</expect>
             <description>
                 This should be under-uninitialized case. This is a correct JMM behavior.
             </description>

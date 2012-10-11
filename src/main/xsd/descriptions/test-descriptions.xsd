@@ -3,13 +3,12 @@
             xmlns:jxb="http://java.sun.com/xml/ns/jaxb"
             jxb:version="2.0">
 
-    <xsd:simpleType name="outcomeType">
+    <xsd:simpleType name="expectType">
         <xsd:restriction base="xsd:string">
-            <xsd:enumeration value="POSITIVE_REQUIRED"/>
-            <xsd:enumeration value="POSITIVE_MISSING"/>
-            <xsd:enumeration value="NEGATIVE_REQUIRED"/>
-            <xsd:enumeration value="NEGATIVE_MISSING"/>
+            <xsd:enumeration value="REQUIRED"/>
             <xsd:enumeration value="ACCEPTABLE"/>
+            <xsd:enumeration value="ABSENT"/>
+            <xsd:enumeration value="KNOWN_SPECIAL"/>
         </xsd:restriction>
     </xsd:simpleType>
 
@@ -35,7 +34,7 @@
     <xsd:complexType name="case">
         <xsd:sequence>
             <xsd:element name="match" type="xsd:string" maxOccurs="unbounded"/>
-            <xsd:element name="outcome" type="outcomeType"/>
+            <xsd:element name="expect" type="expectType"/>
             <xsd:element name="description" type="xsd:string"/>
         </xsd:sequence>
     </xsd:complexType>
@@ -43,7 +42,7 @@
     <xsd:complexType name="unmatched">
         <xsd:sequence>
             <xsd:element name="match" type="xsd:string" maxOccurs="unbounded"/>
-            <xsd:element name="outcome" type="outcomeType"/>
+            <xsd:element name="expect" type="expectType"/>
             <xsd:element name="description" type="xsd:string"/>
         </xsd:sequence>
     </xsd:complexType>

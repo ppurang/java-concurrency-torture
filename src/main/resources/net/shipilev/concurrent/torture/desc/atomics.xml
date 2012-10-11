@@ -7,13 +7,13 @@
         </description>
         <case>
             <match>[2]</match>
-            <outcome>POSITIVE_REQUIRED</outcome>
+            <expect>REQUIRED</expect>
             <description>
                 Required to see both updates.
             </description>
         </case>
         <unmatched>
-            <outcome>POSITIVE_MISSING</outcome>
+            <expect>ABSENT</expect>
             <description>
                 Other cases are not expected.
             </description>

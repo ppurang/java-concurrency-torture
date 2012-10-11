@@ -7,14 +7,14 @@
         </description>
         <case>
             <match>[0]</match>
-            <outcome>POSITIVE_MISSING</outcome>
+            <expect>ABSENT</expect>
             <description>
                 Factory returned null singleton. This is the major correctness issue.
             </description>
         </case>
         <case>
             <match>[1]</match>
-            <outcome>NEGATIVE_MISSING</outcome>
+            <expect>KNOWN_SPECIAL</expect>
             <description>
                 The reference field in singleton is null.
                 This is the violation of singleton contract, but legal JMM behavior.
@@ -22,13 +22,13 @@
         </case>
         <case>
             <match>[42]</match>
-            <outcome>POSITIVE_REQUIRED</outcome>
+            <expect>REQUIRED</expect>
             <description>
                 The singleton is observed in fully-constructed way.
             </description>
         </case>
         <unmatched>
-            <outcome>NEGATIVE_MISSING</outcome>
+            <expect>KNOWN_SPECIAL</expect>
             <description>
                 This should be under-uninitialized case. This is a correct JMM behavior.
             </description>
@@ -42,14 +42,14 @@
         </description>
         <case>
             <match>[0]</match>
-            <outcome>POSITIVE_MISSING</outcome>
+            <expect>ABSENT</expect>
             <description>
                 Factory returned null singleton. This is the major correctness issue.
             </description>
         </case>
         <case>
             <match>[1]</match>
-            <outcome>POSITIVE_MISSING</outcome>
+            <expect>ABSENT</expect>
             <description>
                 The reference field in singleton is null.
                 This is forbidden by JMM.
@@ -57,13 +57,13 @@
         </case>
         <case>
             <match>[42]</match>
-            <outcome>POSITIVE_REQUIRED</outcome>
+            <expect>REQUIRED</expect>
             <description>
                 The singleton is observed in fully-constructed way.
             </description>
         </case>
         <unmatched>
-            <outcome>NEGATIVE_MISSING</outcome>
+            <expect>KNOWN_SPECIAL</expect>
             <description>
                 This should be under-uninitialized case. This is a correct JMM behavior.
             </description>
@@ -77,14 +77,14 @@
         </description>
         <case>
             <match>[0]</match>
-            <outcome>POSITIVE_MISSING</outcome>
+            <expect>ABSENT</expect>
             <description>
                 Factory returned null singleton. This is the major correctness issue.
             </description>
         </case>
         <case>
             <match>[1]</match>
-            <outcome>POSITIVE_MISSING</outcome>
+            <expect>ABSENT</expect>
             <description>
                 The reference field in singleton is null.
                 This is forbidden by JMM.
@@ -92,13 +92,13 @@
         </case>
         <case>
             <match>[42]</match>
-            <outcome>POSITIVE_REQUIRED</outcome>
+            <expect>REQUIRED</expect>
             <description>
                 The singleton is observed in fully-constructed way.
             </description>
         </case>
         <unmatched>
-            <outcome>NEGATIVE_MISSING</outcome>
+            <expect>KNOWN_SPECIAL</expect>
             <description>
                 This should be under-uninitialized case. This is a correct JMM behavior.
             </description>
@@ -112,14 +112,14 @@
         </description>
         <case>
             <match>[0]</match>
-            <outcome>POSITIVE_MISSING</outcome>
+            <expect>ABSENT</expect>
             <description>
                 Factory returned null singleton. This is the major correctness issue.
             </description>
         </case>
         <case>
             <match>[1]</match>
-            <outcome>POSITIVE_MISSING</outcome>
+            <expect>ABSENT</expect>
             <description>
                 The reference field in singleton is null.
                 This is forbidden by JMM.
@@ -127,13 +127,13 @@
         </case>
         <case>
             <match>[42]</match>
-            <outcome>POSITIVE_REQUIRED</outcome>
+            <expect>REQUIRED</expect>
             <description>
                 The singleton is observed in fully-constructed way.
             </description>
         </case>
         <unmatched>
-            <outcome>NEGATIVE_MISSING</outcome>
+            <expect>KNOWN_SPECIAL</expect>
             <description>
                 This should be under-uninitialized case. This is a correct JMM behavior.
             </description>
