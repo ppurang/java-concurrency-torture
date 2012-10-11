@@ -4,12 +4,44 @@ Quick-start:
  $ mvn clean install
  $ java -jar target/concurrency-torture.jar
 
-Help:
- $ java -jar target/concurrency-torture.jar -h
-
-Interpreting results:
+Caveats:
 --------------------------------------------------------------------
- The console output can be used to track progress and debugging.
 
- For human use, it also outputs results.html,
- which has all the full interpretation of the results.
+* Most of the tests are probabilistic, and require substantial time
+  to catch all the cases. It is highly recommended to run tests longer
+  to get reliable results.
+
+* Most of the tests require at least 3-4 online CPUs. Low CPU count
+  machines could also use these tests, but enable always enable
+  yielding there.
+
+
+Understanding tests and Interpreting results:
+--------------------------------------------------------------------
+
+ The tests so far folded in Litmus-like tests, where few threads are
+ executing the test concurrently, sometimes exhibiting races. There
+ are multiple state objects generated per each run. Threads then
+ either mutate or observe that state object.
+
+ Test harness is collecting statistics on the observed states. In many
+ cases this is enough to catch the reorderings or contract violations
+ for concurrent code.
+
+ The console output can be used to track progress and debugging.
+ Ordinary users should use results/index.html, which has the full
+ interpretation of the results.
+
+Developing tests:
+--------------------------------------------------------------------
+
+ If you want to develop a test, you are encourage to get familiar with
+ existing set of tests first. You will have to implements one of the
+ test interfaces:
+   - OneActorOneObserverTest
+   - TwoActorsOneArbiterTest
+
+ Read up their Javadocs to understand the conditions that are guaranteed
+ for those tests. If you need some other test interface/harness support,
+ please don't hesitate to raise the issue and describe the scenario you
+ want to test.
