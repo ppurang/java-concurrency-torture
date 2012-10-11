@@ -39,6 +39,36 @@
     </test>
 
     <test>
+        <name>net.shipilev.concurrent.torture.positive.IntAtomicityTest</name>
+        <file>negative/DoubleAtomicityTest.java</file>
+        <contributed-by>Aleksey Shipilev (aleksey.shipilev@oracle.com)</contributed-by>
+        <description>
+            Tests if primitive integers experience non-atomic updates.
+        </description>
+        <case>
+            <match>[0, 0, 0, 0]</match>
+            <outcome>POSITIVE_REQUIRED</outcome>
+            <description>
+                Default value for the field. Observers are allowed to see the default value for the field,
+                because there is the data race between reader and writer.
+            </description>
+        </case>
+        <case>
+            <match>[-1, -1, -1, -1]</match>
+            <outcome>POSITIVE_REQUIRED</outcome>
+            <description>
+                The value set by the actor thread. Observer sees the complete update.
+            </description>
+        </case>
+        <unmatched>
+            <outcome>POSITIVE_MISSING</outcome>
+            <description>
+                This case is not expected.
+            </description>
+        </unmatched>
+    </test>
+
+    <test>
         <name>net.shipilev.concurrent.torture.negative.LongAtomicityTest</name>
         <file>negative/DoubleAtomicityTest.java</file>
         <contributed-by>Aleksey Shipilev (aleksey.shipilev@oracle.com)</contributed-by>
@@ -202,6 +232,131 @@
             <outcome>POSITIVE_MISSING</outcome>
             <description>
                 This case is not expected.
+            </description>
+        </unmatched>
+    </test>
+
+    <test>
+        <name>net.shipilev.concurrent.torture.positive.AtomicIntegerIncrementTest</name>
+        <file>negative/ReadTwice.java</file>
+        <contributed-by>Aleksey Shipilev (aleksey.shipilev@oracle.com)</contributed-by>
+        <description>
+            Tests the atomicity of AtomicInteger incrementAndGet.
+        </description>
+        <case>
+            <match>[2]</match>
+            <outcome>POSITIVE_REQUIRED</outcome>
+            <description>
+                Required to see both updates.
+            </description>
+        </case>
+        <unmatched>
+            <outcome>POSITIVE_MISSING</outcome>
+            <description>
+                Other cases are not expected.
+            </description>
+        </unmatched>
+    </test>
+
+    <test>
+        <name>net.shipilev.concurrent.torture.negative.VolatileAtomicityTest</name>
+        <file>negative/ReadTwice.java</file>
+        <contributed-by>Aleksey Shipilev (aleksey.shipilev@oracle.com)</contributed-by>
+        <description>
+            Tests the atomicity of volatile increment.
+        </description>
+        <case>
+            <match>[0]</match>
+            <outcome>POSITIVE_MISSING</outcome>
+            <description>
+                Can not see the default value.
+            </description>
+        </case>
+        <case>
+            <match>[1]</match>
+            <outcome>NEGATIVE_MISSING</outcome>
+            <description>
+                One update is lost.
+            </description>
+        </case>
+        <case>
+            <match>[2]</match>
+            <outcome>POSITIVE_REQUIRED</outcome>
+            <description>
+                Seeing both updates.
+            </description>
+        </case>
+        <unmatched>
+            <outcome>POSITIVE_MISSING</outcome>
+            <description>
+                Other cases are not expected.
+            </description>
+        </unmatched>
+    </test>
+
+    <test>
+        <name>net.shipilev.concurrent.torture.negative.RacyPublicationTest</name>
+        <file>negative/ReadTwice.java</file>
+        <contributed-by>Aleksey Shipilev (aleksey.shipilev@oracle.com)</contributed-by>
+        <description>
+            Tests the races during unsafe publication.
+        </description>
+        <case>
+            <match>[1, 1, 1, 1, 1, 1, 1, 1]</match>
+            <outcome>POSITIVE_REQUIRED</outcome>
+            <description>
+                Seeing the object in fully-constructed way.
+            </description>
+        </case>
+        <case>
+            <match>[-1, -1, -1, -1, -1, -1, -1, -1]</match>
+            <outcome>POSITIVE_REQUIRED</outcome>
+            <description>
+                Observer sees null reference to the object.
+                This is the correct case, since there is an intrinsic race between actor and observer.
+            </description>
+        </case>
+        <unmatched>
+            <outcome>NEGATIVE_MISSING</outcome>
+            <description>
+                This should be under-uninitialized case. This is a correct JMM behavior.
+            </description>
+        </unmatched>
+    </test>
+
+    <test>
+        <name>net.shipilev.concurrent.torture.negative.UnsafeSingletonTest</name>
+        <file>negative/ReadTwice.java</file>
+        <contributed-by>Aleksey Shipilev (aleksey.shipilev@oracle.com)</contributed-by>
+        <description>
+            Tests the broken DCL-style singleton.
+        </description>
+        <case>
+            <match>[0]</match>
+            <outcome>POSITIVE_MISSING</outcome>
+            <description>
+                Factory returned null singleton. This is the major correctness issue.
+            </description>
+        </case>
+        <case>
+            <match>[1]</match>
+            <outcome>NEGATIVE_MISSING</outcome>
+            <description>
+                The reference field in singleton is null.
+                This is the functional failure, but legal JMM behavior.
+            </description>
+        </case>
+        <case>
+            <match>[42]</match>
+            <outcome>POSITIVE_REQUIRED</outcome>
+            <description>
+                The singleton is observed in fully-constructed way.
+            </description>
+        </case>
+        <unmatched>
+            <outcome>NEGATIVE_MISSING</outcome>
+            <description>
+                This should be under-uninitialized case. This is a correct JMM behavior.
             </description>
         </unmatched>
     </test>
