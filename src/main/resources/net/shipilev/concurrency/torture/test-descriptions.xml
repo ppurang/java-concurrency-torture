@@ -108,6 +108,36 @@
     </test>
 
     <test>
+        <name>net.shipilev.concurrent.torture.positive.VolatileLongAtomicityTest</name>
+        <file>negative/DoubleAtomicityTest.java</file>
+        <contributed-by>Aleksey Shipilev (aleksey.shipilev@oracle.com)</contributed-by>
+        <description>
+            Tests if volatile longs experience non-atomic updates.
+        </description>
+        <case>
+            <match>[0, 0, 0, 0, 0, 0, 0, 0]</match>
+            <outcome>POSITIVE_REQUIRED</outcome>
+            <description>
+                Default value for the field. Observers are allowed to see the default value for the field,
+                because there is the data race between reader and writer.
+            </description>
+        </case>
+        <case>
+            <match>[-1, -1, -1, -1, -1, -1, -1, -1]</match>
+            <outcome>POSITIVE_REQUIRED</outcome>
+            <description>
+                The value set by the actor thread. Observer sees the complete update.
+            </description>
+        </case>
+        <unmatched>
+            <outcome>POSITIVE_MISSING</outcome>
+            <description>
+                Seeing other values is forbidden by JMM.
+            </description>
+        </unmatched>
+    </test>
+
+    <test>
         <name>net.shipilev.concurrent.torture.negative.ReadTwiceTest</name>
         <file>negative/ReadTwice.java</file>
         <contributed-by>Aleksey Shipilev (aleksey.shipilev@oracle.com)</contributed-by>
@@ -165,6 +195,53 @@
             <outcome>POSITIVE_REQUIRED</outcome>
             <description>
                 Both updates are visible.
+            </description>
+        </case>
+        <unmatched>
+            <outcome>POSITIVE_MISSING</outcome>
+            <description>
+                This case is not expected.
+            </description>
+        </unmatched>
+    </test>
+
+    <test>
+        <name>net.shipilev.concurrent.torture.positive.ReadAfterVolatileReadTest</name>
+        <file>negative/ReadTwice.java</file>
+        <contributed-by>Aleksey Shipilev (aleksey.shipilev@oracle.com)</contributed-by>
+        <description>
+            Tests if volatile write-read induce proper happens-before.
+        </description>
+        <case>
+            <match>[0, 0]</match>
+            <match>[0, 1]</match>
+            <match>[0, 2]</match>
+            <match>[0, 3]</match>
+            <outcome>POSITIVE_REQUIRED</outcome>
+            <description>
+                Volatile write to $y did not yet happened, the observer is allowed to see any value for $x.
+            </description>
+        </case>
+        <case>
+            <match>[1, 0]</match>
+            <outcome>POSITIVE_MISSING</outcome>
+            <description>
+                Can't read the default value for $x after $y is effective.
+            </description>
+        </case>
+        <case>
+            <match>[1, 1]</match>
+            <outcome>POSITIVE_MISSING</outcome>
+            <description>
+                Can't read the stale value for $x after $y is effective.
+            </description>
+        </case>
+        <case>
+            <match>[1, 2]</match>
+            <match>[1, 3]</match>
+            <outcome>ACCEPTABLE</outcome>
+            <description>
+                Can see either after volatile write to $y is in effect.
             </description>
         </case>
         <unmatched>
@@ -361,5 +438,156 @@
         </unmatched>
     </test>
 
+    <test>
+        <name>net.shipilev.concurrent.torture.positive.init.LongConstrTest</name>
+        <file>negative/DoubleAtomicityTest.java</file>
+        <contributed-by>Aleksey Shipilev (aleksey.shipilev@oracle.com)</contributed-by>
+        <description>
+            Tests if primitive long fields are properly initialized (in constructor).
+        </description>
+        <case>
+            <match>[0, 0, 0, 0, 0, 0, 0, 0]</match>
+            <outcome>ACCEPTABLE</outcome>
+            <description>
+                Seeing the default value for long field. The update to the field in the constructor is lost.
+                This is a legal JMM behavior.
+            </description>
+        </case>
+        <case>
+            <match>[-1, -1, -1, -1, -1, -1, -1, -1]</match>
+            <outcome>POSITIVE_REQUIRED</outcome>
+            <description>
+                The value set by the actor thread. Observer sees the complete update.
+            </description>
+        </case>
+        <case>
+            <match>[42, 42, 42, 42, 42, 42, 42, 42]</match>
+            <outcome>ACCEPTABLE</outcome>
+            <description>
+                The observer sees the empty shell.
+                This is a legal JMM behavior, since there is a race between actor and observer.
+            </description>
+        </case>
+        <unmatched>
+            <outcome>POSITIVE_MISSING</outcome>
+            <description>
+                This case is not expected.
+            </description>
+        </unmatched>
+    </test>
+
+    <test>
+        <name>net.shipilev.concurrent.torture.positive.init.LongInstanceTest</name>
+        <file>negative/DoubleAtomicityTest.java</file>
+        <contributed-by>Aleksey Shipilev (aleksey.shipilev@oracle.com)</contributed-by>
+        <description>
+            Tests if primitive long fields are properly initialized (by instance initializer).
+        </description>
+        <case>
+            <match>[0, 0, 0, 0, 0, 0, 0, 0]</match>
+            <outcome>ACCEPTABLE</outcome>
+            <description>
+                Seeing the default value for long field. The update to the field in the constructor is lost.
+                This is a legal JMM behavior.
+            </description>
+        </case>
+        <case>
+            <match>[-1, -1, -1, -1, -1, -1, -1, -1]</match>
+            <outcome>POSITIVE_REQUIRED</outcome>
+            <description>
+                The value set by the actor thread. Observer sees the complete update.
+            </description>
+        </case>
+        <case>
+            <match>[42, 42, 42, 42, 42, 42, 42, 42]</match>
+            <outcome>ACCEPTABLE</outcome>
+            <description>
+                The observer sees the empty shell.
+                This is a legal JMM behavior, since there is a race between actor and observer.
+            </description>
+        </case>
+        <unmatched>
+            <outcome>POSITIVE_MISSING</outcome>
+            <description>
+                This case is not expected.
+            </description>
+        </unmatched>
+    </test>
+
+    <test>
+        <name>net.shipilev.concurrent.torture.positive.init.LongFinalTest</name>
+        <file>negative/DoubleAtomicityTest.java</file>
+        <contributed-by>Aleksey Shipilev (aleksey.shipilev@oracle.com)</contributed-by>
+        <description>
+            Tests if primitive long fields are properly initialized (final field set in constructor).
+        </description>
+        <case>
+            <match>[0, 0, 0, 0, 0, 0, 0, 0]</match>
+            <outcome>POSITIVE_MISSING</outcome>
+            <description>
+                Seeing the default value for long field. The update to the field in the constructor is lost.
+                This is a legal JMM behavior.
+            </description>
+        </case>
+        <case>
+            <match>[-1, -1, -1, -1, -1, -1, -1, -1]</match>
+            <outcome>POSITIVE_REQUIRED</outcome>
+            <description>
+                The value set by the actor thread. Observer sees the complete update.
+            </description>
+        </case>
+        <case>
+            <match>[42, 42, 42, 42, 42, 42, 42, 42]</match>
+            <outcome>ACCEPTABLE</outcome>
+            <description>
+                The observer sees the empty shell.
+                This is a legal JMM behavior, since there is a race between actor and observer.
+            </description>
+        </case>
+        <unmatched>
+            <outcome>POSITIVE_MISSING</outcome>
+            <description>
+                This case is not expected.
+            </description>
+        </unmatched>
+    </test>
+
+    <test>
+        <name>net.shipilev.concurrent.torture.positive.init.LongVolatileTest</name>
+        <file>negative/DoubleAtomicityTest.java</file>
+        <contributed-by>Aleksey Shipilev (aleksey.shipilev@oracle.com)</contributed-by>
+        <description>
+            Tests if primitive long fields are properly initialized (volatile field set in constructor).
+        </description>
+        <case>
+            <match>[0, 0, 0, 0, 0, 0, 0, 0]</match>
+            <outcome>POSITIVE_MISSING</outcome>
+            <description>
+                Seeing the default value for long field. The update to the field in the constructor is lost.
+                This is a legal JMM behavior.
+            </description>
+        </case>
+        <case>
+            <match>[-1, -1, -1, -1, -1, -1, -1, -1]</match>
+            <outcome>POSITIVE_REQUIRED</outcome>
+            <description>
+                The value set by the actor thread. Observer sees the complete update.
+            </description>
+        </case>
+        <case>
+            <match>[42, 42, 42, 42, 42, 42, 42, 42]</match>
+            <outcome>ACCEPTABLE</outcome>
+            <description>
+                The observer sees the empty shell.
+                This is a legal JMM behavior, since there is a race between actor and observer.
+            </description>
+        </case>
+        <unmatched>
+            <outcome>POSITIVE_MISSING</outcome>
+            <description>
+                This case is not expected.
+            </description>
+        </unmatched>
+    </test>
 
 </testsuite>
