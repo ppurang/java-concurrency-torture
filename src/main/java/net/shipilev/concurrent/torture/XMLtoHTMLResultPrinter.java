@@ -108,12 +108,12 @@ public class XMLtoHTMLResultPrinter {
 
         output.println("<p>" + test.getDescription() + "</p>");
 
-        output.println("<table width=1000>");
+        output.println("<table width=100%>");
         output.println("<tr>");
         output.println("<th width=250>Observed state</th>");
         output.println("<th width=50>Occurence</th>");
         output.println("<th width=50>Outcome</th>");
-        output.println("<th width=600>Interpretation</th>");
+        output.println("<th>Interpretation</th>");
         output.println("</tr>");
 
         List<State> unmatchedStates = new ArrayList<State>();
