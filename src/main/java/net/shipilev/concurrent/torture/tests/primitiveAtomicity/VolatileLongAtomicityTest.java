@@ -1,4 +1,4 @@
-package net.shipilev.concurrent.torture.positive;
+package net.shipilev.concurrent.torture.tests.primitiveAtomicity;
 
 import net.shipilev.concurrent.torture.OneActorOneObserverTest;
 

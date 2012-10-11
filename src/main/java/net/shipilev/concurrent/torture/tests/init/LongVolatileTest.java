@@ -1,20 +1,20 @@
-package net.shipilev.concurrent.torture.positive.init;
+package net.shipilev.concurrent.torture.tests.init;
 
 import net.shipilev.concurrent.torture.OneActorOneObserverTest;
 
 /**
- * Tests if final primitive longs experience tearing when initializing in constructor.
+ * Tests if final primitive longs experience tearing when initializing as volatile field.
  *
  * @author Aleksey Shipilev (aleksey.shipilev@oracle.com)
  */
-public class LongConstrTest implements OneActorOneObserverTest<LongConstrTest.Specimen> {
+public class LongVolatileTest implements OneActorOneObserverTest<LongVolatileTest.Specimen> {
 
     public static class Specimen {
         Shell shell;
     }
 
     public static class Shell {
-        long x;
+        volatile long x;
 
         public Shell() {
             this.x = 0xFFFFFFFFFFFFFFFFL;

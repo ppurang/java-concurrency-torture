@@ -1,0 +1,208 @@
+<testsuite suite="Volatile tests">
+
+    <test name="net.shipilev.concurrent.torture.tests.volatiles.ReadTwiceTest">
+        <contributed-by>Aleksey Shipilev (aleksey.shipilev@oracle.com)</contributed-by>
+        <description>
+            Tests if intervening writes break the ordering.
+        </description>
+        <case>
+            <match>[0, 0, 0]</match>
+            <outcome>POSITIVE_REQUIRED</outcome>
+            <description>
+                Default value for the fields. Observers are allowed to see the default value for the field,
+                because there is the data race between reader and writer.
+            </description>
+        </case>
+        <case>
+            <match>[0, 1, 0]</match>
+            <outcome>ACCEPTABLE</outcome>
+            <description>
+                The evidence for the correct reordering: the later write is seen first.
+            </description>
+        </case>
+        <case>
+            <match>[1, 0, 1]</match>
+            <outcome>ACCEPTABLE</outcome>
+            <description>
+                Write to $y is still in flight, $x is already here.
+            </description>
+        </case>
+        <case>
+            <match>[0, 0, 1]</match>
+            <outcome>ACCEPTABLE</outcome>
+            <description>
+                Write to $y is still in flight, $x is arriving late.
+                This is the evidence the compiler had not merged the loads for $x.
+            </description>
+        </case>
+        <case>
+            <match>[0, 1, 1]</match>
+            <outcome>ACCEPTABLE</outcome>
+            <description>
+                The writes appear the the writers' order.
+                This code also means the compiler had not merged the loads for $x.
+            </description>
+        </case>
+        <case>
+            <match>[1, 0, 0]</match>
+            <match>[1, 1, 0]</match>
+            <outcome>ACCEPTABLE</outcome>
+            <description>
+                TODO: Odd, but legal case?
+            </description>
+        </case>
+        <case>
+            <match>[1, 1, 1]</match>
+            <outcome>POSITIVE_REQUIRED</outcome>
+            <description>
+                Both updates are visible.
+            </description>
+        </case>
+        <unmatched>
+            <outcome>POSITIVE_MISSING</outcome>
+            <description>
+                This case is not expected.
+            </description>
+        </unmatched>
+    </test>
+
+    <test name="net.shipilev.concurrent.torture.tests.volatiles.ReadAfterVolatileReadTest">
+        <contributed-by>Aleksey Shipilev (aleksey.shipilev@oracle.com)</contributed-by>
+        <description>
+            Tests if volatile write-read induce proper happens-before.
+        </description>
+        <case>
+            <match>[0, 0]</match>
+            <match>[0, 1]</match>
+            <match>[0, 2]</match>
+            <match>[0, 3]</match>
+            <outcome>POSITIVE_REQUIRED</outcome>
+            <description>
+                Volatile write to $y did not yet happened, the observer is allowed to see any value for $x.
+            </description>
+        </case>
+        <case>
+            <match>[1, 0]</match>
+            <outcome>POSITIVE_MISSING</outcome>
+            <description>
+                Can't read the default value for $x after $y is effective.
+            </description>
+        </case>
+        <case>
+            <match>[1, 1]</match>
+            <outcome>POSITIVE_MISSING</outcome>
+            <description>
+                Can't read the stale value for $x after $y is effective.
+            </description>
+        </case>
+        <case>
+            <match>[1, 2]</match>
+            <match>[1, 3]</match>
+            <outcome>ACCEPTABLE</outcome>
+            <description>
+                Can see either after volatile write to $y is in effect.
+            </description>
+        </case>
+        <unmatched>
+            <outcome>POSITIVE_MISSING</outcome>
+            <description>
+                This case is not expected.
+            </description>
+        </unmatched>
+    </test>
+
+    <test name="net.shipilev.concurrent.torture.tests.volatiles.ReadTwiceOverVolatileReadTest">
+        <contributed-by>Aleksey Shipilev (aleksey.shipilev@oracle.com)</contributed-by>
+        <description>
+            Test if volatile write-read induces happens-before if in between two non-volatile reads.
+        </description>
+        <case>
+            <match>[0, 0, 0]</match>
+            <outcome>POSITIVE_REQUIRED</outcome>
+            <description>
+                Default value for the fields. Observers are allowed to see the default value for the field,
+                because there is the data race between reader and writer.
+            </description>
+        </case>
+        <case>
+            <match>[0, 1, 0]</match>
+            <outcome>POSITIVE_MISSING</outcome>
+            <description>
+                Volatile write to $y had happened, and update to $x had been lost.
+            </description>
+        </case>
+        <case>
+            <match>[1, 1, 0]</match>
+            <outcome>POSITIVE_MISSING</outcome>
+            <description>
+                Volatile write to $y had happened, and update to $x had been lost (this one is very weird).
+            </description>
+        </case>
+        <case>
+            <match>[0, 0, 1]</match>
+            <match>[1, 0, 1]</match>
+            <outcome>ACCEPTABLE</outcome>
+            <description>
+                Write to $y is still in flight, $x is arriving late.
+                This is the evidence the compiler had not merged the loads for $x.
+            </description>
+        </case>
+        <case>
+            <match>[0, 1, 1]</match>
+            <outcome>ACCEPTABLE</outcome>
+            <description>
+                The writes appear the the writers' order.
+                This code also means the compiler had not merged the loads for $x.
+            </description>
+        </case>
+        <case>
+            <match>[1, 1, 1]</match>
+            <outcome>POSITIVE_REQUIRED</outcome>
+            <description>
+                Both updates are visible.
+            </description>
+        </case>
+        <unmatched>
+            <outcome>POSITIVE_MISSING</outcome>
+            <description>
+                This case is not expected.
+            </description>
+        </unmatched>
+    </test>
+
+    <test name="net.shipilev.concurrent.torture.tests.volatiles.VolatileAtomicityTest">
+        <contributed-by>Aleksey Shipilev (aleksey.shipilev@oracle.com)</contributed-by>
+        <description>
+            Tests the atomicity of volatile increment.
+        </description>
+        <case>
+            <match>[0]</match>
+            <outcome>POSITIVE_MISSING</outcome>
+            <description>
+                Can not see the default value.
+            </description>
+        </case>
+        <case>
+            <match>[1]</match>
+            <outcome>NEGATIVE_MISSING</outcome>
+            <description>
+                One update is lost.
+            </description>
+        </case>
+        <case>
+            <match>[2]</match>
+            <outcome>POSITIVE_REQUIRED</outcome>
+            <description>
+                Seeing both updates.
+            </description>
+        </case>
+        <unmatched>
+            <outcome>POSITIVE_MISSING</outcome>
+            <description>
+                Other cases are not expected.
+            </description>
+        </unmatched>
+    </test>
+
+
+</testsuite>

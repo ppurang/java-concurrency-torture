@@ -1,0 +1,23 @@
+<testsuite suite="Atomics tests">
+
+    <test name="net.shipilev.concurrent.torture.tests.atomics.AtomicIntegerIncrementTest">
+        <contributed-by>Aleksey Shipilev (aleksey.shipilev@oracle.com)</contributed-by>
+        <description>
+            Tests the atomicity of AtomicInteger incrementAndGet.
+        </description>
+        <case>
+            <match>[2]</match>
+            <outcome>POSITIVE_REQUIRED</outcome>
+            <description>
+                Required to see both updates.
+            </description>
+        </case>
+        <unmatched>
+            <outcome>POSITIVE_MISSING</outcome>
+            <description>
+                Other cases are not expected.
+            </description>
+        </unmatched>
+    </test>
+
+</testsuite>

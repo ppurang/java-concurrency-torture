@@ -1,13 +1,13 @@
-package net.shipilev.concurrent.torture.positive;
+package net.shipilev.concurrent.torture.tests.volatiles;
 
 import net.shipilev.concurrent.torture.OneActorOneObserverTest;
 
 /**
- * Tests if volatile write-read induce proper happens-before.
+ * Test if volatile write-read induces happens-before if in between two non-volatile reads.
  *
- *  @author Aleksey Shipilev (aleksey.shipilev@oracle.com)
+ * @author Aleksey Shipilev (aleksey.shipilev@oracle.com)
  */
-public class ReadAfterVolatileReadTest implements OneActorOneObserverTest<ReadAfterVolatileReadTest.Specimen> {
+public class ReadTwiceOverVolatileReadTest implements OneActorOneObserverTest<ReadTwiceOverVolatileReadTest.Specimen> {
 
     public static class Specimen {
         int x;
@@ -17,15 +17,14 @@ public class ReadAfterVolatileReadTest implements OneActorOneObserverTest<ReadAf
     @Override
     public void actor1(Specimen s) {
         s.x = 1;
-        s.x = 2;
         s.y = 1;
-        s.x = 3;
     }
 
     @Override
     public void observe(Specimen s, byte[] res) {
-        res[0] = (byte) s.y;
-        res[1] = (byte) s.x;
+        res[0] = (byte) s.x;
+        res[1] = (byte) s.y;
+        res[2] = (byte) s.x;
     }
 
     @Override
@@ -35,7 +34,7 @@ public class ReadAfterVolatileReadTest implements OneActorOneObserverTest<ReadAf
 
     @Override
     public int resultSize() {
-        return 2;
+        return 3;
     }
 
 }

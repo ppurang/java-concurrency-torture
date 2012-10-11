@@ -1,6 +1,7 @@
 package net.shipilev.concurrent.torture;
 
 
+import com.google.common.base.Predicate;
 import net.shipilev.concurrency.torture.schema.descr.Case;
 import net.shipilev.concurrency.torture.schema.descr.OutcomeType;
 import net.shipilev.concurrency.torture.schema.descr.Test;
@@ -8,7 +9,15 @@ import net.shipilev.concurrency.torture.schema.descr.Testsuite;
 import net.shipilev.concurrency.torture.schema.result.Result;
 import net.shipilev.concurrency.torture.schema.result.Results;
 import net.shipilev.concurrency.torture.schema.result.State;
+import org.reflections.Reflections;
+import org.reflections.scanners.ResourcesScanner;
+import org.reflections.scanners.SubTypesScanner;
+import org.reflections.scanners.TypeAnnotationsScanner;
+import org.reflections.util.ClasspathHelper;
+import org.reflections.util.ConfigurationBuilder;
+import org.reflections.util.FilterBuilder;
 
+import javax.annotation.Nullable;
 import javax.xml.bind.JAXBContext;
 import javax.xml.bind.JAXBException;
 import javax.xml.bind.Unmarshaller;
@@ -21,6 +30,7 @@ import java.util.ArrayList;
 import java.util.HashMap;
 import java.util.List;
 import java.util.Map;
+import java.util.Set;
 
 public class Parser {
 
@@ -34,7 +44,29 @@ public class Parser {
     }
 
     private void readDescriptions() throws JAXBException {
-        Testsuite suite = unmarshal(Testsuite.class, this.getClass().getResourceAsStream("/net/shipilev/concurrency/torture/test-descriptions.xml"));
+        Reflections r = new Reflections(
+                new ConfigurationBuilder()
+                        .filterInputsBy(new FilterBuilder().include("net.shipilev.concurrent.torture.desc.*"))
+                        .setUrls(ClasspathHelper.forClassLoader())
+                        .setScanners(new ResourcesScanner()));
+
+        Set<String> resources = r.getResources(new Predicate<String>() {
+            @Override
+            public boolean apply(@Nullable String s) {
+                return s != null && s.endsWith(".xml");
+            }
+        });
+
+        System.out.println("Loading test descriptions");
+        for (String res : resources) {
+            System.out.println("  Loading " + res);
+            loadDescription(res);
+        }
+        System.out.println();
+    }
+
+    private void loadDescription(String name) throws JAXBException {
+        Testsuite suite = unmarshal(Testsuite.class, this.getClass().getResourceAsStream("/" + name));
 
         for (Test t : suite.getTest()) {
             descriptions.put(t.getName(), t);
@@ -53,6 +85,7 @@ public class Parser {
             Test test = descriptions.get(r.getName());
             if (test == null) {
                 output.println("Missing description for " + r.getName());
+                System.err.println("Missing description for " + r.getName());
                 continue;
             }
 
