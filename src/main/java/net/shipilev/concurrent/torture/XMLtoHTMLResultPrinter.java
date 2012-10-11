@@ -72,6 +72,10 @@ public class XMLtoHTMLResultPrinter {
     public void parse() throws FileNotFoundException, JAXBException {
         PrintWriter output = new PrintWriter(resultDir + "/index.html");
 
+        output.println("<html>");
+        output.println("<head><title>Java Concurrency Torture report</title></head>");
+        output.println("<body>");
+
         File[] files = new File(resultDir).listFiles(new FilenameFilter() {
             @Override
             public boolean accept(File dir, String name) {
@@ -83,7 +87,11 @@ public class XMLtoHTMLResultPrinter {
             parse(output, unmarshal(Result.class, new FileInputStream(f)));
         }
 
-        output.println("<p>Please report the errors in test grading to <a href='https://github.com/shipilev/java-concurrency-torture'>https://github.com/shipilev/java-concurrency-torture</a></p>");
+        output.println("<p>Please report the errors in test grading to <a href='https://github.com/shipilev/java-concurrency-torture/issues'>https://github.com/shipilev/java-concurrency-torture/issues</a></p>");
+
+        output.println("</body>");
+        output.println("</html>");
+
         output.close();
     }
 
