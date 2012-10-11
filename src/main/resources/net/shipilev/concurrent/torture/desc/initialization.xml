@@ -144,7 +144,7 @@
         </unmatched>
     </test>
 
-    <test name="net.shipilev.concurrent.torture.tests.volatiles.RacyPublicationTest">
+    <test name="net.shipilev.concurrent.torture.tests.init.RacyPublicationTest">
         <contributed-by>Aleksey Shipilev (aleksey.shipilev@oracle.com)</contributed-by>
         <description>
             Tests the races during unsafe publication.

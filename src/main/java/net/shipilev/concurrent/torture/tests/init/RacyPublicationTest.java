@@ -1,4 +1,4 @@
-package net.shipilev.concurrent.torture.tests.volatiles;
+package net.shipilev.concurrent.torture.tests.init;
 
 import net.shipilev.concurrent.torture.tests.OneActorOneObserverTest;
 
