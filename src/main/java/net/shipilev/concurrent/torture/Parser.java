@@ -42,7 +42,7 @@ public class Parser {
     }
 
     public void parseHTML() throws FileNotFoundException, JAXBException {
-        PrintWriter output = new PrintWriter("result.html");
+        PrintWriter output = new PrintWriter("results.html");
 
         Results result = unmarshal(Results.class, new FileInputStream(src));
 

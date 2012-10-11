@@ -7,6 +7,7 @@ import net.shipilev.concurrency.torture.schema.result.State;
 import net.shipilev.concurrent.torture.util.Multiset;
 
 import javax.xml.bind.JAXBContext;
+import javax.xml.bind.JAXBException;
 import javax.xml.bind.Marshaller;
 import java.io.File;
 import java.io.FileNotFoundException;
@@ -383,7 +384,7 @@ public class Runner {
         return buf.getLong();
     }
 
-    public void close() {
+    public void close() throws FileNotFoundException, JAXBException {
         pool.shutdownNow();
 
         try {
@@ -395,6 +396,8 @@ public class Runner {
         } catch (Throwable e) {
             e.printStackTrace();
         }
+
+        parser.parseHTML();
     }
 
     public static class SingleSharedStateHolder<S> {

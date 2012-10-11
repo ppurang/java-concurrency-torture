@@ -3,3 +3,7 @@ Quick-start:
 
  $ mvn clean install
  $ java -jar target/concurrency-torture.jar
+
+Interpreting results:
+ The console output can be used to track progress and debugging.
+ For human use, it also outputs results.html, which has all the full interpretation of the results.
