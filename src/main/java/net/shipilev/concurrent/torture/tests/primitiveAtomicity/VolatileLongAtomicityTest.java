@@ -1,6 +1,6 @@
 package net.shipilev.concurrent.torture.tests.primitiveAtomicity;
 
-import net.shipilev.concurrent.torture.OneActorOneObserverTest;
+import net.shipilev.concurrent.torture.tests.OneActorOneObserverTest;
 
 /**
  * Tests if volatile primitive longs experience word tearing.

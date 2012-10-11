@@ -1,6 +1,6 @@
 package net.shipilev.concurrent.torture.tests.singletons;
 
-import net.shipilev.concurrent.torture.OneActorOneObserverTest;
+import net.shipilev.concurrent.torture.tests.OneActorOneObserverTest;
 
 /**
  * Tests the broken double-checked locking.

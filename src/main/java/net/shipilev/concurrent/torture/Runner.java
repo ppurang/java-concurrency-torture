@@ -3,6 +3,9 @@ package net.shipilev.concurrent.torture;
 import net.shipilev.concurrency.torture.schema.result.ObjectFactory;
 import net.shipilev.concurrency.torture.schema.result.Result;
 import net.shipilev.concurrency.torture.schema.result.State;
+import net.shipilev.concurrent.torture.tests.ConcurrencyTest;
+import net.shipilev.concurrent.torture.tests.OneActorOneObserverTest;
+import net.shipilev.concurrent.torture.tests.TwoActorsOneArbiterTest;
 import net.shipilev.concurrent.torture.util.Multiset;
 
 import javax.xml.bind.JAXBContext;

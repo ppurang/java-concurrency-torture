@@ -1,5 +1,7 @@
 package net.shipilev.concurrent.torture;
 
+import net.shipilev.concurrent.torture.tests.OneActorOneObserverTest;
+import net.shipilev.concurrent.torture.tests.TwoActorsOneArbiterTest;
 import org.reflections.Reflections;
 import org.reflections.scanners.SubTypesScanner;
 import org.reflections.scanners.TypeAnnotationsScanner;

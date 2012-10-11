@@ -1,6 +1,6 @@
 package net.shipilev.concurrent.torture.tests.volatiles;
 
-import net.shipilev.concurrent.torture.TwoActorsOneArbiterTest;
+import net.shipilev.concurrent.torture.tests.TwoActorsOneArbiterTest;
 
 /**
  * Tests the atomicity of volatile increment.

@@ -1,6 +1,6 @@
 package net.shipilev.concurrent.torture.tests.primitiveAtomicity;
 
-import net.shipilev.concurrent.torture.OneActorOneObserverTest;
+import net.shipilev.concurrent.torture.tests.OneActorOneObserverTest;
 
 /**
  * Tests if primitive longs experience non-atomic updates.

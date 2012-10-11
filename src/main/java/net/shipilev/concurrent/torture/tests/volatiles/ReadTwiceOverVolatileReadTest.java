@@ -1,6 +1,6 @@
 package net.shipilev.concurrent.torture.tests.volatiles;
 
-import net.shipilev.concurrent.torture.OneActorOneObserverTest;
+import net.shipilev.concurrent.torture.tests.OneActorOneObserverTest;
 
 /**
  * Test if volatile write-read induces happens-before if in between two non-volatile reads.

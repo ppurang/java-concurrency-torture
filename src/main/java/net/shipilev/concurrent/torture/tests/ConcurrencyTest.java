@@ -1,4 +1,4 @@
-package net.shipilev.concurrent.torture;
+package net.shipilev.concurrent.torture.tests;
 
 /**
  * Marks concurrency tests.

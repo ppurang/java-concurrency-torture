@@ -1,6 +1,6 @@
 package net.shipilev.concurrent.torture.tests.init;
 
-import net.shipilev.concurrent.torture.OneActorOneObserverTest;
+import net.shipilev.concurrent.torture.tests.OneActorOneObserverTest;
 
 /**
  * Tests if final primitive longs experience tearing when initializing as final field.

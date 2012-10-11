@@ -1,4 +1,4 @@
-package net.shipilev.concurrent.torture;
+package net.shipilev.concurrent.torture.tests;
 
 /**
  * This test accepts single actors (thread actively mutating the state),

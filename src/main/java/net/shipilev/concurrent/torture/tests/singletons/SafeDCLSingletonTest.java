@@ -1,7 +1,5 @@
 package net.shipilev.concurrent.torture.tests.singletons;
 
-import net.shipilev.concurrent.torture.OneActorOneObserverTest;
-
 /**
  * Tests the safe double-checked locking singleton.
  *

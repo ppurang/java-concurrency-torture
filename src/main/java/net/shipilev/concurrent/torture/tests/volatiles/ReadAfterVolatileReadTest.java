@@ -1,6 +1,6 @@
 package net.shipilev.concurrent.torture.tests.volatiles;
 
-import net.shipilev.concurrent.torture.OneActorOneObserverTest;
+import net.shipilev.concurrent.torture.tests.OneActorOneObserverTest;
 
 /**
  * Tests if volatile write-read induce proper happens-before.
