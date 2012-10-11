@@ -20,4 +20,92 @@
         </unmatched>
     </test>
 
+    <test name="net.shipilev.concurrent.torture.tests.atomics.AtomicIntegerDecrementTest">
+        <contributed-by>Aleksey Shipilev (aleksey.shipilev@oracle.com)</contributed-by>
+        <description>
+            Tests the atomicity of AtomicInteger incrementAndGet.
+        </description>
+        <case>
+            <match>[-2]</match>
+            <expect>REQUIRED</expect>
+            <description>
+                Required to see both updates.
+            </description>
+        </case>
+        <unmatched>
+            <expect>ABSENT</expect>
+            <description>
+                Other cases are not expected.
+            </description>
+        </unmatched>
+    </test>
+
+    <test name="net.shipilev.concurrent.torture.tests.atomics.AtomicIntegerIncDecTest">
+        <contributed-by>Aleksey Shipilev (aleksey.shipilev@oracle.com)</contributed-by>
+        <description>
+            Tests the atomicity of AtomicInteger incrementAndGet.
+        </description>
+        <case>
+            <match>[0]</match>
+            <expect>REQUIRED</expect>
+            <description>
+                Required to see both updates.
+            </description>
+        </case>
+        <unmatched>
+            <expect>ABSENT</expect>
+            <description>
+                Other cases are not expected.
+            </description>
+        </unmatched>
+    </test>
+
+    <test name="net.shipilev.concurrent.torture.tests.atomics.AtomicIntegerInitialValueTest">
+        <contributed-by>Aleksey Shipilev (aleksey.shipilev@oracle.com)</contributed-by>
+        <description>
+            Tests the atomicity of AtomicInteger incrementAndGet.
+        </description>
+        <case>
+            <match>[1]</match>
+            <expect>REQUIRED</expect>
+            <description>
+                Required to see the initial value.
+            </description>
+        </case>
+        <case>
+            <match>[-1]</match>
+            <expect>ACCEPTABLE</expect>
+            <description>
+                Seeing the null AtomicInteger. This is a legal race.
+            </description>
+        </case>
+        <unmatched>
+            <expect>ABSENT</expect>
+            <description>
+                Other cases are not expected.
+            </description>
+        </unmatched>
+    </test>
+
+    <test name="net.shipilev.concurrent.torture.tests.atomics.AtomicIntegerCASTest">
+        <contributed-by>Aleksey Shipilev (aleksey.shipilev@oracle.com)</contributed-by>
+        <description>
+            Tests the atomicity of AtomicInteger compareAndSet().
+        </description>
+        <case>
+            <match>[1]</match>
+            <match>[2]</match>
+            <expect>REQUIRED</expect>
+            <description>
+                Required to see either case.
+            </description>
+        </case>
+        <unmatched>
+            <expect>ABSENT</expect>
+            <description>
+                Other cases are not expected.
+            </description>
+        </unmatched>
+    </test>
+
 </testsuite>
