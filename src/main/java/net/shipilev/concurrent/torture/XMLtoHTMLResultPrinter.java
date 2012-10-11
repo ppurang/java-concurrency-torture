@@ -18,7 +18,6 @@ package net.shipilev.concurrent.torture;
 
 
 import com.google.common.base.Predicate;
-import com.google.common.collect.HashMultimap;
 import com.google.common.collect.Multimap;
 import com.google.common.collect.TreeMultimap;
 import net.shipilev.concurrency.torture.schema.descr.Case;
@@ -51,7 +50,6 @@ import java.util.HashMap;
 import java.util.List;
 import java.util.Map;
 import java.util.Set;
-import java.util.TreeMap;
 
 public class XMLtoHTMLResultPrinter {
 

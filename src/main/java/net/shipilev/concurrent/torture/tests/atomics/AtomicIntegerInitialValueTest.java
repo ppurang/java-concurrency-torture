@@ -17,7 +17,6 @@
 package net.shipilev.concurrent.torture.tests.atomics;
 
 import net.shipilev.concurrent.torture.tests.OneActorOneObserverTest;
-import net.shipilev.concurrent.torture.tests.TwoActorsOneArbiterTest;
 
 import java.util.concurrent.atomic.AtomicInteger;
 
