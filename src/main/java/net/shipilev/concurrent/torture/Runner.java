@@ -16,13 +16,14 @@
 
 package net.shipilev.concurrent.torture;
 
+import com.google.common.collect.HashMultiset;
+import com.google.common.collect.Multiset;
 import net.shipilev.concurrency.torture.schema.result.ObjectFactory;
 import net.shipilev.concurrency.torture.schema.result.Result;
 import net.shipilev.concurrency.torture.schema.result.State;
 import net.shipilev.concurrent.torture.tests.ConcurrencyTest;
 import net.shipilev.concurrent.torture.tests.OneActorOneObserverTest;
 import net.shipilev.concurrent.torture.tests.TwoActorsOneArbiterTest;
-import net.shipilev.concurrent.torture.util.Multiset;
 
 import javax.xml.bind.JAXBContext;
 import javax.xml.bind.JAXBException;
@@ -171,7 +172,7 @@ public class Runner {
         */
         Future<Multiset<Long>> res = pool.submit(new Callable<Multiset<Long>>() {
             public Multiset<Long> call() {
-                Multiset<Long> set = new Multiset<Long>();
+                Multiset<Long> set = HashMultiset.create();
 
                 S[] last = null;
                 byte[] state = new byte[8];
@@ -325,7 +326,7 @@ public class Runner {
             public Multiset<Long> call() {
                 byte[] res = new byte[8];
 
-                Multiset<Long> set = new Multiset<Long>();
+                Multiset<Long> set = HashMultiset.create();
 
                 byte[][] results = new byte[loops][];
                 while (!isStopped) {
@@ -375,7 +376,7 @@ public class Runner {
 
         result.setName(test.getClass().getName());
 
-        for (Long e : results.keys()) {
+        for (Long e : results.elementSet()) {
             byte[] b = longToByteArr(e);
             byte[] temp = new byte[test.resultSize()];
             System.arraycopy(b, 0, temp, 0, test.resultSize());
