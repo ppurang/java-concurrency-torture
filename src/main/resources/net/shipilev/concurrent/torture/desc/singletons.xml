@@ -1,4 +1,4 @@
-<testsuite suite="Singleton tests">
+<testsuite name="Singleton tests">
 
     <test name="net.shipilev.concurrent.torture.tests.singletons.UnsafeDCLSingletonTest">
         <contributed-by>Aleksey Shipilev (aleksey.shipilev@oracle.com)</contributed-by>

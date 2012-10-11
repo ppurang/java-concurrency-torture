@@ -2,6 +2,9 @@ package net.shipilev.concurrent.torture;
 
 
 import com.google.common.base.Predicate;
+import com.google.common.collect.HashMultimap;
+import com.google.common.collect.Multimap;
+import com.google.common.collect.TreeMultimap;
 import net.shipilev.concurrency.torture.schema.descr.Case;
 import net.shipilev.concurrency.torture.schema.descr.ExpectType;
 import net.shipilev.concurrency.torture.schema.descr.Test;
@@ -14,7 +17,6 @@ import org.reflections.util.ClasspathHelper;
 import org.reflections.util.ConfigurationBuilder;
 import org.reflections.util.FilterBuilder;
 
-import javax.annotation.Nullable;
 import javax.xml.bind.JAXBContext;
 import javax.xml.bind.JAXBException;
 import javax.xml.bind.Unmarshaller;
@@ -27,6 +29,7 @@ import java.io.InputStream;
 import java.io.PrintWriter;
 import java.util.ArrayList;
 import java.util.Arrays;
+import java.util.Collection;
 import java.util.Comparator;
 import java.util.HashMap;
 import java.util.List;
@@ -37,11 +40,16 @@ import java.util.TreeMap;
 public class XMLtoHTMLResultPrinter {
 
     private final String resultDir;
-    private final Map<String, Test> descriptions;
+    private final Multimap<String, Test> testSuites;
 
     public XMLtoHTMLResultPrinter(Options opts) throws JAXBException, FileNotFoundException {
         resultDir = opts.getResultDest();
-        descriptions = new TreeMap<String, Test>();
+        testSuites = TreeMultimap.create(String.CASE_INSENSITIVE_ORDER, new Comparator<Test>() {
+            @Override
+            public int compare(Test o1, Test o2) {
+                return o1.getName().compareTo(o2.getName());
+            }
+        });
         readDescriptions();
     }
 
@@ -54,7 +62,7 @@ public class XMLtoHTMLResultPrinter {
 
         Set<String> resources = r.getResources(new Predicate<String>() {
             @Override
-            public boolean apply(@Nullable String s) {
+            public boolean apply(String s) {
                 return s != null && s.endsWith(".xml");
             }
         });
@@ -66,19 +74,12 @@ public class XMLtoHTMLResultPrinter {
 
     private void loadDescription(String name) throws JAXBException {
         Testsuite suite = unmarshal(Testsuite.class, this.getClass().getResourceAsStream("/" + name));
-
         for (Test t : suite.getTest()) {
-            descriptions.put(t.getName(), t);
+            testSuites.put(suite.getName(), t);
         }
     }
 
     public void parse() throws FileNotFoundException, JAXBException {
-        PrintWriter output = new PrintWriter(resultDir + "/index.html");
-
-        output.println("<html>");
-        output.println("<head><title>Java Concurrency Torture report</title></head>");
-        output.println("<body>");
-
         File[] files = new File(resultDir).listFiles(new FilenameFilter() {
             @Override
             public boolean accept(File dir, String name) {
@@ -88,9 +89,37 @@ public class XMLtoHTMLResultPrinter {
 
         Arrays.sort(files);
 
+        Map<String, Result> results = new HashMap<String, Result>();
+
         for (File f : files) {
-            parse(output, unmarshal(Result.class, new FileInputStream(f)));
+            Result r = unmarshal(Result.class, new FileInputStream(f));
+            results.put(r.getName(), r);
         }
+
+        PrintWriter output = new PrintWriter(resultDir + "/index.html");
+
+        output.println("<html>");
+        output.println("<head><title>Java Concurrency Torture report</title></head>");
+        output.println("<body>");
+
+        for (String k : testSuites.keySet()) {
+            Collection<Test> tests = testSuites.get(k);
+
+            output.println("<h1>Suite \"" + k + "\"</h1>");
+
+            for (Test test : tests) {
+                Result result = results.get(test.getName());
+                if (result != null) {
+                    parse(output, result, test);
+                }
+            }
+
+        }
+
+//        output.println("Missing description for " + r.getName());
+//        System.err.println("Missing description for " + r.getName());
+
+
 
         output.println("<p>Please report the errors in test grading to <a href='https://github.com/shipilev/java-concurrency-torture/issues'>https://github.com/shipilev/java-concurrency-torture/issues</a></p>");
 
@@ -100,16 +129,9 @@ public class XMLtoHTMLResultPrinter {
         output.close();
     }
 
-    public void parse(PrintWriter output, Result r) throws FileNotFoundException, JAXBException {
+    public void parse(PrintWriter output, Result r, Test test) throws FileNotFoundException, JAXBException {
 
         output.println("<h2>" + r.getName() + "</h2>");
-
-        Test test = descriptions.get(r.getName());
-        if (test == null) {
-            output.println("Missing description for " + r.getName());
-            System.err.println("Missing description for " + r.getName());
-            return;
-        }
 
         output.println("<p>" + test.getDescription() + "</p>");
 

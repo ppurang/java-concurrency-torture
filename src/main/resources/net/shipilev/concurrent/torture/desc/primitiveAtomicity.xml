@@ -1,4 +1,4 @@
-<testsuite suite="Primitive atomicity tests">
+<testsuite name="Primitive atomicity tests">
 
     <test name="net.shipilev.concurrent.torture.tests.primitiveAtomicity.DoubleAtomicityTest">
         <contributed-by>Aleksey Shipilev (aleksey.shipilev@oracle.com)</contributed-by>

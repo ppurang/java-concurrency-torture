@@ -1,4 +1,4 @@
-<testsuite suite="Initialization Tests">
+<testsuite name="Initialization Tests">
 
     <test name="net.shipilev.concurrent.torture.tests.init.LongConstrTest">
         <contributed-by>Aleksey Shipilev (aleksey.shipilev@oracle.com)</contributed-by>

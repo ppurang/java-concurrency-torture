@@ -14,7 +14,6 @@ import org.reflections.util.ClasspathHelper;
 import org.reflections.util.ConfigurationBuilder;
 import org.reflections.util.FilterBuilder;
 
-import javax.annotation.Nullable;
 import javax.xml.bind.JAXBContext;
 import javax.xml.bind.JAXBException;
 import javax.xml.bind.Unmarshaller;
@@ -45,7 +44,7 @@ public class TextResultPrinter {
 
         Set<String> resources = r.getResources(new Predicate<String>() {
             @Override
-            public boolean apply(@Nullable String s) {
+            public boolean apply(String s) {
                 return s != null && s.endsWith(".xml");
             }
         });
