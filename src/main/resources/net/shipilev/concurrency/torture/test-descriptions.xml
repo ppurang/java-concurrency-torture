@@ -26,8 +26,8 @@
             <match>[-1, -1, -1, -1, 0, 0, 0, 0]</match>
             <outcome>NEGATIVE_MISSING</outcome>
             <description>
-                Seeing the torn value. This is specifically allowed by JLS 17.7.
-                This is not a surprising behavior on some 32-bit systems which do not have full-double instructions.
+                Seeing the torn value. This is specifically allowed by <![CDATA[<a href="http://docs.oracle.com/javase/specs/jls/se7/html/jls-17.html#jls-17.7">JLS 17.7</a>]]>.
+                This is not a surprising behavior on some 32-bit systems which do not have full-width 64-bit instructions.
             </description>
         </case>
         <unmatched>
@@ -95,8 +95,8 @@
             <match>[-1, -1, -1, -1, 0, 0, 0, 0]</match>
             <outcome>NEGATIVE_MISSING</outcome>
             <description>
-                Seeing the torn value. This is specifically allowed by JLS 17.7.
-                This is not a surprising behavior on some 32-bit systems which do not have full-double instructions.
+                Seeing the torn value. This is specifically allowed by <![CDATA[<a href="http://docs.oracle.com/javase/specs/jls/se7/html/jls-17.html#jls-17.7">JLS 17.7</a>]]>.
+                This is not a surprising behavior on some 32-bit systems which do not have full-width 64-bit instructions.
             </description>
         </case>
         <unmatched>
@@ -553,7 +553,7 @@
     </test>
 
     <test>
-        <name>net.shipilev.concurrent.torture.positive.init.LongVolatileTest</name>
+        <name>net.shipilev.concurrent.torture.positive.init.Long</name>
         <file>negative/DoubleAtomicityTest.java</file>
         <contributed-by>Aleksey Shipilev (aleksey.shipilev@oracle.com)</contributed-by>
         <description>
