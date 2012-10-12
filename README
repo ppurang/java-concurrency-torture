@@ -2,7 +2,7 @@ Quick-start:
 --------------------------------------------------------------------
 
  $ mvn clean install
- $ java -jar target/concurrency-torture.jar
+ $ java -jar target/concurrency-torture.jar -h
 
 Caveats:
 --------------------------------------------------------------------
@@ -12,16 +12,16 @@ Caveats:
   to get reliable results.
 
 * Most of the tests require at least 3-4 online CPUs. Low CPU count
-  machines could also use these tests, but enable always enable
-  yielding there.
+  machines could also use these tests, but always enable yielding
+  there. Consult the command help to figure out the option for it.
 
 
 Understanding tests and Interpreting results:
 --------------------------------------------------------------------
 
- The tests so far folded in Litmus-like tests, where few threads are
- executing the test concurrently, sometimes exhibiting races. There
- are multiple state objects generated per each run. Threads then
+ The tests so far are folded in Litmus-like tests, where few threads
+ are  executing the test concurrently, sometimes exhibiting races.
+ There  are multiple state objects generated per each run. Threads then
  either mutate or observe that state object.
 
  Test harness is collecting statistics on the observed states. In many
@@ -35,8 +35,8 @@ Understanding tests and Interpreting results:
 Developing tests:
 --------------------------------------------------------------------
 
- If you want to develop a test, you are encourage to get familiar with
- existing set of tests first. You will have to implements one of the
+ If you want to develop a test, you are encouraged to get familiar with
+ existing set of tests first. You will have to implement one of the
  test interfaces:
    - OneActorOneObserverTest
    - TwoActorsOneArbiterTest
