@@ -355,6 +355,15 @@
                 The value set by the actor thread. Observer sees the complete update.
             </description>
         </case>
+        <case>
+            <match>[0, -1]</match>
+            <match>[-1, 0]</match>
+            <expect>ABSENT</expect>
+            <description>
+                Torn value had been read.
+                This might be the known issue (JDK-8000805)>
+            </description>
+        </case>
         <unmatched>
             <expect>ABSENT</expect>
             <description>
