@@ -51,11 +51,15 @@ Developing tests:
 
  Each XML file there describes the test suite, which is the collection of
  tests. It can match the output for each test and mark if that state is:
-    - REQUIRED:      should always be present
-    - ACCEPTABLE:    may be present, may be absent
-    - ABSENT:        should always be absent
-    - KNOWN_SPECIAL: may be present, special known case
-                     (useful to document known corner cases)
+    - REQUIRED:         should always be present
+    - ACCEPTABLE:       may be present, may be absent
+    - FORBIDDEN:        should always be absent
+    - KNOWN_ACCEPTABLE: may be present, special known case
+    - KNOWN_FORBIDDEN:  should always be absent, special known case
+
+ KNOWN_* are useful to document known corner cases and/or building the
+ negative tests, they are treated as their counterparts, but routinely
+ high-lighted in the reports.
 
  You are encouraged to provide the thorough explanation why particular
  state has required/acceptable/absent/special.

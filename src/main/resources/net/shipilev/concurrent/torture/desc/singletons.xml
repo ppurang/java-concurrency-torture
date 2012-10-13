@@ -7,14 +7,14 @@
         </description>
         <case>
             <match>[0]</match>
-            <expect>ABSENT</expect>
+            <expect>FORBIDDEN</expect>
             <description>
                 Factory returned null singleton. This is the major correctness issue.
             </description>
         </case>
         <case>
             <match>[1]</match>
-            <expect>KNOWN_SPECIAL</expect>
+            <expect>KNOWN_ACCEPTABLE</expect>
             <description>
                 The reference field in singleton is null.
                 This is the violation of singleton contract, but legal JMM behavior.
@@ -28,7 +28,7 @@
             </description>
         </case>
         <unmatched>
-            <expect>KNOWN_SPECIAL</expect>
+            <expect>KNOWN_ACCEPTABLE</expect>
             <description>
                 This should be under-uninitialized case. This is a correct JMM behavior.
             </description>
@@ -42,14 +42,14 @@
         </description>
         <case>
             <match>[0]</match>
-            <expect>ABSENT</expect>
+            <expect>FORBIDDEN</expect>
             <description>
                 Factory returned null singleton. This is the major correctness issue.
             </description>
         </case>
         <case>
             <match>[1]</match>
-            <expect>ABSENT</expect>
+            <expect>FORBIDDEN</expect>
             <description>
                 The reference field in singleton is null.
                 This is forbidden by JMM.
@@ -63,7 +63,7 @@
             </description>
         </case>
         <unmatched>
-            <expect>KNOWN_SPECIAL</expect>
+            <expect>KNOWN_ACCEPTABLE</expect>
             <description>
                 This should be under-uninitialized case. This is a correct JMM behavior.
             </description>
@@ -77,14 +77,14 @@
         </description>
         <case>
             <match>[0]</match>
-            <expect>ABSENT</expect>
+            <expect>FORBIDDEN</expect>
             <description>
                 Factory returned null singleton. This is the major correctness issue.
             </description>
         </case>
         <case>
             <match>[1]</match>
-            <expect>ABSENT</expect>
+            <expect>FORBIDDEN</expect>
             <description>
                 The reference field in singleton is null.
                 This is forbidden by JMM.
@@ -98,7 +98,7 @@
             </description>
         </case>
         <unmatched>
-            <expect>KNOWN_SPECIAL</expect>
+            <expect>KNOWN_ACCEPTABLE</expect>
             <description>
                 This should be under-uninitialized case. This is a correct JMM behavior.
             </description>
@@ -112,14 +112,14 @@
         </description>
         <case>
             <match>[0]</match>
-            <expect>ABSENT</expect>
+            <expect>FORBIDDEN</expect>
             <description>
                 Factory returned null singleton. This is the major correctness issue.
             </description>
         </case>
         <case>
             <match>[1]</match>
-            <expect>ABSENT</expect>
+            <expect>FORBIDDEN</expect>
             <description>
                 The reference field in singleton is null.
                 This is forbidden by JMM.
@@ -133,7 +133,7 @@
             </description>
         </case>
         <unmatched>
-            <expect>KNOWN_SPECIAL</expect>
+            <expect>KNOWN_ACCEPTABLE</expect>
             <description>
                 This should be under-uninitialized case. This is a correct JMM behavior.
             </description>

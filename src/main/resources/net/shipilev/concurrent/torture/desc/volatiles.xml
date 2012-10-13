@@ -59,7 +59,7 @@
             </description>
         </case>
         <unmatched>
-            <expect>ABSENT</expect>
+            <expect>FORBIDDEN</expect>
             <description>
                 This case is not expected.
             </description>
@@ -83,14 +83,14 @@
         </case>
         <case>
             <match>[1, 0]</match>
-            <expect>ABSENT</expect>
+            <expect>FORBIDDEN</expect>
             <description>
                 Can't read the default value for $x after $y is effective.
             </description>
         </case>
         <case>
             <match>[1, 1]</match>
-            <expect>ABSENT</expect>
+            <expect>FORBIDDEN</expect>
             <description>
                 Can't read the stale value for $x after $y is effective.
             </description>
@@ -104,7 +104,7 @@
             </description>
         </case>
         <unmatched>
-            <expect>ABSENT</expect>
+            <expect>FORBIDDEN</expect>
             <description>
                 This case is not expected.
             </description>
@@ -126,7 +126,7 @@
         </case>
         <case>
             <match>[0, 1, 0]</match>
-            <expect>ABSENT</expect>
+            <expect>FORBIDDEN</expect>
             <description>
                 Volatile write to $y had happened, and update to $x had been lost.
                 Known bug in JDK 7u4 and lower client compiler, see <![CDATA[<a href="http://bugs.sun.com/bugdatabase/view_bug.do?bug_id=7170145">CR 7170145</a>]]>
@@ -134,7 +134,7 @@
         </case>
         <case>
             <match>[1, 1, 0]</match>
-            <expect>ABSENT</expect>
+            <expect>FORBIDDEN</expect>
             <description>
                 Volatile write to $y had happened, and update to $x had been lost (this one is very weird).
             </description>
@@ -164,7 +164,7 @@
             </description>
         </case>
         <unmatched>
-            <expect>ABSENT</expect>
+            <expect>FORBIDDEN</expect>
             <description>
                 This case is not expected.
             </description>
@@ -178,14 +178,14 @@
         </description>
         <case>
             <match>[0]</match>
-            <expect>ABSENT</expect>
+            <expect>FORBIDDEN</expect>
             <description>
                 Can not see the default value.
             </description>
         </case>
         <case>
             <match>[1]</match>
-            <expect>KNOWN_SPECIAL</expect>
+            <expect>KNOWN_ACCEPTABLE</expect>
             <description>
                 One update is lost.
             </description>
@@ -198,7 +198,7 @@
             </description>
         </case>
         <unmatched>
-            <expect>ABSENT</expect>
+            <expect>FORBIDDEN</expect>
             <description>
                 Other cases are not expected.
             </description>

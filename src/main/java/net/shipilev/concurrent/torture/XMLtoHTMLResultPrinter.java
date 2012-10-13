@@ -212,10 +212,12 @@ public class XMLtoHTMLResultPrinter {
                 return isZero ? Color.RED : Color.GREEN;
             case ACCEPTABLE:
                 return isZero ? Color.LIGHT_GRAY : Color.GREEN;
-            case ABSENT:
+            case FORBIDDEN:
                 return isZero ? Color.LIGHT_GRAY : Color.RED;
-            case KNOWN_SPECIAL:
+            case KNOWN_ACCEPTABLE:
                 return isZero ? Color.LIGHT_GRAY : Color.CYAN;
+            case KNOWN_FORBIDDEN:
+                return isZero ? Color.LIGHT_GRAY : Color.YELLOW;
             default:
                 throw new IllegalStateException();
         }

@@ -7,8 +7,9 @@
         <xsd:restriction base="xsd:string">
             <xsd:enumeration value="REQUIRED"/>
             <xsd:enumeration value="ACCEPTABLE"/>
-            <xsd:enumeration value="ABSENT"/>
-            <xsd:enumeration value="KNOWN_SPECIAL"/>
+            <xsd:enumeration value="FORBIDDEN"/>
+            <xsd:enumeration value="KNOWN_ACCEPTABLE"/>
+            <xsd:enumeration value="KNOWN_FORBIDDEN"/>
             <xsd:enumeration value="UNKNOWN"/>
         </xsd:restriction>
     </xsd:simpleType>

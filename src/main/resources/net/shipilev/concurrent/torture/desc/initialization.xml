@@ -29,7 +29,7 @@
             </description>
         </case>
         <unmatched>
-            <expect>ABSENT</expect>
+            <expect>FORBIDDEN</expect>
             <description>
                 This case is not expected.
             </description>
@@ -65,7 +65,7 @@
             </description>
         </case>
         <unmatched>
-            <expect>ABSENT</expect>
+            <expect>FORBIDDEN</expect>
             <description>
                 This case is not expected.
             </description>
@@ -79,7 +79,7 @@
         </description>
         <case>
             <match>[0, 0, 0, 0, 0, 0, 0, 0]</match>
-            <expect>ABSENT</expect>
+            <expect>FORBIDDEN</expect>
             <description>
                 Seeing the default value for long field. The update to the field in the constructor is lost.
                 This is a legal JMM behavior.
@@ -101,7 +101,7 @@
             </description>
         </case>
         <unmatched>
-            <expect>ABSENT</expect>
+            <expect>FORBIDDEN</expect>
             <description>
                 This case is not expected.
             </description>
@@ -115,7 +115,7 @@
         </description>
         <case>
             <match>[0, 0, 0, 0, 0, 0, 0, 0]</match>
-            <expect>ABSENT</expect>
+            <expect>FORBIDDEN</expect>
             <description>
                 Seeing the default value for long field. The update to the field in the constructor is lost.
                 This is a legal JMM behavior.
@@ -137,7 +137,7 @@
             </description>
         </case>
         <unmatched>
-            <expect>ABSENT</expect>
+            <expect>FORBIDDEN</expect>
             <description>
                 This case is not expected.
             </description>
@@ -165,7 +165,7 @@
             </description>
         </case>
         <unmatched>
-            <expect>KNOWN_SPECIAL</expect>
+            <expect>KNOWN_ACCEPTABLE</expect>
             <description>
                 This should be under-uninitialized case. This is a correct JMM behavior.
             </description>

@@ -23,14 +23,14 @@
         <case>
             <match>[0, 0, 0, 0, -1, -1, -1, -1]</match>
             <match>[-1, -1, -1, -1, 0, 0, 0, 0]</match>
-            <expect>KNOWN_SPECIAL</expect>
+            <expect>KNOWN_ACCEPTABLE</expect>
             <description>
                 Seeing the torn value. This is specifically allowed by <![CDATA[<a href="http://docs.oracle.com/javase/specs/jls/se7/html/jls-17.html#jls-17.7">JLS 17.7</a>]]>.
                 This is not a surprising behavior on some 32-bit systems which do not have full-width 64-bit instructions.
             </description>
         </case>
         <unmatched>
-            <expect>ABSENT</expect>
+            <expect>FORBIDDEN</expect>
             <description>
                 This case is not expected.
             </description>
@@ -58,7 +58,7 @@
             </description>
         </case>
         <unmatched>
-            <expect>ABSENT</expect>
+            <expect>FORBIDDEN</expect>
             <description>
                 This case is not expected.
             </description>
@@ -86,7 +86,7 @@
             </description>
         </case>
         <unmatched>
-            <expect>ABSENT</expect>
+            <expect>FORBIDDEN</expect>
             <description>
                 This case is not expected.
             </description>
@@ -114,7 +114,7 @@
             </description>
         </case>
         <unmatched>
-            <expect>ABSENT</expect>
+            <expect>FORBIDDEN</expect>
             <description>
                 This case is not expected.
             </description>
@@ -142,7 +142,7 @@
             </description>
         </case>
         <unmatched>
-            <expect>ABSENT</expect>
+            <expect>FORBIDDEN</expect>
             <description>
                 This case is not expected.
             </description>
@@ -170,7 +170,7 @@
             </description>
         </case>
         <unmatched>
-            <expect>ABSENT</expect>
+            <expect>FORBIDDEN</expect>
             <description>
                 This case is not expected.
             </description>
@@ -200,14 +200,14 @@
         <case>
             <match>[0, 0, 0, 0, -1, -1, -1, -1]</match>
             <match>[-1, -1, -1, -1, 0, 0, 0, 0]</match>
-            <expect>KNOWN_SPECIAL</expect>
+            <expect>KNOWN_ACCEPTABLE</expect>
             <description>
                 Seeing the torn value. This is specifically allowed by <![CDATA[<a href="http://docs.oracle.com/javase/specs/jls/se7/html/jls-17.html#jls-17.7">JLS 17.7</a>]]>.
                 This is not a surprising behavior on some 32-bit systems which do not have full-width 64-bit instructions.
             </description>
         </case>
         <unmatched>
-            <expect>ABSENT</expect>
+            <expect>FORBIDDEN</expect>
             <description>
                 This case is not expected.
             </description>
@@ -235,7 +235,7 @@
             </description>
         </case>
         <unmatched>
-            <expect>ABSENT</expect>
+            <expect>FORBIDDEN</expect>
             <description>
                 Seeing other values is forbidden by JMM.
             </description>
@@ -263,7 +263,7 @@
             </description>
         </case>
         <unmatched>
-            <expect>ABSENT</expect>
+            <expect>FORBIDDEN</expect>
             <description>
                 This case is not expected.
             </description>
@@ -291,7 +291,7 @@
             </description>
         </case>
         <unmatched>
-            <expect>ABSENT</expect>
+            <expect>FORBIDDEN</expect>
             <description>
                 This case is not expected.
             </description>
@@ -321,14 +321,14 @@
         <case>
             <match>[0, -1]</match>
             <match>[-1, 0]</match>
-            <expect>ABSENT</expect>
+            <expect>FORBIDDEN</expect>
             <description>
                 Torn value had been read.
                 This might be the known issue (JDK-8000805)>
             </description>
         </case>
         <unmatched>
-            <expect>ABSENT</expect>
+            <expect>FORBIDDEN</expect>
             <description>
                 This case is not expected.
             </description>
@@ -358,14 +358,14 @@
         <case>
             <match>[0, -1]</match>
             <match>[-1, 0]</match>
-            <expect>ABSENT</expect>
+            <expect>FORBIDDEN</expect>
             <description>
                 Torn value had been read.
                 This might be the known issue (JDK-8000805)>
             </description>
         </case>
         <unmatched>
-            <expect>ABSENT</expect>
+            <expect>FORBIDDEN</expect>
             <description>
                 This case is not expected.
             </description>
@@ -393,7 +393,7 @@
             </description>
         </case>
         <unmatched>
-            <expect>ABSENT</expect>
+            <expect>FORBIDDEN</expect>
             <description>
                 This case is not expected.
             </description>
@@ -421,7 +421,7 @@
             </description>
         </case>
         <unmatched>
-            <expect>ABSENT</expect>
+            <expect>FORBIDDEN</expect>
             <description>
                 This case is not expected.
             </description>
