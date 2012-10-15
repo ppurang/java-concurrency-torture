@@ -41,7 +41,7 @@ public class VolatileIntAtomicityTest implements OneActorOneObserverTest<Volatil
 
     @Override
     public void observe(Specimen s, byte[] result) {
-        long t = s.x;
+        int t = s.x;
         result[0] = (byte) ((t >> 0) & 0xFF);
         result[1] = (byte) ((t >> 8) & 0xFF);
         result[2] = (byte) ((t >> 16) & 0xFF);
