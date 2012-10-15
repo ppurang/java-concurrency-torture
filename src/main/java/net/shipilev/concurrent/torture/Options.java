@@ -50,7 +50,7 @@ public class Options {
                 .withOptionalArg().ofType(boolean.class).defaultsTo(false);
 
         OptionSpec<String> testFilter = parser.accepts("t", "Regexp selector for tests")
-                .withRequiredArg().ofType(String.class).describedAs("file").defaultsTo(".*");
+                .withRequiredArg().ofType(String.class).describedAs("regexp").defaultsTo(".*");
 
         OptionSpec<Integer> loops = parser.accepts("loops", "Number of internal loops")
                 .withRequiredArg().ofType(int.class).describedAs("N").defaultsTo(10);
