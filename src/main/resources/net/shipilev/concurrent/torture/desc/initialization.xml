@@ -82,7 +82,7 @@
             <expect>FORBIDDEN</expect>
             <description>
                 Seeing the default value for long field. The update to the field in the constructor is lost.
-                This is a legal JMM behavior.
+                This is an illegal JMM behavior.
             </description>
         </case>
         <case>
@@ -118,7 +118,7 @@
             <expect>FORBIDDEN</expect>
             <description>
                 Seeing the default value for long field. The update to the field in the constructor is lost.
-                This is a legal JMM behavior.
+                This is an illegal JMM behavior.
             </description>
         </case>
         <case>
