@@ -1,0 +1,248 @@
+<testsuite name="Initialization Tests">
+
+    <test name="net.shipilev.concurrent.torture.tests.init.arrays.ByteArrayInitTest">
+        <contributed-by>Aleksey Shipilev (aleksey.shipilev@oracle.com)</contributed-by>
+        <description>
+            Tests if byte[] has the proper default values.
+        </description>
+        <case>
+            <match>[-1]</match>
+            <expect>ACCEPTABLE</expect>
+            <description>
+                Seeing the null array. This is legal case since there is a race between actor and observer.
+                Seeing the default value for long field. The update to the field in the constructor is lost.
+            </description>
+        </case>
+        <case>
+            <match>[0]</match>
+            <expect>ACCEPTABLE</expect>
+            <description>
+                Seeing the completely initialized array, and all elements are with default values.
+            </description>
+        </case>
+        <case>
+            <match>[1]</match>
+            <expect>FORBIDDEN</expect>
+            <description>
+                Seeing some values in the array is NOT default value.
+            </description>
+        </case>
+        <unmatched>
+            <expect>FORBIDDEN</expect>
+            <description>
+                This case is not expected.
+            </description>
+        </unmatched>
+    </test>
+
+    <test name="net.shipilev.concurrent.torture.tests.init.arrays.CharArrayInitTest">
+        <contributed-by>Aleksey Shipilev (aleksey.shipilev@oracle.com)</contributed-by>
+        <description>
+            Tests if byte[] has the proper default values.
+        </description>
+        <case>
+            <match>[-1]</match>
+            <expect>ACCEPTABLE</expect>
+            <description>
+                Seeing the null array. This is legal case since there is a race between actor and observer.
+                Seeing the default value for long field. The update to the field in the constructor is lost.
+            </description>
+        </case>
+        <case>
+            <match>[0]</match>
+            <expect>ACCEPTABLE</expect>
+            <description>
+                Seeing the completely initialized array, and all elements are with default values.
+            </description>
+        </case>
+        <case>
+            <match>[1]</match>
+            <expect>FORBIDDEN</expect>
+            <description>
+                Seeing some values in the array is NOT default value.
+            </description>
+        </case>
+        <unmatched>
+            <expect>FORBIDDEN</expect>
+            <description>
+                This case is not expected.
+            </description>
+        </unmatched>
+    </test>
+
+    <test name="net.shipilev.concurrent.torture.tests.init.arrays.DoubleArrayInitTest">
+        <contributed-by>Aleksey Shipilev (aleksey.shipilev@oracle.com)</contributed-by>
+        <description>
+            Tests if byte[] has the proper default values.
+        </description>
+        <case>
+            <match>[-1]</match>
+            <expect>ACCEPTABLE</expect>
+            <description>
+                Seeing the null array. This is legal case since there is a race between actor and observer.
+                Seeing the default value for long field. The update to the field in the constructor is lost.
+            </description>
+        </case>
+        <case>
+            <match>[0]</match>
+            <expect>ACCEPTABLE</expect>
+            <description>
+                Seeing the completely initialized array, and all elements are with default values.
+            </description>
+        </case>
+        <case>
+            <match>[1]</match>
+            <expect>FORBIDDEN</expect>
+            <description>
+                Seeing some values in the array is NOT default value.
+            </description>
+        </case>
+        <unmatched>
+            <expect>FORBIDDEN</expect>
+            <description>
+                This case is not expected.
+            </description>
+        </unmatched>
+    </test>
+
+    <test name="net.shipilev.concurrent.torture.tests.init.arrays.FloatArrayInitTest">
+        <contributed-by>Aleksey Shipilev (aleksey.shipilev@oracle.com)</contributed-by>
+        <description>
+            Tests if byte[] has the proper default values.
+        </description>
+        <case>
+            <match>[-1]</match>
+            <expect>ACCEPTABLE</expect>
+            <description>
+                Seeing the null array. This is legal case since there is a race between actor and observer.
+                Seeing the default value for long field. The update to the field in the constructor is lost.
+            </description>
+        </case>
+        <case>
+            <match>[0]</match>
+            <expect>ACCEPTABLE</expect>
+            <description>
+                Seeing the completely initialized array, and all elements are with default values.
+            </description>
+        </case>
+        <case>
+            <match>[1]</match>
+            <expect>FORBIDDEN</expect>
+            <description>
+                Seeing some values in the array is NOT default value.
+            </description>
+        </case>
+        <unmatched>
+            <expect>FORBIDDEN</expect>
+            <description>
+                This case is not expected.
+            </description>
+        </unmatched>
+    </test>
+
+    <test name="net.shipilev.concurrent.torture.tests.init.arrays.IntArrayInitTest">
+        <contributed-by>Aleksey Shipilev (aleksey.shipilev@oracle.com)</contributed-by>
+        <description>
+            Tests if byte[] has the proper default values.
+        </description>
+        <case>
+            <match>[-1]</match>
+            <expect>ACCEPTABLE</expect>
+            <description>
+                Seeing the null array. This is legal case since there is a race between actor and observer.
+                Seeing the default value for long field. The update to the field in the constructor is lost.
+            </description>
+        </case>
+        <case>
+            <match>[0]</match>
+            <expect>ACCEPTABLE</expect>
+            <description>
+                Seeing the completely initialized array, and all elements are with default values.
+            </description>
+        </case>
+        <case>
+            <match>[1]</match>
+            <expect>FORBIDDEN</expect>
+            <description>
+                Seeing some values in the array is NOT default value.
+            </description>
+        </case>
+        <unmatched>
+            <expect>FORBIDDEN</expect>
+            <description>
+                This case is not expected.
+            </description>
+        </unmatched>
+    </test>
+
+    <test name="net.shipilev.concurrent.torture.tests.init.arrays.LongArrayInitTest">
+        <contributed-by>Aleksey Shipilev (aleksey.shipilev@oracle.com)</contributed-by>
+        <description>
+            Tests if byte[] has the proper default values.
+        </description>
+        <case>
+            <match>[-1]</match>
+            <expect>ACCEPTABLE</expect>
+            <description>
+                Seeing the null array. This is legal case since there is a race between actor and observer.
+                Seeing the default value for long field. The update to the field in the constructor is lost.
+            </description>
+        </case>
+        <case>
+            <match>[0]</match>
+            <expect>ACCEPTABLE</expect>
+            <description>
+                Seeing the completely initialized array, and all elements are with default values.
+            </description>
+        </case>
+        <case>
+            <match>[1]</match>
+            <expect>FORBIDDEN</expect>
+            <description>
+                Seeing some values in the array is NOT default value.
+            </description>
+        </case>
+        <unmatched>
+            <expect>FORBIDDEN</expect>
+            <description>
+                This case is not expected.
+            </description>
+        </unmatched>
+    </test>
+
+    <test name="net.shipilev.concurrent.torture.tests.init.arrays.ShortArrayInitTest">
+        <contributed-by>Aleksey Shipilev (aleksey.shipilev@oracle.com)</contributed-by>
+        <description>
+            Tests if byte[] has the proper default values.
+        </description>
+        <case>
+            <match>[-1]</match>
+            <expect>ACCEPTABLE</expect>
+            <description>
+                Seeing the null array. This is legal case since there is a race between actor and observer.
+                Seeing the default value for long field. The update to the field in the constructor is lost.
+            </description>
+        </case>
+        <case>
+            <match>[0]</match>
+            <expect>ACCEPTABLE</expect>
+            <description>
+                Seeing the completely initialized array, and all elements are with default values.
+            </description>
+        </case>
+        <case>
+            <match>[1]</match>
+            <expect>FORBIDDEN</expect>
+            <description>
+                Seeing some values in the array is NOT default value.
+            </description>
+        </case>
+        <unmatched>
+            <expect>FORBIDDEN</expect>
+            <description>
+                This case is not expected.
+            </description>
+        </unmatched>
+    </test>
+
+</testsuite>
