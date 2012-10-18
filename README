@@ -1,3 +1,9 @@
+JAVA CONCURRENCY TORTURE TESTS
+
+This project is the attempt to test/break Java implementations 
+on concurrency front. This harness can be used to conduct the fine
+experiments which require lots of art to expose otherwise.
+
 Quick-start:
 --------------------------------------------------------------------
 
