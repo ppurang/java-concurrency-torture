@@ -53,7 +53,7 @@ Developing tests:
  want to test.
 
  Test interpretation is handled elsewhere, you can see at
-    src/main/resources/net/shipilev/concurrent/torturn/desc/
+    src/main/resources/net/shipilev/concurrent/torture/desc/
 
  Each XML file there describes the test suite, which is the collection of
  tests. It can match the output for each test and mark if that state is:
@@ -65,7 +65,8 @@ Developing tests:
 
  KNOWN_* are useful to document known corner cases and/or building the
  negative tests, they are treated as their counterparts, but routinely
- high-lighted in the reports.
+ highlighted in the reports.
 
  You are encouraged to provide the thorough explanation why particular
- state has required/acceptable/absent/special.
+ state is required/acceptable/absent/special. Even though harness will
+ print the debug output into the console if no description is given.
