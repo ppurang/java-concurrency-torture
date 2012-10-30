@@ -18,12 +18,15 @@ package net.shipilev.concurrent.torture;
 
 import com.google.common.collect.HashMultiset;
 import com.google.common.collect.Multiset;
+import net.shipilev.concurrency.torture.schema.result.Env;
+import net.shipilev.concurrency.torture.schema.result.Kv;
 import net.shipilev.concurrency.torture.schema.result.ObjectFactory;
 import net.shipilev.concurrency.torture.schema.result.Result;
 import net.shipilev.concurrency.torture.schema.result.State;
 import net.shipilev.concurrent.torture.tests.ConcurrencyTest;
 import net.shipilev.concurrent.torture.tests.OneActorOneObserverTest;
 import net.shipilev.concurrent.torture.tests.TwoActorsOneArbiterTest;
+import net.shipilev.concurrent.torture.util.Environment;
 
 import javax.xml.bind.JAXBContext;
 import javax.xml.bind.JAXBException;
@@ -33,6 +36,7 @@ import java.io.FileNotFoundException;
 import java.io.PrintWriter;
 import java.nio.ByteBuffer;
 import java.util.Arrays;
+import java.util.Map;
 import java.util.concurrent.Callable;
 import java.util.concurrent.ExecutionException;
 import java.util.concurrent.ExecutorService;
@@ -245,7 +249,7 @@ public class Runner {
 
          /*
            Injector thread: injects new states until interrupted.
-           There are an additional constraints:
+           There are an addi.tional constraints:
               a. If actors results are not yet consumed, do not push the new state.
                  This will effectively block actors from working until arbiter consumes their result.
          */
@@ -387,6 +391,15 @@ public class Runner {
             state.setCount(results.count(e));
             result.getState().add(state);
         }
+
+        Env env = factory.createEnv();
+        for (Map.Entry<String, String> entry : Environment.getEnvironment().entrySet()) {
+            Kv kv = factory.createKv();
+            kv.setKey(entry.getKey());
+            kv.setValue(entry.getValue());
+            env.getProperty().add(kv);
+        }
+        result.setEnv(env);
 
         try {
             String packageName = Result.class.getPackage().getName();
