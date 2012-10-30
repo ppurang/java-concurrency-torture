@@ -41,12 +41,14 @@ public class ByteAtomicityTest implements OneActorOneObserverTest<ByteAtomicityT
 
     @Override
     public void observe(Specimen s, byte[] result) {
-        result[0] = s.x;
+        byte b = s.x;
+        result[0] = (byte)((b >> 0) & 0xF);
+        result[1] = (byte)((b >> 4) & 0xF);
     }
 
     @Override
     public int resultSize() {
-        return 1;
+        return 2;
     }
 
 }

@@ -42,8 +42,8 @@ public class VolatileCharAtomicityTest implements OneActorOneObserverTest<Volati
     @Override
     public void observe(Specimen s, byte[] result) {
         char t = s.x;
-        result[0] = (byte) ((t >> 0) & 0xFF);
-        result[1] = (byte) ((t >> 8) & 0xFF);
+        result[0] = (byte) t;
+        result[1] = (byte) ((t << 16) >> 16); // this is known to exhibit bugs
     }
 
     @Override
