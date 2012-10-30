@@ -36,7 +36,9 @@ import java.io.FileNotFoundException;
 import java.io.PrintWriter;
 import java.nio.ByteBuffer;
 import java.util.Arrays;
+import java.util.Collections;
 import java.util.Map;
+import java.util.Random;
 import java.util.concurrent.Callable;
 import java.util.concurrent.ExecutionException;
 import java.util.concurrent.ExecutorService;
@@ -152,11 +154,13 @@ public class Runner {
             public void run() {
                 S[] last = null;
 
+                int[] indices = generatePermutation(loops);
+
                 while (!isStopped) {
                     S[] cur = holder.current;
                     if (cur != null && last != cur) {
                         for (int l = 0; l < loops; l++) {
-                            test.actor1(cur[l]);
+                            test.actor1(cur[indices[l]]);
                         }
                         last = cur;
                     } else {
@@ -182,14 +186,17 @@ public class Runner {
                 byte[] state = new byte[8];
                 byte[][] results = new byte[loops][];
 
+                int[] indices = generatePermutation(loops);
+
                 while (!isStopped) {
                     S[] cur = holder.current;
 
                     if (cur != null && last != cur) {
                         for (int l = 0; l < loops; l++) {
-                            test.observe(cur[l], state);
-                            results[l] = new byte[8];
-                            System.arraycopy(state, 0, results[l], 0, 8);
+                            int index = indices[l];
+                            test.observe(cur[index], state);
+                            results[index] = new byte[8];
+                            System.arraycopy(state, 0, results[index], 0, 8);
                         }
 
                         last = cur;
@@ -219,6 +226,27 @@ public class Runner {
             Result r = dump(test, res.get());
             judge(r);
         }
+    }
+
+    public static int[] generatePermutation(int len) {
+        int[] res = new int[len];
+        for (int i = 0; i < len; i++) {
+            res[i] = i;
+        }
+        return shuffle(res);
+    }
+
+    public static int[] shuffle(int[] arr) {
+        Random r = new Random();
+        int[] res = arr.clone();
+        for (int i = arr.length; i > 1; i--) {
+            int i1 = i-1;
+            int i2 = r.nextInt(i);
+            int t = res[i1];
+            res[i1] = res[i2];
+            res[i2] = t;
+        }
+        return res;
     }
 
     public <S> void run(final TwoActorsOneArbiterTest<S> test) throws InterruptedException, ExecutionException {
@@ -273,6 +301,7 @@ public class Runner {
         Future<?> a1 = pool.submit(new Runnable() {
             public void run() {
                 S last = null;
+
                 while (!isStopped) {
                     int l = 0;
                     while (l < loops) {
