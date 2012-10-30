@@ -129,8 +129,11 @@
             <expect>FORBIDDEN</expect>
             <description>
                 Volatile write to $y had happened, and update to $x had been lost.
-                Known bug in JDK 7u4 and lower client compiler, see <![CDATA[<a href="http://bugs.sun.com/bugdatabase/view_bug.do?bug_id=7170145">CR 7170145</a>]]>
             </description>
+            <refs>
+                <url></url>
+                <url>http://bugs.sun.com/bugdatabase/view_bug.do?bug_id=7170145</url>
+            </refs>
         </case>
         <case>
             <match>[1, 1, 0]</match>

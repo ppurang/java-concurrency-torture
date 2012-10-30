@@ -29,6 +29,7 @@
             <xsd:element name="description" type="xsd:string"/>
             <xsd:element name="case" type="case" maxOccurs="unbounded"/>
             <xsd:element name="unmatched" type="unmatched" />
+            <xsd:element name="refs" type="ref" maxOccurs="unbounded"/>
         </xsd:sequence>
         <xsd:attribute name="name" type="xsd:string"/>
     </xsd:complexType>
@@ -38,6 +39,7 @@
             <xsd:element name="match" type="xsd:string" maxOccurs="unbounded"/>
             <xsd:element name="expect" type="expectType"/>
             <xsd:element name="description" type="xsd:string"/>
+            <xsd:element name="refs" type="ref" maxOccurs="unbounded"/>
         </xsd:sequence>
     </xsd:complexType>
 
@@ -46,6 +48,13 @@
             <xsd:element name="match" type="xsd:string" maxOccurs="unbounded"/>
             <xsd:element name="expect" type="expectType"/>
             <xsd:element name="description" type="xsd:string"/>
+            <xsd:element name="refs" type="ref" maxOccurs="unbounded"/>
+        </xsd:sequence>
+    </xsd:complexType>
+
+    <xsd:complexType name="ref">
+        <xsd:sequence>
+            <xsd:element name="url" type="xsd:string" minOccurs="0" maxOccurs="1" />
         </xsd:sequence>
     </xsd:complexType>
 

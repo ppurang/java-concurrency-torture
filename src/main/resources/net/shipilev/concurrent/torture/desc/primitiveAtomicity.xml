@@ -25,9 +25,12 @@
             <match>[-1, -1, -1, -1, 0, 0, 0, 0]</match>
             <expect>KNOWN_ACCEPTABLE</expect>
             <description>
-                Seeing the torn value. This is specifically allowed by <![CDATA[<a href="http://docs.oracle.com/javase/specs/jls/se7/html/jls-17.html#jls-17.7">JLS 17.7</a>]]>.
+                Seeing the torn value. This is specifically allowed by JLS.
                 This is not a surprising behavior on some 32-bit systems which do not have full-width 64-bit instructions.
             </description>
+            <refs>
+                <url>http://docs.oracle.com/javase/specs/jls/se7/html/jls-17.html#jls-17.7</url>
+            </refs>
         </case>
         <unmatched>
             <expect>FORBIDDEN</expect>
@@ -202,9 +205,12 @@
             <match>[-1, -1, -1, -1, 0, 0, 0, 0]</match>
             <expect>KNOWN_ACCEPTABLE</expect>
             <description>
-                Seeing the torn value. This is specifically allowed by <![CDATA[<a href="http://docs.oracle.com/javase/specs/jls/se7/html/jls-17.html#jls-17.7">JLS 17.7</a>]]>.
+                Seeing the torn value. This is specifically allowed by JLS.
                 This is not a surprising behavior on some 32-bit systems which do not have full-width 64-bit instructions.
             </description>
+            <refs>
+                <url>http://docs.oracle.com/javase/specs/jls/se7/html/jls-17.html#jls-17.7</url>
+            </refs>
         </case>
         <unmatched>
             <expect>FORBIDDEN</expect>
@@ -268,8 +274,10 @@
             <expect>FORBIDDEN</expect>
             <description>
                 Torn value had been read.
-                This can be the known issue <![CDATA[<a href="http://bugs.sun.com/bugdatabase/view_bug.do?bug_id=8000805">CR 8000805</a>]]>.
             </description>
+            <refs>
+                <url>http://bugs.sun.com/bugdatabase/view_bug.do?bug_id=8000805</url>
+            </refs>
         </case>
         <unmatched>
             <expect>FORBIDDEN</expect>
@@ -305,8 +313,10 @@
             <expect>FORBIDDEN</expect>
             <description>
                 Torn value had been read.
-                This can be the known issue <![CDATA[<a href="http://bugs.sun.com/bugdatabase/view_bug.do?bug_id=8000805">CR 8000805</a>]]>.
             </description>
+            <refs>
+                <url>http://bugs.sun.com/bugdatabase/view_bug.do?bug_id=8000805</url>
+            </refs>
         </case>
         <unmatched>
             <expect>FORBIDDEN</expect>
@@ -342,8 +352,10 @@
             <expect>FORBIDDEN</expect>
             <description>
                 Torn value had been read.
-                This can be the known issue <![CDATA[<a href="http://bugs.sun.com/bugdatabase/view_bug.do?bug_id=8000805">CR 8000805</a>]]>.
             </description>
+            <refs>
+                <url>http://bugs.sun.com/bugdatabase/view_bug.do?bug_id=8000805</url>
+            </refs>
         </case>
         <unmatched>
             <expect>FORBIDDEN</expect>
@@ -379,8 +391,10 @@
             <expect>FORBIDDEN</expect>
             <description>
                 Torn value had been read.
-                This can be the known issue <![CDATA[<a href="http://bugs.sun.com/bugdatabase/view_bug.do?bug_id=8000805">CR 8000805</a>]]>.
             </description>
+            <refs>
+                <url>http://bugs.sun.com/bugdatabase/view_bug.do?bug_id=8000805</url>
+            </refs>
         </case>
         <unmatched>
             <expect>FORBIDDEN</expect>
@@ -416,8 +430,10 @@
             <expect>FORBIDDEN</expect>
             <description>
                 Torn value had been read.
-                This can be the known issue <![CDATA[<a href="http://bugs.sun.com/bugdatabase/view_bug.do?bug_id=8000805">CR 8000805</a>]]>.
             </description>
+            <refs>
+                <url>http://bugs.sun.com/bugdatabase/view_bug.do?bug_id=8000805</url>
+            </refs>
         </case>
         <unmatched>
             <expect>FORBIDDEN</expect>
@@ -453,8 +469,10 @@
             <expect>FORBIDDEN</expect>
             <description>
                 Torn value had been read.
-                This can be the known issue <![CDATA[<a href="http://bugs.sun.com/bugdatabase/view_bug.do?bug_id=8000805">CR 8000805</a>]]>.
             </description>
+            <refs>
+                <url>http://bugs.sun.com/bugdatabase/view_bug.do?bug_id=8000805</url>
+            </refs>
         </case>
         <unmatched>
             <expect>FORBIDDEN</expect>

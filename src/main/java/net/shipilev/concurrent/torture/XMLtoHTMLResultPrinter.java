@@ -22,6 +22,7 @@ import com.google.common.collect.Multimap;
 import com.google.common.collect.TreeMultimap;
 import net.shipilev.concurrency.torture.schema.descr.Case;
 import net.shipilev.concurrency.torture.schema.descr.ExpectType;
+import net.shipilev.concurrency.torture.schema.descr.Ref;
 import net.shipilev.concurrency.torture.schema.descr.Test;
 import net.shipilev.concurrency.torture.schema.descr.Testsuite;
 import net.shipilev.concurrency.torture.schema.result.Result;
@@ -155,6 +156,7 @@ public class XMLtoHTMLResultPrinter {
         output.println("<th width=50>Occurrence</th>");
         output.println("<th width=50>Expectation</th>");
         output.println("<th>Interpretation</th>");
+        output.println("<th width=50>Refs</th>");
         output.println("</tr>");
 
         List<State> unmatchedStates = new ArrayList<State>();
@@ -171,6 +173,13 @@ public class XMLtoHTMLResultPrinter {
                     output.println("<td align=center>" + s.getCount() + "</td>");
                     output.println("<td align=center>" + c.getExpect() + "</td>");
                     output.println("<td>" + c.getDescription() + "</td>");
+                    output.println("<td bgColor='white'>");
+                    List<Ref> list = c.getRefs();
+                    for (int i = 0; i < list.size(); i++) {
+                        output.println("<a href=\"" + list.get(i).getUrl() + "\">[" + (i+1) + "]</a>");
+                    }
+                    output.println("</td>");
+
                     output.println("</tr>");
                     matched = true;
                     unmatchedStates.remove(s);
@@ -184,6 +193,12 @@ public class XMLtoHTMLResultPrinter {
                     output.println("<td align=center>" + 0 + "</td>");
                     output.println("<td align=center>" + c.getExpect() + "</td>");
                     output.println("<td>" + c.getDescription() + "</td>");
+                    output.println("<td bgColor='white'>");
+                    List<Ref> list = c.getRefs();
+                    for (int i = 0; i < list.size(); i++) {
+                        output.println("<a href=\"" + list.get(i).getUrl() + "\">[" + (i+1) + "]</a>");
+                    }
+                    output.println("</td>");
                     output.println("</tr>");
                 }
             }
@@ -195,6 +210,12 @@ public class XMLtoHTMLResultPrinter {
             output.println("<td align=center>" + s.getCount() + "</td>");
             output.println("<td align=center>" + test.getUnmatched().getExpect() + "</td>");
             output.println("<td>" + test.getUnmatched().getDescription() + "</td>");
+            output.println("<td bgColor='white'>");
+            List<Ref> list = test.getUnmatched().getRefs();
+            for (int i = 0; i < list.size(); i++) {
+                output.println("<a href=\"" + list.get(i).getUrl() + "\">[" + (i+1) + "]</a>");
+            }
+            output.println("</td>");
             output.println("</tr>");
         }
 
